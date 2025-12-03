@@ -1,5 +1,5 @@
-import { AppSidebar } from "@/components/app-sidebar";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppSidebar } from "@/components/nav/app-sidebar";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
   Breadcrumb,
   BreadcrumbItem,

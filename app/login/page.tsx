@@ -1,7 +1,7 @@
 import Image from "next/image";
 
-import { LoginForm } from "@/components/login-form";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { LoginForm } from "@/components/auth/login-form";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import LoginImage from "@/public/img/login.jpg";
 import Logo from "@/public/img/logo.jpg";
 

@@ -11,9 +11,9 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/components/nav/nav-main";
+import { NavProjects } from "@/components/nav/nav-projects";
+import { NavUser } from "@/components/nav/nav-user";
 import {
   Sidebar,
   SidebarContent,

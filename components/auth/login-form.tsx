@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { GoogleIcon } from "@/components/icons/google";
+import { WithGoogle } from "@/components/auth/google";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -47,10 +47,7 @@ export function LoginForm({
         </Field>
         <FieldSeparator>Or continue with</FieldSeparator>
         <Field>
-          <Button variant="outline" type="button">
-            <GoogleIcon />
-            Login with Google
-          </Button>
+          <WithGoogle btnTextPrefix="Login" />
           <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline underline-offset-4">

@@ -103,11 +103,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Check if popup has redirected back to our callback URL
         if (popup.location.href.includes("/api/auth/google/callback")) {
-          // The backend returns the JSON response directly in the body
-          // But we can't read the body of the document easily if it's just JSON text displayed in browser
-          // Wait... if the backend returns JSON, the browser displays it.
-          // We can read `popup.document.body.innerText`
-
           const responseText = popup.document.body.innerText;
           try {
             const response = JSON.parse(responseText);

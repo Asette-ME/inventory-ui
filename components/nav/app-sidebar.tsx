@@ -14,6 +14,7 @@ import * as React from "react";
 import { NavMain } from "@/components/nav/nav-main";
 import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
+import { useAuth } from "@/components/providers/auth-provider";
 import {
   Sidebar,
   SidebarContent,
@@ -57,8 +58,8 @@ const data = {
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Hello",
+          url: "/hello",
         },
         {
           title: "Starred",
@@ -81,6 +82,16 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
+  const userData = user
+    ? {
+        name: user.username,
+        email: user.email,
+        image: user.image,
+      }
+    : data.user;
+
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -88,9 +99,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                {/* <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
-                </div> */}
                 <Image
                   src={Logo}
                   alt="Logo"
@@ -112,7 +120,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );

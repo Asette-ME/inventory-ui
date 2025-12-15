@@ -108,7 +108,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">Asette.ai</span>
-                  <span className="truncate text-xs">Inventory Manager</span>
+                  <span className="truncate text-xs">Inventory</span>
                 </div>
               </Link>
             </SidebarMenuButton>

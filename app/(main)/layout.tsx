@@ -1,57 +1,50 @@
+import { SearchIcon } from "lucide-react";
+import { cookies } from "next/headers";
+
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AppSidebar } from "@/components/nav/app-sidebar";
+import { Header } from "@/components/nav/header";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+
   return (
     <AuthGuard>
-      <SidebarProvider className="bg-[#fafafa] dark:bg-background">
+      <SidebarProvider
+        className="bg-[#fafafa] dark:bg-background"
+        defaultOpen={cookieStore.get("sidebar_state")?.value === "true"}
+      >
         <AppSidebar />
         <SidebarInset className="bg-transparent">
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-            <div className="flex flex-1 items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+          <Header>
+            <SidebarTrigger />
 
-              <div className="ml-auto flex items-center gap-2">
-                <ThemeToggle />
-              </div>
+            <InputGroup className="bg-white max-w-100">
+              <InputGroupInput placeholder="Search" disabled />
+              <InputGroupAddon>
+                <SearchIcon />
+              </InputGroupAddon>
+            </InputGroup>
+
+            <div className="ml-auto flex items-center gap-2">
+              <ThemeToggle />
             </div>
-          </header>
+          </Header>
 
           {children}
         </SidebarInset>

@@ -140,7 +140,7 @@ function SidebarMenuItemGroupCollapsed({
   pathname: string;
 }) {
   return (
-    <SidebarMenuItem>
+    <SidebarMenuItem key={item.title}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton tooltip={item.title} isActive={isActive}>

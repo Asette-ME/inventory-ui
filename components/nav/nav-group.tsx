@@ -77,7 +77,7 @@ function SidebarMenuItemSingle({
     <SidebarMenuItem key={item.title}>
       <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
         <Link href={item.url}>
-          {item.icon && <item.icon />}
+          <item.icon />
           <span>{item.title}</span>
         </Link>
       </SidebarMenuButton>
@@ -104,7 +104,7 @@ function SidebarMenuItemGroup({
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton tooltip={item.title} isActive={isActive}>
-            {item.icon && <item.icon />}
+            <item.icon />
             <span>{item.title}</span>
             <SidebarMenuItemGroupIcon />
           </SidebarMenuButton>
@@ -144,7 +144,7 @@ function SidebarMenuItemGroupCollapsed({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuButton tooltip={item.title} isActive={isActive}>
-            {item.icon && <item.icon />}
+            <item.icon />
             <span>{item.title}</span>
             <SidebarMenuItemGroupIcon />
           </SidebarMenuButton>

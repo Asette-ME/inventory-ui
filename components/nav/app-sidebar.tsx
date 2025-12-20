@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  AudioWaveform,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  SquareTerminal,
-} from "lucide-react";
+import { FerrisWheel, Frame, LayoutDashboard, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
-import { NavMain } from "@/components/nav/nav-main";
+import { NavGroup } from "@/components/nav/nav-group";
 import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -27,54 +21,44 @@ import {
 import Logo from "@/public/img/logo.jpg";
 
 // This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
+const routes = {
+  dashboard: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
     },
   ],
-  navMain: [
+  geo: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Locations",
+      icon: MapPin,
       isActive: true,
-      items: [
+      subItems: [
         {
-          title: "Hello",
-          url: "/hello",
+          title: "Countries",
+          url: "/geo/locations/countries",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Cities",
+          url: "/geo/locations/cities",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Districts",
+          url: "/geo/locations/districts",
         },
       ],
+    },
+    {
+      title: "Attractions",
+      url: "/geo/attractions",
+      icon: FerrisWheel,
+      isActive: false,
     },
   ],
   projects: [
     {
-      name: "Design Engineering",
+      title: "Design Engineering",
       url: "#",
       icon: Frame,
     },
@@ -83,14 +67,14 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
-
-  const userData = user
-    ? {
-        name: user.username,
-        email: user.email,
-        image: user.image,
-      }
-    : data.user;
+  let userData;
+  if (user) {
+    userData = {
+      name: user.username,
+      email: user.email,
+      image: user.image,
+    };
+  }
 
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -116,12 +100,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavGroup items={routes.dashboard} />
+        <NavGroup title="Geo" items={routes.geo} />
+        <NavProjects projects={routes.projects} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={userData} />
-      </SidebarFooter>
+      <SidebarFooter>{userData && <NavUser user={userData} />}</SidebarFooter>
     </Sidebar>
   );
 }

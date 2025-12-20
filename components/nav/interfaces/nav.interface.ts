@@ -1,19 +1,24 @@
 import { LucideIcon } from "lucide-react";
 
-interface RouteSubItem {
+interface NavSubItem {
   title: string;
   url: string;
 }
 
-export interface RouteItem {
+export interface NavItem {
   title: string;
   url: string;
   icon: LucideIcon;
   isActive?: boolean;
-  subItems?: RouteSubItem[];
+  subItems?: NavSubItem[];
 }
 
-export interface RouteUser {
+export interface NavGroupProps {
+  title?: string;
+  items: NavItem[];
+}
+
+export interface NavItemUser {
   name: string;
   email: string;
   image?: string;

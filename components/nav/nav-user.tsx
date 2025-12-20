@@ -2,7 +2,7 @@
 
 import { EllipsisVertical, LogOut } from "lucide-react";
 
-import { RouteUser } from "@/components/nav/interfaces/routes.interface";
+import { NavItemUser } from "@/components/nav/interfaces/nav.interface";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,7 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavUser({ user }: { user: RouteUser }) {
+export function NavUser({ user }: { user: NavItemUser }) {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
 

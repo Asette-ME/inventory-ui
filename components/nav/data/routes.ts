@@ -1,8 +1,8 @@
 import { FerrisWheel, Frame, LayoutDashboard, MapPin } from "lucide-react";
 
-import { RouteItem } from "@/components/nav/interfaces/routes.interface";
+import { NavItem } from "@/components/nav/interfaces/nav.interface";
 
-export const routes: Record<string, RouteItem[]> = {
+export const routes: Record<string, NavItem[]> = {
   dashboard: [
     {
       title: "Dashboard",

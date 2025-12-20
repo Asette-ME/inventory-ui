@@ -20,9 +20,9 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 
-import { RouteItem } from "@/components/nav/interfaces/routes.interface";
+import { NavItem } from "@/components/nav/interfaces/nav.interface";
 
-export function NavProjects({ projects }: { projects: RouteItem[] }) {
+export function NavProjects({ projects }: { projects: NavItem[] }) {
   const { isMobile } = useSidebar();
 
   return (
@@ -31,7 +31,7 @@ export function NavProjects({ projects }: { projects: RouteItem[] }) {
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={item.title}>
               <Link href={item.url}>
                 <item.icon />
                 <span>{item.title}</span>

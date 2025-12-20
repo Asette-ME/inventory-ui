@@ -5,7 +5,7 @@ import Link from "next/link";
 import * as React from "react";
 
 import { routes } from "@/components/nav/data/routes";
-import { RouteUser } from "@/components/nav/interfaces/routes.interface";
+import { NavItemUser } from "@/components/nav/interfaces/nav.interface";
 import { NavGroup } from "@/components/nav/nav-group";
 import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
@@ -23,7 +23,7 @@ import Logo from "@/public/img/logo.jpg";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
-  let userData: RouteUser | null = null;
+  let userData: NavItemUser | null = null;
   if (user) {
     userData = {
       name: user.username,

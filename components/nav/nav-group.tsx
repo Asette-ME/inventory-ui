@@ -1,7 +1,9 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+
+import { RouteItem } from "@/components/nav/interfaces/routes.interface";
 
 import {
   Collapsible,
@@ -24,16 +26,7 @@ export function NavGroup({
   items,
 }: {
   title?: string;
-  items: {
-    title: string;
-    url?: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    subItems?: {
-      title: string;
-      url: string;
-    }[];
-  }[];
+  items: RouteItem[];
 }) {
   return (
     <SidebarGroup>
@@ -77,7 +70,7 @@ export function NavGroup({
           return (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <Link href={item.url || "#"}>
+                <Link href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>

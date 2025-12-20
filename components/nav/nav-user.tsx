@@ -1,13 +1,13 @@
 "use client";
 
-import { BadgeCheck, EllipsisVertical, LogOut } from "lucide-react";
+import { EllipsisVertical, LogOut } from "lucide-react";
 
+import { RouteUser } from "@/components/nav/interfaces/routes.interface";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -20,15 +20,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    image?: string;
-  };
-}) {
+export function NavUser({ user }: { user: RouteUser }) {
   const { isMobile } = useSidebar();
   const { logout } = useAuth();
 
@@ -72,13 +64,13 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            {/* <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-            </DropdownMenuGroup>
+            </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={logout}>
               <LogOut />

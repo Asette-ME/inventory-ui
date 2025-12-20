@@ -1,10 +1,11 @@
 "use client";
 
-import { FerrisWheel, Frame, LayoutDashboard, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 
+import { routes } from "@/components/nav/data/routes";
+import { RouteUser } from "@/components/nav/interfaces/routes.interface";
 import { NavGroup } from "@/components/nav/nav-group";
 import { NavProjects } from "@/components/nav/nav-projects";
 import { NavUser } from "@/components/nav/nav-user";
@@ -20,54 +21,9 @@ import {
 } from "@/components/ui/sidebar";
 import Logo from "@/public/img/logo.jpg";
 
-// This is sample data.
-const routes = {
-  dashboard: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: LayoutDashboard,
-    },
-  ],
-  geo: [
-    {
-      title: "Locations",
-      icon: MapPin,
-      isActive: true,
-      subItems: [
-        {
-          title: "Countries",
-          url: "/geo/locations/countries",
-        },
-        {
-          title: "Cities",
-          url: "/geo/locations/cities",
-        },
-        {
-          title: "Districts",
-          url: "/geo/locations/districts",
-        },
-      ],
-    },
-    {
-      title: "Attractions",
-      url: "/geo/attractions",
-      icon: FerrisWheel,
-      isActive: false,
-    },
-  ],
-  projects: [
-    {
-      title: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
-  let userData;
+  let userData: RouteUser | null = null;
   if (user) {
     userData = {
       name: user.username,

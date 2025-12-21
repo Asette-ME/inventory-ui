@@ -28,10 +28,12 @@ export function HeaderUser() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="relative h-9 w-9 overflow-hidden">
+        <Button variant="ghost" className="relative h-9 w-9 overflow-hidden">
           <Avatar className="h-9 w-9">
             <AvatarImage src={userData.image} alt={userData.name} />
-            <AvatarFallback>{getUserInitials(userData.name)}</AvatarFallback>
+            <AvatarFallback className="bg-white dark:bg-muted">
+              {getUserInitials(userData.name)}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

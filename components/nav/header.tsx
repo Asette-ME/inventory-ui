@@ -28,7 +28,7 @@ export function Header({ className, children, ...props }: HeaderProps) {
         "header-fixed peer/header top-0 sticky z-50 h-16 px-4 md:rounded-xl md:me-2",
         "transition-[top] duration-300 ease-in-out",
         offset > 30
-          ? "shadow-sm md:top-2 bg-clip-padding backdrop-filter backdrop-blur-xl dark:border dark:border-white-900"
+          ? "shadow-sm md:top-2 bg-clip-padding backdrop-filter backdrop-blur-xl dark:border-b dark:md:border dark:border-white-900"
           : "shadow-none",
         className
       )}

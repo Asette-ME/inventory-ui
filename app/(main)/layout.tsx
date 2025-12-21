@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { AuthGuard } from "@/components/auth/auth-guard";
 import { AppSidebar } from "@/components/nav/app-sidebar";
 import { Header } from "@/components/nav/header";
+import { HeaderUser } from "@/components/nav/header-user";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
   InputGroup,
@@ -43,6 +44,7 @@ export default async function MainLayout({
 
             <div className="ml-auto flex items-center gap-2">
               <ThemeToggle />
+              <HeaderUser />
             </div>
           </Header>
 

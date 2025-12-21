@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (data: any) => {
     try {
       // Use the rewrite path
-      const res = await api.post("/auth/token/login", data);
+      const res = await api.post("/auth/login", data);
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.detail || "Login failed");
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = async (data: any) => {
     try {
-      const res = await api.post("/auth/token/signup", data);
+      const res = await api.post("/auth/signup", data);
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.detail || "Signup failed");

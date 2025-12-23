@@ -149,7 +149,12 @@ function SidebarMenuItemGroupCollapsed({
             <SidebarMenuItemGroupIcon />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" align="start" className="w-48">
+        <DropdownMenuContent
+          side="right"
+          align="start"
+          className="w-48"
+          sideOffset={11}
+        >
           <DropdownMenuLabel className="p-2 text-xs font-medium text-muted-foreground">
             {item.title}
           </DropdownMenuLabel>

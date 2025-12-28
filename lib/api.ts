@@ -4,14 +4,11 @@ type FetchOptions = RequestInit & {
 
 export const api = {
   async fetch(endpoint: string, options: FetchOptions = {}) {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-    const headers = {
-      "Content-Type": "application/json",
-      Authorization: "",
-      ...options.headers,
-    };
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+
+    if (options.headers) Object.assign(headers, options.headers);
 
     if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -22,9 +19,9 @@ export const api = {
 
     if (response.status === 401) {
       // TODO: Handle token refresh or logout
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
       }
     }
 
@@ -32,13 +29,13 @@ export const api = {
   },
 
   async get(endpoint: string, options: FetchOptions = {}) {
-    return this.fetch(endpoint, { ...options, method: "GET" });
+    return this.fetch(endpoint, { ...options, method: 'GET' });
   },
 
   async post(endpoint: string, body: any, options: FetchOptions = {}) {
     return this.fetch(endpoint, {
       ...options,
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(body),
     });
   },
@@ -46,12 +43,12 @@ export const api = {
   async put(endpoint: string, body: any, options: FetchOptions = {}) {
     return this.fetch(endpoint, {
       ...options,
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(body),
     });
   },
 
   async delete(endpoint: string, options: FetchOptions = {}) {
-    return this.fetch(endpoint, { ...options, method: "DELETE" });
+    return this.fetch(endpoint, { ...options, method: 'DELETE' });
   },
 };

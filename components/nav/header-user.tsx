@@ -1,10 +1,7 @@
 "use client";
 
 import { NavItemUser } from "@/components/nav/interfaces/nav.interface";
-import {
-  getUserInitials,
-  UserDropdownContent,
-} from "@/components/nav/nav-user";
+import { UserDropdownContent } from "@/components/nav/nav-user";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,6 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { getUserInitials } from "@/lib/utils";
 
 export function HeaderUser() {
   const { user } = useAuth();

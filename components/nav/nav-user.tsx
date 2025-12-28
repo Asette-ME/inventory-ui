@@ -19,15 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-
-export function getUserInitials(name: string) {
-  const words = name.split(" ");
-
-  if (words.length === 1) return words[0][0].toUpperCase();
-
-  // For multiple words, use first letter of first and last words
-  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
-}
+import { getUserInitials } from "@/lib/utils";
 
 export function UserDropdownContent({ user }: { user: NavItemUser }) {
   const { logout } = useAuth();

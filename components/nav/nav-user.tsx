@@ -21,11 +21,12 @@ import {
 } from "@/components/ui/sidebar";
 
 export function getUserInitials(name: string) {
-  return name
-    .split(" ")
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase();
+  const words = name.split(" ");
+
+  if (words.length === 1) return words[0][0].toUpperCase();
+
+  // For multiple words, use first letter of first and last words
+  return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
 
 export function UserDropdownContent({ user }: { user: NavItemUser }) {

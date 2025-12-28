@@ -13,7 +13,7 @@ interface DataTablePaginationProps {
   onLimitChange: (limit: number) => void;
 }
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
+const PAGE_SIZE_OPTIONS = [1, 10, 25, 50, 100];
 
 export function DataTablePagination({ pagination, limit, onPageChange, onLimitChange }: DataTablePaginationProps) {
   if (!pagination) return null;
@@ -21,27 +21,13 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
   const { page, total_pages, filtered, has_previous, has_next } = pagination;
 
   return (
-    <div className="flex items-center justify-between px-2 py-4">
+    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 px-2 py-4">
       <div className="text-sm text-muted-foreground">
         {filtered} result{filtered !== 1 ? 's' : ''}
       </div>
-      <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2">
-          <p className="text-sm">Rows per page</p>
-          <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
-            <SelectTrigger size="sm" className="w-[70px] bg-white">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="text-sm">
+
+      <div className="flex flex-col items-center justify-between sm:justify-end gap-4">
+        <div className="text-sm whitespace-nowrap">
           Page {page} of {total_pages || 1}
         </div>
         <div className="flex items-center gap-1">
@@ -58,6 +44,22 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
             <ChevronsRight className="size-4" />
           </Button>
         </div>
+      </div>
+
+      <div className="flex flex-col items-center gap-2">
+        <span className="text-sm whitespace-nowrap">Rows per page</span>
+        <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
+          <SelectTrigger size="sm" className="w-[70px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PAGE_SIZE_OPTIONS.map((size) => (
+              <SelectItem key={size} value={String(size)}>
+                {size}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

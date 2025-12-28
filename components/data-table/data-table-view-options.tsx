@@ -75,9 +75,9 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="max-sm:size-8 max-sm:p-0">
           <Settings2 className="size-4" />
-          View
+          <span className="max-sm:hidden">View</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-52 p-0">

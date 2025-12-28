@@ -47,7 +47,7 @@ export function UsersTable() {
         onRolesChange={(roles) => setParams({ roles: roles.length > 0 ? roles : undefined })}
         onReset={resetParams}
       />
-      <div className="bg-white dark:bg-muted/50 rounded-xl shadow-sm border border-gray-200 dark:border-0">
+      <div className="bg-white dark:bg-muted/50 rounded-xl shadow-sm border border-gray-200 dark:border-0 overflow-hidden">
         <DataTable table={table} columns={columns} isLoading={isLoading} />
       </div>
       <DataTablePagination

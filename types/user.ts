@@ -19,10 +19,5 @@ export interface User {
 export interface UsersResponse extends ApiResponsePaginated<User> {}
 
 export interface UsersParams extends Params {
-  search?: string;
-  sort_by?: string;
-  sort_order?: "asc" | "desc";
-  limit?: number;
-  page?: number;
   roles?: string[];
 }

@@ -13,20 +13,29 @@ interface DataTablePaginationProps {
   onLimitChange: (limit: number) => void;
 }
 
-const PAGE_SIZE_OPTIONS = [1, 10, 25, 50, 100];
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 export function DataTablePagination({ pagination, limit, onPageChange, onLimitChange }: DataTablePaginationProps) {
   if (!pagination) return null;
 
-  const { page, total_pages, filtered, has_previous, has_next } = pagination;
+  const { page, total_pages, total, filtered, has_previous, has_next } = pagination;
+
+  const from = (page - 1) * limit + 1;
+  const to = Math.min(page * limit, filtered);
+  const isFiltered = filtered !== total;
 
   return (
-    <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-4 px-2 py-4">
-      <div className="text-sm text-muted-foreground">
-        {filtered} result{filtered !== 1 ? 's' : ''}
+    <div className="flex flex-col sm:flex-row items-center gap-4 px-2 py-4">
+      {/* Left - Results info */}
+      <div className="flex flex-col items-center sm:items-start text-sm text-muted-foreground sm:flex-1">
+        <span>
+          Showing {from} to {to} of {filtered.toLocaleString()} result{filtered !== 1 ? 's' : ''}
+        </span>
+        <span>{isFiltered && ` (filtered from ${total.toLocaleString()})`}</span>
       </div>
 
-      <div className="flex flex-col items-center justify-between sm:justify-end gap-4">
+      {/* Center - Page info and navigation */}
+      <div className="flex flex-col items-center gap-2">
         <div className="text-sm whitespace-nowrap">
           Page {page} of {total_pages || 1}
         </div>
@@ -46,7 +55,8 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-2">
+      {/* Right - Rows per page */}
+      <div className="flex sm:flex-col items-center gap-2 sm:flex-1 sm:justify-end sm:items-end">
         <span className="text-sm whitespace-nowrap">Rows per page</span>
         <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
           <SelectTrigger size="sm" className="w-[70px]">

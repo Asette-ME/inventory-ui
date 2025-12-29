@@ -64,7 +64,7 @@ export function UsersToolbar({ table, search, roles, onSearchChange, onRolesChan
   return (
     <div className="flex items-center justify-between gap-2">
       <div className="flex flex-1 items-center gap-2">
-        <InputGroup className="w-full sm:w-64">
+        <InputGroup className="w-full sm:w-64 bg-white">
           <InputGroupAddon>
             <Search />
           </InputGroupAddon>

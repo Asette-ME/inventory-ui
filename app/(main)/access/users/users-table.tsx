@@ -1,6 +1,7 @@
 'use client';
 
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
+import { useState } from 'react';
 
 import { DataTable, DataTablePagination } from '@/components/data-table';
 import { useTableState } from '@/hooks/use-table-state';
@@ -12,11 +13,14 @@ import { UsersToolbar } from './users-toolbar';
 
 export function UsersTable() {
   const { params, setParams, resetParams } = useUsersParams();
-  const { users, pagination, isLoading, isInitialLoading } = useUsers(params);
+  const { users, pagination, isLoading, isInitialLoading, refetch } = useUsers(params);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const { columnVisibility, columnOrder, onColumnVisibilityChange, onColumnOrderChange } = useTableState({
     key: 'users',
     defaultVisibility: DEFAULT_VISIBLE_COLUMNS,
+    pinnedLeft: ['select'],
+    pinnedRight: ['actions'],
   });
 
   const columns = getUsersColumns({
@@ -29,9 +33,12 @@ export function UsersTable() {
     data: users,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange,
     onColumnOrderChange,
-    state: { columnVisibility, columnOrder },
+    onRowSelectionChange: setRowSelection,
+    getRowId: (row) => row.id,
+    state: { columnVisibility, columnOrder, rowSelection },
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
@@ -46,6 +53,8 @@ export function UsersTable() {
         onSearchChange={(search) => setParams({ search: search || undefined })}
         onRolesChange={(roles) => setParams({ roles: roles.length > 0 ? roles : undefined })}
         onReset={resetParams}
+        onRefresh={refetch}
+        isLoading={isLoading}
       />
       <div className="bg-white dark:bg-muted/50 rounded-xl shadow-sm border border-gray-200 dark:border-0 overflow-hidden">
         <DataTable table={table} columns={columns} isLoading={isLoading} isInitialLoading={isInitialLoading} />

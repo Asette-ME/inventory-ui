@@ -1,10 +1,20 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { getUserInitials } from '@/lib/utils';
 import { User } from '@/types/user';
 
@@ -16,6 +26,25 @@ interface ColumnOptions {
 
 export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): ColumnDef<User>[] {
   return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
     {
       id: 'username',
       accessorKey: 'username',
@@ -102,7 +131,7 @@ export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): C
           onSort={onSort}
         />
       ),
-      cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString(),
+      cell: ({ row }) => new Date(row.original.created_at).toLocaleString('en-US'),
     },
     {
       id: 'last_login_at',
@@ -117,7 +146,8 @@ export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): C
           onSort={onSort}
         />
       ),
-      cell: ({ row }) => (row.original.last_login_at ? new Date(row.original.last_login_at).toLocaleDateString() : '—'),
+      cell: ({ row }) =>
+        row.original.last_login_at ? new Date(row.original.last_login_at).toLocaleString('en-US') : '—',
     },
     {
       id: 'updated_at',
@@ -132,13 +162,45 @@ export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): C
           onSort={onSort}
         />
       ),
-      cell: ({ row }) => new Date(row.original.updated_at).toLocaleDateString(),
+      cell: ({ row }) => new Date(row.original.updated_at).toLocaleString('en-US'),
+    },
+    {
+      id: 'actions',
+      meta: { className: 'w-0' },
+      header: '',
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-sm">
+                <MoreHorizontal className="size-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => console.log('Edit', user.id)}>
+                <Pencil className="size-4" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => console.log('Delete', user.id)}>
+                <Trash2 className="size-4" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      enableSorting: false,
+      enableHiding: false,
     },
   ];
 }
 
 // Default visible columns
 export const DEFAULT_VISIBLE_COLUMNS = {
+  select: true,
   username: true,
   email: true,
   phone: true,
@@ -146,4 +208,5 @@ export const DEFAULT_VISIBLE_COLUMNS = {
   created_at: false,
   last_login_at: false,
   updated_at: false,
+  actions: true,
 };

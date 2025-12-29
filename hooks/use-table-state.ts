@@ -12,14 +12,43 @@ interface UseTableStateOptions {
   key: string;
   defaultVisibility: VisibilityState;
   defaultOrder?: ColumnOrderState;
+  pinnedLeft?: string[];
+  pinnedRight?: string[];
 }
 
-export function useTableState({ key, defaultVisibility, defaultOrder = [] }: UseTableStateOptions) {
+// Ensures pinned columns stay in their positions
+function enforceColumnOrder(
+  order: ColumnOrderState,
+  pinnedLeft: string[],
+  pinnedRight: string[]
+): ColumnOrderState {
+  if (order.length === 0) return order;
+
+  // Remove pinned columns from the order
+  const middleColumns = order.filter(
+    (col) => !pinnedLeft.includes(col) && !pinnedRight.includes(col)
+  );
+
+  // Reconstruct order with pinned columns at their positions
+  return [...pinnedLeft, ...middleColumns, ...pinnedRight];
+}
+
+export function useTableState({
+  key,
+  defaultVisibility,
+  defaultOrder = [],
+  pinnedLeft = [],
+  pinnedRight = [],
+}: UseTableStateOptions) {
   const storageKey = `table-state-${key}`;
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultVisibility);
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(defaultOrder);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Memoize pinned arrays to prevent infinite loops
+  const pinnedLeftKey = pinnedLeft.join(',');
+  const pinnedRightKey = pinnedRight.join(',');
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -28,13 +57,15 @@ export function useTableState({ key, defaultVisibility, defaultOrder = [] }: Use
       if (stored) {
         const parsed: TableState = JSON.parse(stored);
         if (parsed.columnVisibility) setColumnVisibility(parsed.columnVisibility);
-        if (parsed.columnOrder) setColumnOrder(parsed.columnOrder);
+        if (parsed.columnOrder) {
+          setColumnOrder(enforceColumnOrder(parsed.columnOrder, pinnedLeft, pinnedRight));
+        }
       }
     } catch (e) {
       console.error('Failed to load table state:', e);
     }
     setIsLoaded(true);
-  }, [storageKey]);
+  }, [storageKey, pinnedLeftKey, pinnedRightKey]);
 
   // Save to localStorage when state changes
   useEffect(() => {
@@ -52,12 +83,18 @@ export function useTableState({ key, defaultVisibility, defaultOrder = [] }: Use
     (updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => {
       setColumnVisibility((prev) => (typeof updater === 'function' ? updater(prev) : updater));
     },
-    [],
+    []
   );
 
-  const handleOrderChange = useCallback((updater: ColumnOrderState | ((old: ColumnOrderState) => ColumnOrderState)) => {
-    setColumnOrder((prev) => (typeof updater === 'function' ? updater(prev) : updater));
-  }, []);
+  const handleOrderChange = useCallback(
+    (updater: ColumnOrderState | ((old: ColumnOrderState) => ColumnOrderState)) => {
+      setColumnOrder((prev) => {
+        const newOrder = typeof updater === 'function' ? updater(prev) : updater;
+        return enforceColumnOrder(newOrder, pinnedLeft, pinnedRight);
+      });
+    },
+    [pinnedLeftKey, pinnedRightKey]
+  );
 
   return {
     columnVisibility,

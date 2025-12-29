@@ -1,7 +1,7 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { Search, Shield, ShieldCheck, User as UserIcon, X } from 'lucide-react';
+import { RefreshCw, Search, Shield, ShieldCheck, User as UserIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { DataTableFacetedFilter, DataTableFilterDrawer, DataTableViewOptions } from '@/components/data-table';
@@ -25,9 +25,20 @@ interface UsersToolbarProps {
   onSearchChange: (search: string) => void;
   onRolesChange: (roles: string[]) => void;
   onReset: () => void;
+  onRefresh: () => void;
+  isLoading?: boolean;
 }
 
-export function UsersToolbar({ table, search, roles, onSearchChange, onRolesChange, onReset }: UsersToolbarProps) {
+export function UsersToolbar({
+  table,
+  search,
+  roles,
+  onSearchChange,
+  onRolesChange,
+  onReset,
+  onRefresh,
+  isLoading,
+}: UsersToolbarProps) {
   const [searchValue, setSearchValue] = useState(search);
   const hasFilters = search || roles.length > 0;
   const filterCount = roles.length;
@@ -91,7 +102,19 @@ export function UsersToolbar({ table, search, roles, onSearchChange, onRolesChan
           <DataTableFilterDrawer filters={filterGroups} onReset={handleResetFilters} totalSelected={filterCount} />
         </div>
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onRefresh}
+          disabled={isLoading}
+          className="max-sm:size-8 max-sm:p-0"
+        >
+          <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
+          <span className="max-sm:hidden">Refresh</span>
+        </Button>
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -72,15 +72,12 @@ export function DataTableFacetedFilter({ title, options, selectedValues, onChang
       </PopoverTrigger>
       <PopoverContent className="w-52 p-0" align="start">
         <div className="p-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder={title}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="h-8 pl-8"
-            />
-          </div>
+          <InputGroup className="h-8">
+            <InputGroupAddon>
+              <Search />
+            </InputGroupAddon>
+            <InputGroupInput placeholder={title} value={search} onChange={(e) => setSearch(e.target.value)} />
+          </InputGroup>
         </div>
         <div className="max-h-64 overflow-y-auto">
           {filteredOptions.length === 0 ? (

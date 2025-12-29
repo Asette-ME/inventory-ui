@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
@@ -82,15 +82,16 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
       </PopoverTrigger>
       <PopoverContent align="end" className="w-52 p-0">
         <div className="p-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
+          <InputGroup className="h-8">
+            <InputGroupAddon>
+              <Search />
+            </InputGroupAddon>
+            <InputGroupInput
               placeholder="Search columns..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-8 pl-8"
             />
-          </div>
+          </InputGroup>
         </div>
         <div className="max-h-64 overflow-y-auto">
           {filteredColumns.length === 0 ? (

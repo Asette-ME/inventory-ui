@@ -12,7 +12,7 @@ import { UsersToolbar } from './users-toolbar';
 
 export function UsersTable() {
   const { params, setParams, resetParams } = useUsersParams();
-  const { users, pagination, isLoading } = useUsers(params);
+  const { users, pagination, isLoading, isInitialLoading } = useUsers(params);
 
   const { columnVisibility, columnOrder, onColumnVisibilityChange, onColumnOrderChange } = useTableState({
     key: 'users',
@@ -48,7 +48,7 @@ export function UsersTable() {
         onReset={resetParams}
       />
       <div className="bg-white dark:bg-muted/50 rounded-xl shadow-sm border border-gray-200 dark:border-0 overflow-hidden">
-        <DataTable table={table} columns={columns} isLoading={isLoading} />
+        <DataTable table={table} columns={columns} isLoading={isLoading} isInitialLoading={isInitialLoading} />
       </div>
       <DataTablePagination
         pagination={pagination}

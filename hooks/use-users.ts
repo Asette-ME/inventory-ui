@@ -11,6 +11,7 @@ interface UseUsersReturn {
   users: User[];
   pagination: Pagination | null;
   isLoading: boolean;
+  isInitialLoading: boolean;
   error: string | null;
   refetch: () => void;
 }
@@ -33,6 +34,7 @@ export function useUsers(params: UsersParams): UseUsersReturn {
   const [users, setUsers] = useState<User[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const queryString = buildQueryString(params);
@@ -59,6 +61,7 @@ export function useUsers(params: UsersParams): UseUsersReturn {
       setPagination(null);
     } finally {
       setIsLoading(false);
+      setIsInitialLoading(false);
     }
   };
 
@@ -76,6 +79,7 @@ export function useUsers(params: UsersParams): UseUsersReturn {
     users,
     pagination,
     isLoading,
+    isInitialLoading,
     error,
     refetch: fetchUsers,
   };

@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="relative">
       {showLoadingBar && headerHeight > 0 && (
-        <div className="absolute left-0 right-0 h-[2px] overflow-hidden z-10" style={{ top: headerHeight }}>
+        <div className="absolute left-0 right-0 h-[3px] overflow-hidden z-10" style={{ top: headerHeight }}>
           <div className="h-full w-full bg-primary/20" />
           <div className="absolute top-0 h-full w-1/4 bg-primary animate-[loading_1s_ease-in-out_infinite]" />
         </div>

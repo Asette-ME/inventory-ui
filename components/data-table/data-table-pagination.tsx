@@ -59,7 +59,7 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
       <div className="flex sm:flex-col items-center gap-2 sm:flex-1 sm:justify-end sm:items-end">
         <span className="text-sm whitespace-nowrap">Rows per page</span>
         <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
-          <SelectTrigger size="sm" className="w-[70px]">
+          <SelectTrigger size="sm" className="w-[70px] bg-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

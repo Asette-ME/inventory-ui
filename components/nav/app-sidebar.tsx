@@ -4,10 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
 
-import { navCustomRoutes, navRouteGroups } from '@/components/nav/data';
+import { navRouteGroups } from '@/components/nav/data';
 import { NavItemUser } from '@/components/nav/interfaces/nav.interface';
 import { NavGroup } from '@/components/nav/nav-group';
-import { NavProjects } from '@/components/nav/nav-projects';
 import { NavUser } from '@/components/nav/nav-user';
 import { useAuth } from '@/components/providers/auth-provider';
 import {
@@ -53,7 +52,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {navRouteGroups.map((group, index) => (
           <NavGroup key={index} title={group.title} items={group.items} />
         ))}
-        <NavProjects projects={navCustomRoutes.projects} />
       </SidebarContent>
       <SidebarFooter>{userData && <NavUser user={userData} />}</SidebarFooter>
     </Sidebar>

@@ -1,18 +1,15 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import * as React from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import * as React from 'react';
 
-import {
-  navCustomRoutes,
-  navRouteGroups,
-} from "@/components/nav/data/nav-routes";
-import { NavItemUser } from "@/components/nav/interfaces/nav.interface";
-import { NavGroup } from "@/components/nav/nav-group";
-import { NavProjects } from "@/components/nav/nav-projects";
-import { NavUser } from "@/components/nav/nav-user";
-import { useAuth } from "@/components/providers/auth-provider";
+import { navCustomRoutes, navRouteGroups } from '@/components/nav/data';
+import { NavItemUser } from '@/components/nav/interfaces/nav.interface';
+import { NavGroup } from '@/components/nav/nav-group';
+import { NavProjects } from '@/components/nav/nav-projects';
+import { NavUser } from '@/components/nav/nav-user';
+import { useAuth } from '@/components/providers/auth-provider';
 import {
   Sidebar,
   SidebarContent,
@@ -21,8 +18,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import Logo from "@/public/img/logo.jpg";
+} from '@/components/ui/sidebar';
+import Logo from '@/public/img/logo.jpg';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
@@ -42,13 +39,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <Image
-                  src={Logo}
-                  alt="Logo"
-                  width={36}
-                  height={36}
-                  className="rounded-sm"
-                />
+                <Image src={Logo} alt="Logo" width={36} height={36} className="rounded-sm" />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">Asette.ai</span>
                   <span className="truncate text-xs">Inventory</span>
@@ -60,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {navRouteGroups.map((group, index) => (
-          <NavGroup key={index} title={group.title} items={group.routes} />
+          <NavGroup key={index} title={group.title} items={group.items} />
         ))}
         <NavProjects projects={navCustomRoutes.projects} />
       </SidebarContent>

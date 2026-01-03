@@ -1,25 +1,18 @@
-"use client";
+'use client';
 
-import { ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import {
-  NavGroupProps,
-  NavItem,
-} from "@/components/nav/interfaces/nav.interface";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { NavGroup, NavItem } from '@/components/nav/interfaces/nav.interface';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -30,11 +23,11 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar';
 
-export function NavGroup({ title, items }: NavGroupProps) {
+export function NavGroup({ title, items }: NavGroup) {
   const { state, isMobile } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const isCollapsed = state === 'collapsed';
   const pathname = usePathname();
 
   return (
@@ -42,10 +35,7 @@ export function NavGroup({ title, items }: NavGroupProps) {
       {title && <SidebarGroupLabel>{title}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => {
-          const isActive =
-            pathname === item.url ||
-            item.subItems?.some((sub) => pathname === sub.url) ||
-            false;
+          const isActive = pathname === item.url || item.subItems?.some((sub) => pathname === sub.url) || false;
 
           if (item.subItems?.length) {
             if (isCollapsed && !isMobile) {
@@ -66,13 +56,7 @@ export function NavGroup({ title, items }: NavGroupProps) {
   );
 }
 
-function SidebarMenuItemSingle({
-  item,
-  isActive,
-}: {
-  item: NavItem;
-  isActive: boolean;
-}) {
+function SidebarMenuItemSingle({ item, isActive }: { item: NavItem; isActive: boolean }) {
   return (
     <SidebarMenuItem key={item.title}>
       <SidebarMenuButton asChild tooltip={item.title} isActive={isActive}>
@@ -85,22 +69,9 @@ function SidebarMenuItemSingle({
   );
 }
 
-function SidebarMenuItemGroup({
-  item,
-  isActive,
-  pathname,
-}: {
-  item: NavItem;
-  isActive: boolean;
-  pathname: string;
-}) {
+function SidebarMenuItemGroup({ item, isActive, pathname }: { item: NavItem; isActive: boolean; pathname: string }) {
   return (
-    <Collapsible
-      key={item.title}
-      asChild
-      defaultOpen={item.isActive || isActive}
-      className="group/collapsible"
-    >
+    <Collapsible key={item.title} asChild defaultOpen={item.isActive || isActive} className="group/collapsible">
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
           <SidebarMenuButton tooltip={item.title} isActive={isActive}>
@@ -113,10 +84,7 @@ function SidebarMenuItemGroup({
           <SidebarMenuSub>
             {item.subItems?.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton
-                  asChild
-                  isActive={pathname === subItem.url}
-                >
+                <SidebarMenuSubButton asChild isActive={pathname === subItem.url}>
                   <Link href={subItem.url}>
                     <span>{subItem.title}</span>
                   </Link>
@@ -149,23 +117,13 @@ function SidebarMenuItemGroupCollapsed({
             <SidebarMenuItemGroupIcon />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          side="right"
-          align="start"
-          className="w-48"
-          sideOffset={11}
-        >
-          <DropdownMenuLabel className="p-2 text-xs font-medium text-muted-foreground">
-            {item.title}
-          </DropdownMenuLabel>
+        <DropdownMenuContent side="right" align="start" className="w-48" sideOffset={11}>
+          <DropdownMenuLabel className="p-2 text-xs font-medium text-muted-foreground">{item.title}</DropdownMenuLabel>
           {item.subItems?.map((subItem) => {
             const isActive = pathname === subItem.url || false;
             return (
               <DropdownMenuItem key={subItem.title} asChild>
-                <Link
-                  href={subItem.url}
-                  className={isActive ? "bg-secondary" : ""}
-                >
+                <Link href={subItem.url} className={isActive ? 'bg-secondary' : ''}>
                   <span className="truncate">{subItem.title}</span>
                 </Link>
               </DropdownMenuItem>

@@ -1,4 +1,4 @@
-import { KeyRound } from "lucide-react";
+import { KeyRound } from 'lucide-react';
 
 export default function RolesPage() {
   return (

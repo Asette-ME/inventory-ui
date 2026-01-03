@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon } from 'lucide-react';
 
 interface NavSubItem {
   title: string;
@@ -13,7 +13,7 @@ export interface NavItem {
   subItems?: NavSubItem[];
 }
 
-export interface NavGroupProps {
+export interface NavGroup {
   title?: string;
   items: NavItem[];
 }

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { navRouteGroups } from '@/components/nav/data';
-import { NavItemUser } from '@/components/nav/interfaces/nav.interface';
 import { NavGroup } from '@/components/nav/nav-group';
 import { NavUser } from '@/components/nav/nav-user';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -22,14 +21,6 @@ import Logo from '@/public/img/logo.jpg';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useAuth();
-  let userData: NavItemUser | null = null;
-  if (user) {
-    userData = {
-      name: user.username,
-      email: user.email,
-      image: user.image,
-    };
-  }
 
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -53,7 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <NavGroup key={index} title={group.title} items={group.items} />
         ))}
       </SidebarContent>
-      <SidebarFooter>{userData && <NavUser user={userData} />}</SidebarFooter>
+      <SidebarFooter>{user && <NavUser user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }

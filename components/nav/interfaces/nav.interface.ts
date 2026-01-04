@@ -3,6 +3,7 @@ import { LucideIcon } from 'lucide-react';
 interface NavSubItem {
   title: string;
   url: string;
+  roles?: string[];
 }
 
 export interface NavItem {
@@ -11,15 +12,11 @@ export interface NavItem {
   icon: LucideIcon;
   isActive?: boolean;
   subItems?: NavSubItem[];
+  roles?: string[];
 }
 
 export interface NavGroup {
   title?: string;
   items: NavItem[];
-}
-
-export interface NavItemUser {
-  name: string;
-  email: string;
-  image?: string;
+  roles?: string[];
 }

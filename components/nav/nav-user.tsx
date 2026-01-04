@@ -1,10 +1,9 @@
-"use client";
+'use client';
 
-import { EllipsisVertical, LogOut } from "lucide-react";
+import { EllipsisVertical, LogOut } from 'lucide-react';
 
-import { NavItemUser } from "@/components/nav/interfaces/nav.interface";
-import { useAuth } from "@/components/providers/auth-provider";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from '@/components/providers/auth-provider';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,16 +11,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import { getUserInitials } from "@/lib/utils";
+} from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { getUserInitials } from '@/lib/utils';
+import { AuthUser } from '@/types/auth';
 
-export function UserDropdownContent({ user }: { user: NavItemUser }) {
+export function UserDropdownContent({ user }: { user: AuthUser }) {
   const { logout } = useAuth();
 
   return (
@@ -29,11 +24,11 @@ export function UserDropdownContent({ user }: { user: NavItemUser }) {
       <DropdownMenuLabel className="p-0 font-normal">
         <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
           <Avatar className="h-8 w-8 rounded-lg">
-            <AvatarImage src={user.image} alt={user.name} />
-            <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
+            {user.image && <AvatarImage src={user.image} alt={user.username} />}
+            <AvatarFallback>{getUserInitials(user.username)}</AvatarFallback>
           </Avatar>
           <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-medium">{user.name}</span>
+            <span className="truncate font-medium">{user.username}</span>
             <span className="truncate text-xs">{user.email}</span>
           </div>
         </div>
@@ -47,7 +42,7 @@ export function UserDropdownContent({ user }: { user: NavItemUser }) {
   );
 }
 
-export function NavUser({ user }: { user: NavItemUser }) {
+export function NavUser({ user }: { user: AuthUser }) {
   const { isMobile } = useSidebar();
 
   return (
@@ -60,11 +55,11 @@ export function NavUser({ user }: { user: NavItemUser }) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.image} alt={user.name} />
-                <AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
+                {user.image && <AvatarImage src={user.image} alt={user.username} />}
+                <AvatarFallback>{getUserInitials(user.username)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate font-medium">{user.username}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <EllipsisVertical className="ml-auto size-4" />
@@ -72,7 +67,7 @@ export function NavUser({ user }: { user: NavItemUser }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >

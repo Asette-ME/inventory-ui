@@ -1,14 +1,8 @@
-import { SVGProps } from "react";
+import { SVGProps } from 'react';
 
 export function GoogleIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="1em"
-      height="1em"
-      viewBox="0 0 16 16"
-      {...props}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" {...props}>
       {/* Icon from Material Icon Theme by Material Extensions - https://github.com/material-extensions/vscode-material-icon-theme/blob/main/LICENSE */}
       <g fill="none" fillRule="evenodd" clipRule="evenodd">
         <path

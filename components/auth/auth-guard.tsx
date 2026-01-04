@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-import { useAuth } from "@/components/providers/auth-provider";
+import { useAuth } from '@/components/providers/auth-provider';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -17,12 +17,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, isAuthenticated, router, pathname]);
 
-  if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
-      </div>
-    );
+  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
 
   if (!isAuthenticated) return null;
 

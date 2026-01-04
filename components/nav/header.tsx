@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   ref?: React.Ref<HTMLElement>;
@@ -16,21 +16,21 @@ export function Header({ className, children, ...props }: HeaderProps) {
     };
 
     // Add scroll listener to the body
-    document.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener('scroll', onScroll, { passive: true });
 
     // Clean up the event listener on unmount
-    return () => document.removeEventListener("scroll", onScroll);
+    return () => document.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <header
       className={cn(
-        "header-fixed peer/header top-0 sticky z-50 h-16 px-4 md:rounded-xl md:me-2",
-        "transition-[top] duration-300 ease-in-out",
+        'header-fixed peer/header top-0 sticky z-50 h-16 px-4 md:rounded-xl md:me-2',
+        'transition-[top] duration-300 ease-in-out',
         offset > 30
-          ? "shadow-sm md:top-2 bg-clip-padding backdrop-filter backdrop-blur-xl dark:border-b dark:md:border dark:border-white-900"
-          : "shadow-none",
-        className
+          ? 'shadow-sm md:top-2 bg-clip-padding backdrop-filter backdrop-blur-xl dark:border-b dark:md:border dark:border-white-900'
+          : 'shadow-none',
+        className,
       )}
       {...props}
     >

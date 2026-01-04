@@ -1,6 +1,6 @@
-import { ApiResponsePaginated } from "@/types/api-response";
-import { Params } from "@/types/params";
-import { Role } from "@/types/role";
+import { ApiResponsePaginated } from '@/types/api-response';
+import { Params } from '@/types/params';
+import { Role } from '@/types/role';
 
 export interface User {
   id: string;

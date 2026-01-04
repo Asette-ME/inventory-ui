@@ -1,22 +1,18 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-import { SignupForm } from "@/components/auth/signup-form";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
-import LoginImage from "@/public/img/login.jpg";
-import Logo from "@/public/img/logo.jpg";
+import { SignupForm } from '@/components/auth/signup-form';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import LoginImage from '@/public/img/login.jpg';
+import Logo from '@/public/img/logo.jpg';
 
-import { GuestGuard } from "@/components/auth/guest-guard";
+import { GuestGuard } from '@/components/auth/guest-guard';
 
 export default function SignupPage() {
   return (
     <GuestGuard>
       <div className="grid min-h-svh lg:grid-cols-2">
         <div className="bg-muted relative hidden lg:block">
-          <Image
-            src={LoginImage}
-            alt="Login"
-            className="absolute inset-0 h-full w-full object-top object-cover"
-          />
+          <Image src={LoginImage} alt="Login" className="absolute inset-0 h-full w-full object-top object-cover" />
         </div>
 
         <div className="relative flex flex-col gap-4 p-6 md:p-10">

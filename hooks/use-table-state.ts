@@ -17,17 +17,11 @@ interface UseTableStateOptions {
 }
 
 // Ensures pinned columns stay in their positions
-function enforceColumnOrder(
-  order: ColumnOrderState,
-  pinnedLeft: string[],
-  pinnedRight: string[]
-): ColumnOrderState {
+function enforceColumnOrder(order: ColumnOrderState, pinnedLeft: string[], pinnedRight: string[]): ColumnOrderState {
   if (order.length === 0) return order;
 
   // Remove pinned columns from the order
-  const middleColumns = order.filter(
-    (col) => !pinnedLeft.includes(col) && !pinnedRight.includes(col)
-  );
+  const middleColumns = order.filter((col) => !pinnedLeft.includes(col) && !pinnedRight.includes(col));
 
   // Reconstruct order with pinned columns at their positions
   return [...pinnedLeft, ...middleColumns, ...pinnedRight];
@@ -83,7 +77,7 @@ export function useTableState({
     (updater: VisibilityState | ((old: VisibilityState) => VisibilityState)) => {
       setColumnVisibility((prev) => (typeof updater === 'function' ? updater(prev) : updater));
     },
-    []
+    [],
   );
 
   const handleOrderChange = useCallback(
@@ -93,7 +87,7 @@ export function useTableState({
         return enforceColumnOrder(newOrder, pinnedLeft, pinnedRight);
       });
     },
-    [pinnedLeftKey, pinnedRightKey]
+    [pinnedLeftKey, pinnedRightKey],
   );
 
   return {

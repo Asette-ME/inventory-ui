@@ -1,34 +1,22 @@
-import { SearchIcon } from "lucide-react";
-import { cookies } from "next/headers";
+import { SearchIcon } from 'lucide-react';
+import { cookies } from 'next/headers';
 
-import { AuthGuard } from "@/components/auth/auth-guard";
-import { AppSidebar } from "@/components/nav/app-sidebar";
-import { Header } from "@/components/nav/header";
-import { HeaderUser } from "@/components/nav/header-user";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { AuthGuard } from '@/components/auth/auth-guard';
+import { AppSidebar } from '@/components/nav/app-sidebar';
+import { Header } from '@/components/nav/header';
+import { HeaderUser } from '@/components/nav/header-user';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
-export default async function MainLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
 
   return (
     <AuthGuard>
       <SidebarProvider
         className="bg-[#fafafa] dark:bg-background"
-        defaultOpen={cookieStore.get("sidebar_state")?.value === "true"}
+        defaultOpen={cookieStore.get('sidebar_state')?.value === 'true'}
       >
         <AppSidebar />
         <SidebarInset className="bg-transparent">

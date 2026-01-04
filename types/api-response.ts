@@ -1,4 +1,4 @@
-import { Pagination } from "@/types/pagination";
+import { Pagination } from '@/types/pagination';
 
 export interface ApiResponse<T> {
   success: boolean;

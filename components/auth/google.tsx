@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { GoogleIcon } from "@/components/icons/google";
-import { useAuth } from "@/components/providers/auth-provider";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { GoogleIcon } from '@/components/icons/google';
+import { useAuth } from '@/components/providers/auth-provider';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export function WithGoogle({
   className,
@@ -15,13 +15,7 @@ export function WithGoogle({
   const { loginWithGoogle } = useAuth();
 
   return (
-    <Button
-      variant="outline"
-      type="button"
-      className={cn("", className)}
-      onClick={loginWithGoogle}
-      {...props}
-    >
+    <Button variant="outline" type="button" className={cn('', className)} onClick={loginWithGoogle} {...props}>
       <GoogleIcon />
       {btnTextPrefix} with Google
     </Button>

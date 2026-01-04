@@ -39,5 +39,6 @@ export interface SignupResponse extends ApiResponse<TokenResponse> {}
 
 export interface LoginResponse extends ApiResponse<TokenResponse> {}
 
-export interface RefreshTokenResponse
-  extends ApiResponse<Omit<TokenResponse, 'refresh_token'> & { refresh_token?: string | null }> {}
+export interface RefreshTokenResponse extends ApiResponse<
+  Omit<TokenResponse, 'refresh_token'> & { refresh_token?: string | null }
+> {}

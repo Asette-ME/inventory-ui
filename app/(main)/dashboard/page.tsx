@@ -1,6 +1,6 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-import Home from "@/public/icons/home.png";
+import Home from '@/public/icons/home.png';
 
 export default async function DashboardPage() {
   const HOME_ICON_SIZE = 48;
@@ -16,9 +16,7 @@ export default async function DashboardPage() {
           height={HOME_ICON_SIZE}
           className={`md:w-[${HOME_ICON_SIZE_MD}px] md:h-[${HOME_ICON_SIZE_MD}px]`}
         />
-        <h1 className="text-2xl md:text-3xl font-bold mb-0">
-          Asette Inventory
-        </h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-0">Asette Inventory</h1>
       </div>
       <div className="grid auto-rows-min gap-4 md:grid-cols-4">
         <div className="bg-white dark:bg-muted/50 aspect-video rounded-xl shadow-sm border border-gray-200 dark:border-0" />

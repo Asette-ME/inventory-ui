@@ -20,7 +20,19 @@ import {
 import Logo from '@/public/img/logo.jpg';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuth();
+  const { user, isAuthorized } = useAuth();
+
+  const authorizedGroups = navRouteGroups
+    .filter((group) => isAuthorized(group.authorizedRoles || []))
+    .map((group) => ({
+      ...group,
+      items: group.items
+        .filter((item) => isAuthorized(item.authorizedRoles || []))
+        .map((item) => ({
+          ...item,
+          subItems: item.subItems?.filter((subItem) => isAuthorized(subItem.authorizedRoles || [])),
+        })),
+    }));
 
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -40,7 +52,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {navRouteGroups.map((group, index) => (
+        {authorizedGroups.map((group, index) => (
           <NavGroup key={index} title={group.title} items={group.items} />
         ))}
       </SidebarContent>

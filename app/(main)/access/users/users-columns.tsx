@@ -174,18 +174,18 @@ export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): C
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon-sm">
-                <MoreHorizontal className="size-4" />
+                <MoreHorizontal />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => console.log('Edit', user.id)}>
-                <Pencil className="size-4" />
+                <Pencil />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={() => console.log('Delete', user.id)}>
-                <Trash2 className="size-4" />
+                <Trash2 />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

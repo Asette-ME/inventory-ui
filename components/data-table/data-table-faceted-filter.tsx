@@ -1,6 +1,6 @@
 'use client';
 
-import { PlusCircle, Search } from 'lucide-react';
+import { LucideIcon, PlusCircle, Search } from 'lucide-react';
 import { useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -23,9 +23,16 @@ interface DataTableFacetedFilterProps {
   options: FilterOption[];
   selectedValues: string[];
   onChange: (values: string[]) => void;
+  prependIcon?: LucideIcon;
 }
 
-export function DataTableFacetedFilter({ title, options, selectedValues, onChange }: DataTableFacetedFilterProps) {
+export function DataTableFacetedFilter({
+  title,
+  options,
+  selectedValues,
+  onChange,
+  prependIcon: PrependIcon = PlusCircle,
+}: DataTableFacetedFilterProps) {
   const [search, setSearch] = useState('');
 
   const filteredOptions = options.filter((option) => option.label.toLowerCase().includes(search.toLowerCase()));
@@ -47,8 +54,8 @@ export function DataTableFacetedFilter({ title, options, selectedValues, onChang
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircle className="size-4" />
+        <Button variant="outline" className="border-dashed">
+          <PrependIcon />
           {title}
           {selectedLabels.length > 0 && (
             <>
@@ -109,12 +116,7 @@ export function DataTableFacetedFilter({ title, options, selectedValues, onChang
           <>
             <Separator />
             <div className="p-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-center text-sm font-normal"
-                onClick={handleClear}
-              >
+              <Button variant="ghost" className="w-full justify-center text-sm font-normal" onClick={handleClear}>
                 Clear filters
               </Button>
             </div>

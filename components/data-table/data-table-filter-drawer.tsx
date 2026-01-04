@@ -119,7 +119,7 @@ function FilterSection({ filter }: { filter: FilterGroup }) {
               <X className="ml-1 size-3" />
             </Badge>
           )}
-          {isOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+          {isOpen ? <ChevronUp /> : <ChevronDown />}
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="pb-4">

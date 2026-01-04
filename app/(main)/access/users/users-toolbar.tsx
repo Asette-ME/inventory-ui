@@ -1,7 +1,7 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { RefreshCw, Search, Shield, ShieldCheck, User as UserIcon, X } from 'lucide-react';
+import { KeyRound, RefreshCw, Search, Shield, ShieldCheck, User as UserIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { DataTableFacetedFilter, DataTableFilterDrawer, DataTableViewOptions } from '@/components/data-table';
@@ -88,11 +88,17 @@ export function UsersToolbar({
 
         {/* Desktop: Show faceted filter */}
         <div className="hidden sm:flex items-center gap-2">
-          <DataTableFacetedFilter title="Role" options={ROLE_OPTIONS} selectedValues={roles} onChange={onRolesChange} />
+          <DataTableFacetedFilter
+            title="Role"
+            options={ROLE_OPTIONS}
+            selectedValues={roles}
+            onChange={onRolesChange}
+            prependIcon={KeyRound}
+          />
           {hasFilters && (
-            <Button variant="ghost" size="sm" onClick={onReset}>
-              Reset
-              <X className="size-4" />
+            <Button className="flex items-center gap-2" variant="ghost" onClick={onReset}>
+              <X />
+              <span>Reset</span>
             </Button>
           )}
         </div>
@@ -103,14 +109,8 @@ export function UsersToolbar({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onRefresh}
-          disabled={isLoading}
-          className="max-sm:size-8 max-sm:p-0"
-        >
-          <RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
+        <Button variant="outline" onClick={onRefresh} disabled={isLoading} className="max-sm:size-8 max-sm:p-0">
+          <RefreshCw className={`${isLoading ? 'animate-spin' : ''}`} />
           <span className="max-sm:hidden">Refresh</span>
         </Button>
         <DataTableViewOptions table={table} />

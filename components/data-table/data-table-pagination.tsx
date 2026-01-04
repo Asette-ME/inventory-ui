@@ -41,16 +41,16 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
         </div>
         <div className="flex items-center gap-1">
           <Button variant="outline" size="icon-sm" onClick={() => onPageChange(1)} disabled={!has_previous}>
-            <ChevronsLeft className="size-4" />
+            <ChevronsLeft />
           </Button>
           <Button variant="outline" size="icon-sm" onClick={() => onPageChange(page - 1)} disabled={!has_previous}>
-            <ChevronLeft className="size-4" />
+            <ChevronLeft />
           </Button>
           <Button variant="outline" size="icon-sm" onClick={() => onPageChange(page + 1)} disabled={!has_next}>
-            <ChevronRight className="size-4" />
+            <ChevronRight />
           </Button>
           <Button variant="outline" size="icon-sm" onClick={() => onPageChange(total_pages)} disabled={!has_next}>
-            <ChevronsRight className="size-4" />
+            <ChevronsRight />
           </Button>
         </div>
       </div>
@@ -59,7 +59,7 @@ export function DataTablePagination({ pagination, limit, onPageChange, onLimitCh
       <div className="flex sm:flex-col items-center gap-2 sm:flex-1 sm:justify-end sm:items-end">
         <span className="text-sm whitespace-nowrap">Rows per page</span>
         <Select value={String(limit)} onValueChange={(value) => onLimitChange(Number(value))}>
-          <SelectTrigger size="sm" className="w-[70px] bg-white">
+          <SelectTrigger className="w-[70px] bg-white">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

@@ -4,6 +4,7 @@ import { NavGroup } from '@/components/nav/interfaces/nav.interface';
 
 export const accessNav: NavGroup = {
   title: 'Access',
+  authorizedRoles: ['admin'],
   items: [
     {
       title: 'Users',

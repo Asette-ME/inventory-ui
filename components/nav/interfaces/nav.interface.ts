@@ -3,7 +3,7 @@ import { LucideIcon } from 'lucide-react';
 interface NavSubItem {
   title: string;
   url: string;
-  roles?: string[];
+  authorizedRoles?: string[];
 }
 
 export interface NavItem {
@@ -12,11 +12,11 @@ export interface NavItem {
   icon: LucideIcon;
   isActive?: boolean;
   subItems?: NavSubItem[];
-  roles?: string[];
+  authorizedRoles?: string[];
 }
 
 export interface NavGroup {
   title?: string;
   items: NavItem[];
-  roles?: string[];
+  authorizedRoles?: string[];
 }

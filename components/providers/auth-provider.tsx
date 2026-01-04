@@ -15,6 +15,7 @@ interface AuthContextType {
   signup: (data: Signup) => Promise<void>;
   loginWithGoogle: () => void;
   logout: () => void;
+  isAuthorized: (roles: string[]) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -129,6 +130,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  const isAuthorized = (roles: string[]) => {
+    if (!user) return false;
+    if (!roles.length) return true;
+    return roles.some((role) => user.roles.includes(role));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -139,6 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signup,
         loginWithGoogle,
         logout,
+        isAuthorized,
       }}
     >
       {children}

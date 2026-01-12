@@ -7,12 +7,12 @@ export const propertyNav: NavGroup = {
   items: [
     {
       title: 'Buildings',
-      url: '/property/structures',
+      url: '/properties/structures',
       icon: Building,
     },
     {
       title: 'Units',
-      url: '/property/units',
+      url: '/properties/units',
       icon: House,
     },
   ],

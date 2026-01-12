@@ -9,6 +9,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from '@dnd-kit/core';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import {
   arrayMove,
   SortableContext,
@@ -52,21 +53,25 @@ function SortableColumn({ column, id }: SortableColumnProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        'flex items-center gap-2 px-2 py-1.5 hover:bg-accent transition-colors rounded-sm touch-none',
-        isDragging && 'bg-accent',
+        'flex items-center gap-2 px-2 py-1.5 hover:bg-accent transition-colors rounded-sm cursor-pointer',
+        isDragging && 'bg-accent opacity-50',
       )}
-      {...attributes}
-      {...listeners}
+      onClick={() => column.toggleVisibility(!column.getIsVisible())}
     >
       <Checkbox
         checked={column.getIsVisible()}
         onCheckedChange={(value) => column.toggleVisibility(!!value)}
-        // propagate click to avoid drag start interference
-        onPointerDown={(e) => e.stopPropagation()}
-        className="cursor-pointer"
+        onClick={(e) => e.stopPropagation()}
       />
       <span className="flex-1 text-sm capitalize select-none truncate">{column.id.replace(/_/g, ' ')}</span>
-      <GripVertical className="size-4 text-muted-foreground" aria-hidden="true" />
+      <span
+        {...attributes}
+        {...listeners}
+        className="cursor-grab active:cursor-grabbing p-1 -m-1 hover:bg-muted rounded"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GripVertical className="size-4 text-muted-foreground" aria-hidden="true" />
+      </span>
     </div>
   );
 }
@@ -139,7 +144,12 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
           {filteredColumns.length === 0 ? (
             <div className="py-6 text-center text-sm text-muted-foreground">No columns found.</div>
           ) : (
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              modifiers={[restrictToVerticalAxis]}
+            >
               <SortableContext
                 items={filteredColumns.map((c) => c.id)}
                 strategy={verticalListSortingStrategy}

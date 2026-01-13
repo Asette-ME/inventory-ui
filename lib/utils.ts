@@ -13,3 +13,18 @@ export function getUserInitials(name: string) {
   // For multiple words, use first letter of first and last words
   return (words[0][0] + words[words.length - 1][0]).toUpperCase();
 }
+
+export function swapCoordinates(coords: any): any {
+  // Base Case: If we hit a pair of numbers [56.27, 25.62]
+  if (Array.isArray(coords) && coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+    return [coords[1], coords[0]];
+  }
+
+  // Recursive Step: If it's an array of arrays, keep digging
+  if (Array.isArray(coords)) {
+    return coords.map((c) => swapCoordinates(c));
+  }
+
+  // Return as-is if it's just a number (though usually shouldn't happen here)
+  return coords;
+}

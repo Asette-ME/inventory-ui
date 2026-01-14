@@ -570,7 +570,7 @@ function MapZoomControl({ className, ...props }: React.ComponentProps<'div'>) {
       <ButtonGroup orientation="vertical" aria-label="Zoom controls" {...props}>
         <Button
           type="button"
-          size="icon-sm"
+          size="icon"
           variant="secondary"
           aria-label="Zoom in"
           title="Zoom in"
@@ -582,7 +582,7 @@ function MapZoomControl({ className, ...props }: React.ComponentProps<'div'>) {
         </Button>
         <Button
           type="button"
-          size="icon-sm"
+          size="icon"
           variant="secondary"
           aria-label="Zoom out"
           title="Zoom out"

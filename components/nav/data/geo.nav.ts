@@ -1,8 +1,8 @@
 import { FerrisWheel, MapPin } from 'lucide-react';
 
-import { NavGroup } from '@/components/nav/interfaces/nav.interface';
+import { NavGroupItem } from '@/components/nav/interfaces/nav.interface';
 
-export const geoNav: NavGroup = {
+export const geoNav: NavGroupItem = {
   title: 'Geo',
   items: [
     {

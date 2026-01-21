@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { NavGroup, NavItem } from '@/components/nav/interfaces/nav.interface';
+import { NavGroupItem, NavItem } from '@/components/nav/interfaces/nav.interface';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-export function NavGroup({ title, items }: NavGroup) {
+export function NavGroup({ title, items }: NavGroupItem) {
   const { state, isMobile } = useSidebar();
   const isCollapsed = state === 'collapsed';
   const pathname = usePathname();

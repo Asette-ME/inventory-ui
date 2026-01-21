@@ -1,8 +1,8 @@
 import { KeyRound, Users } from 'lucide-react';
 
-import { NavGroup } from '@/components/nav/interfaces/nav.interface';
+import { NavGroupItem } from '@/components/nav/interfaces/nav.interface';
 
-export const accessNav: NavGroup = {
+export const accessNav: NavGroupItem = {
   title: 'Access',
   authorizedRoles: ['admin'],
   items: [

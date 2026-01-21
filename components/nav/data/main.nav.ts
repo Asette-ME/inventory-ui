@@ -1,8 +1,8 @@
 import { Frame, HardHat, LayoutDashboard } from 'lucide-react';
 
-import { NavGroup } from '@/components/nav/interfaces/nav.interface';
+import { NavGroupItem } from '@/components/nav/interfaces/nav.interface';
 
-export const mainNav: NavGroup = {
+export const mainNav: NavGroupItem = {
   title: '',
   items: [
     {

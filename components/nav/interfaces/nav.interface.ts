@@ -15,7 +15,7 @@ export interface NavItem {
   authorizedRoles?: string[];
 }
 
-export interface NavGroup {
+export interface NavGroupItem {
   title?: string;
   items: NavItem[];
   authorizedRoles?: string[];

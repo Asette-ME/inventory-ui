@@ -1,8 +1,8 @@
 import { CreditCard, HousePlus } from 'lucide-react';
 
-import { NavGroup } from '@/components/nav/interfaces/nav.interface';
+import { NavGroupItem } from '@/components/nav/interfaces/nav.interface';
 
-export const extraNav: NavGroup = {
+export const extraNav: NavGroupItem = {
   title: 'Other',
   items: [
     {

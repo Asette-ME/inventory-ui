@@ -61,53 +61,24 @@ const ProgressBar = ({ progress, status }) => (
   </div>
 );
 
-// --- Gemini API Integration ---
+import { callGeminiAction } from '@/app/payment-plan-ai/actions';
 
-const callGemini = async (prompt, systemInstruction = "", useJsonMode = false, imageBase64 = null, mimeType = "") => {
-  const apiKey = "AIzaSyDb4oSZ2sPq8szRwmnHulR06frlS1KI0lU"; // Provided by execution environment
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+// --- Gemini API Integration (via server action) ---
 
-  // Construct parts: Text prompt is always there
-  const parts = [{ text: prompt }];
-  
-  // If we have an image, add it to the parts
-  if (imageBase64 && mimeType) {
-    parts.push({
-      inlineData: {
-        mimeType: mimeType,
-        data: imageBase64
-      }
-    });
-  }
-
-  const payload = {
-    contents: [{ parts: parts }],
-    systemInstruction: { parts: [{ text: systemInstruction }] },
-    generationConfig: useJsonMode ? { responseMimeType: "application/json" } : undefined
-  };
-
-  // Simple exponential backoff retry logic
-  const maxRetries = 3;
-  let delay = 1000;
-
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) throw new Error(`API Error: ${response.status}`);
-
-      const data = await response.json();
-      return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    } catch (error) {
-      if (i === maxRetries - 1) throw error;
-      await new Promise(r => setTimeout(r, delay));
-      delay *= 2;
-    }
-  }
+const callGemini = async (
+  prompt: string,
+  systemInstruction = "",
+  useJsonMode = false,
+  imageBase64: string | null = null,
+  mimeType = ""
+): Promise<string> => {
+  return await callGeminiAction({
+    prompt,
+    systemInstruction,
+    useJsonMode,
+    imageBase64,
+    mimeType,
+  });
 };
 
 // --- Core Logic: Tesseract Integration & Heuristic Parsing ---
@@ -488,7 +459,7 @@ export default function PaymentPlanExtractor() {
           <div>
             <h1 className="text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
               <ScanLine className="w-8 h-8 text-indigo-600" />
-              VisionExtract <span className="text-xs align-top bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-2 py-0.5 rounded-full font-bold ml-1">AI ENABLED</span>
+              Payment Plan Extractor <span className="text-xs align-top bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white px-2 py-0.5 rounded-full font-bold ml-1">AI ENABLED</span>
             </h1>
             <p className="text-slate-500 mt-1">
               Extract tabular data from property payment plans using Computer Vision + Gemini LLM.

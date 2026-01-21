@@ -5,17 +5,17 @@ import Link from 'next/link';
 import * as React from 'react';
 
 import { navRouteGroups } from '@/components/nav/data';
-import { NavGroup } from '@/components/nav/nav-group';
+import { NavGroupItem } from '@/components/nav/nav-group';
 import { NavUser } from '@/components/nav/nav-user';
 import { useAuth } from '@/components/providers/auth-provider';
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import Logo from '@/public/img/logo.jpg';
 
@@ -53,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         {authorizedGroups.map((group, index) => (
-          <NavGroup key={index} title={group.title} items={group.items} />
+          <NavGroupItem key={index} title={group.title} items={group.items} />
         ))}
       </SidebarContent>
       <SidebarFooter>{user && <NavUser user={user} />}</SidebarFooter>

@@ -30,4 +30,4 @@ ALWAYS follow the following system design principles and coding practises to wri
 
 - Always use path alias imports (import '...' from '@/lib/...') even if the files are in the same directory
 
-- Don't go over 200 lines in any file. If a goes beyond 200 lines, split the code into separate files.
+- Don't go over 200 lines in any file. If a goes beyond 200 lines, split the code into separate files. Acceptable amount is 10% more than 200.

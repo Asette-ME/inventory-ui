@@ -1,6 +1,6 @@
 'use client';
 
-import { callGeminiAction } from '@/app/payment-plan/actions';
+import { callGeminiAction, fetchBuildingsAction } from '@/app/payment-plan/actions';
 import type {
   ButtonProps,
   ButtonVariant,
@@ -138,15 +138,8 @@ export default function PaymentPlanExtractor() {
     const fetchBuildings = async () => {
       setIsLoadingBuildings(true);
       try {
-        const res = await fetch(`${process.env.ASETTE_BE_API_URL}/buildings/?skip=0&limit=100`, {
-          headers: { 'x-api-key': process.env.ASETTE_BE_API_KEY || '' },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setBuildings(data);
-        } else {
-          console.error('Failed to fetch buildings');
-        }
+        const data = await fetchBuildingsAction();
+        setBuildings(data);
       } catch (error) {
         console.error('Error fetching buildings:', error);
       } finally {

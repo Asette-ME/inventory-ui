@@ -194,7 +194,7 @@ export default function PaymentPlanExtractor() {
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       if (!context) throw new Error('Failed to get canvas context');
-      
+
       canvas.height = viewport.height;
       canvas.width = viewport.width;
 
@@ -202,7 +202,7 @@ export default function PaymentPlanExtractor() {
 
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.95));
       if (!blob) throw new Error('Failed to create blob from canvas');
-      
+
       const imageFile = new File([blob], 'converted_pdf_page.jpg', { type: 'image/jpeg' });
 
       setFile(imageFile);
@@ -415,9 +415,7 @@ export default function PaymentPlanExtractor() {
         }
       }
 
-      const rows = result.data.lines
-        .map(parseLineToRow)
-        .filter((row): row is ExtractedRow => row !== null);
+      const rows = result.data.lines.map(parseLineToRow).filter((row): row is ExtractedRow => row !== null);
 
       if (rows.length === 0) {
         const fallbackRows: ExtractedRow[] = result.data.lines

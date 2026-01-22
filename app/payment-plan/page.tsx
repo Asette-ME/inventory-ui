@@ -539,7 +539,7 @@ export default function PaymentPlanExtractor() {
             <Card className="p-4 border-indigo-100 bg-white">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-2">
                 <BuildingIcon className="w-4 h-4 text-indigo-600" />
-                Select Project / Building
+                Select Building
               </label>
               <div className="relative">
                 <select

@@ -9,7 +9,5 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "kiroAgent.trustedCommands": [
-    "pnpm *"
-  ]
+  "kiroAgent.trustedCommands": ["pnpm *"]
 }

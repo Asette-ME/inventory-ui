@@ -1,6 +1,6 @@
 /**
  * Payment Plan Extractor - TypeScript Interfaces
- * 
+ *
  * Core interfaces for the payment plan extraction feature.
  * Validates: Requirements 7.1, 7.3
  */

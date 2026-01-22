@@ -2,10 +2,10 @@
 
 /**
  * FilePreview Component - Display preview of uploaded files
- * 
+ *
  * Displays image preview for uploaded images (PNG, JPG, JPEG)
  * and PDF icon with filename for PDF files.
- * 
+ *
  * Validates: Requirement 1.4
  */
 
@@ -20,11 +20,11 @@ import { useEffect, useMemo, useState } from 'react';
  */
 function formatFileSize({ bytes }: { bytes: number }): string {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
@@ -70,7 +70,7 @@ export function FilePreview({ file, onRemove }: FilePreviewProps) {
   const fileSize = formatFileSize({ bytes: file.size });
 
   return (
-    <div 
+    <div
       className="relative w-full rounded-lg border border-border bg-card p-4"
       role="region"
       aria-label="File preview"
@@ -87,15 +87,10 @@ export function FilePreview({ file, onRemove }: FilePreviewProps) {
 
         {/* File Info */}
         <div className="flex-1 min-w-0">
-          <p 
-            className="text-sm font-medium text-foreground truncate"
-            title={file.name}
-          >
+          <p className="text-sm font-medium text-foreground truncate" title={file.name}>
             {file.name}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            {fileSize}
-          </p>
+          <p className="text-xs text-muted-foreground mt-1">{fileSize}</p>
         </div>
 
         {/* Remove Button */}
@@ -117,20 +112,10 @@ export function FilePreview({ file, onRemove }: FilePreviewProps) {
 /**
  * ImagePreview sub-component for displaying image files
  */
-function ImagePreview({ 
-  imageUrl, 
-  fileName 
-}: { 
-  imageUrl: string; 
-  fileName: string;
-}) {
+function ImagePreview({ imageUrl, fileName }: { imageUrl: string; fileName: string }) {
   return (
     <div className="relative w-20 h-20 rounded-md overflow-hidden bg-muted">
-      <img
-        src={imageUrl}
-        alt={`Preview of ${fileName}`}
-        className="w-full h-full object-cover"
-      />
+      <img src={imageUrl} alt={`Preview of ${fileName}`} className="w-full h-full object-cover" />
     </div>
   );
 }
@@ -140,10 +125,7 @@ function ImagePreview({
  */
 function PdfPreview() {
   return (
-    <div 
-      className="flex items-center justify-center w-20 h-20 rounded-md bg-muted"
-      aria-label="PDF file"
-    >
+    <div className="flex items-center justify-center w-20 h-20 rounded-md bg-muted" aria-label="PDF file">
       <FileText className="w-10 h-10 text-muted-foreground" />
     </div>
   );

@@ -5,6 +5,7 @@
 The Payment Plan Extractor is a self-contained feature within the `app/payment-plan/` directory that enables users to upload payment plan documents (images or PDFs), extract structured data using OCR and LLM processing, review/edit the data in a table, and submit it to an API endpoint.
 
 The system follows a pipeline architecture:
+
 1. **File Upload** → Accept and validate files
 2. **Text Extraction** → OCR for images, pdf.js for PDFs
 3. **Data Structuring** → LLM processes raw text into structured JSON
@@ -12,6 +13,7 @@ The system follows a pipeline architecture:
 5. **Submission** → Send validated data to API
 
 ### Technology Stack
+
 - **OCR**: Tesseract.js (free, browser-based)
 - **PDF Parsing**: pdf.js (free, Mozilla)
 - **LLM**: Groq free tier (llama-3.1-8b-instant) or Ollama local
@@ -47,7 +49,7 @@ flowchart TB
     OCR --> |Raw Text| LLM
     LLM --> |Structured Data| Table
     Table --> |Confirmed Data| Submit
-    
+
     Route --> OCR
     Route --> PDF
     Route --> LLM
@@ -60,29 +62,29 @@ classDiagram
     class PaymentPlanPage {
         +render()
     }
-    
+
     class FileUploader {
         -acceptedTypes: string[]
         -maxSize: number
         +onFileSelect(file: File)
         +validateFile(file: File)
     }
-    
+
     class OCREngine {
         +extractText(image: File): Promise~OCRResult~
         +preprocessImage(image: File): Promise~Blob~
     }
-    
+
     class PDFParser {
         +extractContent(pdf: File): Promise~PDFContent~
         +extractImages(pdf: File): Promise~Blob[]~
     }
-    
+
     class LLMProcessor {
         +structureData(text: string): Promise~PaymentPlan~
         +buildPrompt(text: string): string
     }
-    
+
     class EditableTable {
         -data: PaymentMilestone[]
         +onCellEdit(row: number, field: string, value: string)
@@ -241,7 +243,7 @@ interface ActionButtonsProps {
 ```typescript
 const PaymentMilestoneSchema = z.object({
   id: z.string().uuid(),
-  milestone: z.string().min(1, "Milestone name is required"),
+  milestone: z.string().min(1, 'Milestone name is required'),
   percentage: z.number().min(0).max(100).nullable(),
   amount: z.number().min(0).nullable(),
   dueDate: z.string().nullable(),
@@ -303,10 +305,7 @@ type ExtractionAction =
   | { type: 'ERROR'; error: string }
   | { type: 'RESET' };
 
-function extractionReducer(
-  state: ExtractionState,
-  action: ExtractionAction
-): ExtractionState {
+function extractionReducer(state: ExtractionState, action: ExtractionAction): ExtractionState {
   switch (action.type) {
     case 'START_UPLOAD':
       return { status: 'uploading', progress: 0, message: 'Uploading file...' };
@@ -355,75 +354,73 @@ interface SubmitResponse {
 }
 ```
 
-
-
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a system—essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: File Type Validation
 
-*For any* file uploaded to the File_Uploader, the file SHALL be accepted if and only if its extension is PNG, JPG, JPEG, or PDF (case-insensitive). All other file types SHALL be rejected with an error message.
+_For any_ file uploaded to the File_Uploader, the file SHALL be accepted if and only if its extension is PNG, JPG, JPEG, or PDF (case-insensitive). All other file types SHALL be rejected with an error message.
 
 **Validates: Requirements 1.2, 1.3**
 
 ### Property 2: File Size Validation
 
-*For any* file uploaded to the File_Uploader, if the file size exceeds 10MB, the file SHALL be rejected with a size limit error. Files at or below 10MB SHALL be accepted (assuming valid type).
+_For any_ file uploaded to the File_Uploader, if the file size exceeds 10MB, the file SHALL be rejected with a size limit error. Files at or below 10MB SHALL be accepted (assuming valid type).
 
 **Validates: Requirements 1.5**
 
 ### Property 3: OCR Result Structure
 
-*For any* image processed by the OCR_Engine, the returned OCRResult SHALL contain: a non-null text string, a confidence score between 0 and 1, and an array of TextBlock objects each with text, bounding box coordinates, and confidence.
+_For any_ image processed by the OCR_Engine, the returned OCRResult SHALL contain: a non-null text string, a confidence score between 0 and 1, and an array of TextBlock objects each with text, bounding box coordinates, and confidence.
 
 **Validates: Requirements 2.3**
 
 ### Property 4: PDF Page Processing
 
-*For any* PDF with N pages processed by the PDF_Parser, the extracted text SHALL contain content from all N pages. The page count in the result SHALL equal the actual page count of the PDF.
+_For any_ PDF with N pages processed by the PDF_Parser, the extracted text SHALL contain content from all N pages. The page count in the result SHALL equal the actual page count of the PDF.
 
 **Validates: Requirements 3.3**
 
 ### Property 5: LLM Output Structure
 
-*For any* text processed by the LLM_Processor, the returned PaymentPlan SHALL contain: an array of PaymentMilestone objects where each milestone has an id, milestone name, and nullable percentage/amount/dueDate/notes fields.
+_For any_ text processed by the LLM_Processor, the returned PaymentPlan SHALL contain: an array of PaymentMilestone objects where each milestone has an id, milestone name, and nullable percentage/amount/dueDate/notes fields.
 
 **Validates: Requirements 4.2**
 
 ### Property 6: Table Row Addition
 
-*For any* editable table with N rows, when a user adds a row at index I (where 0 ≤ I ≤ N), the resulting table SHALL have N+1 rows, and the new empty row SHALL be at index I.
+_For any_ editable table with N rows, when a user adds a row at index I (where 0 ≤ I ≤ N), the resulting table SHALL have N+1 rows, and the new empty row SHALL be at index I.
 
 **Validates: Requirements 5.4**
 
 ### Property 7: Table Row Deletion
 
-*For any* editable table with N rows (N > 0), when a user deletes the row at index I (where 0 ≤ I < N), the resulting table SHALL have N-1 rows, and the row that was at index I SHALL no longer exist.
+_For any_ editable table with N rows (N > 0), when a user deletes the row at index I (where 0 ≤ I < N), the resulting table SHALL have N-1 rows, and the row that was at index I SHALL no longer exist.
 
 **Validates: Requirements 5.5**
 
 ### Property 8: Percentage Sum Validation
 
-*For any* set of PaymentMilestone objects in the Data_Table, if the sum of all non-null percentage values does not equal 100, a warning SHALL be displayed. If the sum equals 100, no warning SHALL be displayed.
+_For any_ set of PaymentMilestone objects in the Data_Table, if the sum of all non-null percentage values does not equal 100, a warning SHALL be displayed. If the sum equals 100, no warning SHALL be displayed.
 
 **Validates: Requirements 5.6**
 
 ### Property 9: Submission Validation
 
-*For any* submission attempt, if any milestone has an empty milestone name, the submission SHALL be rejected with a validation error. Only when all required fields are filled SHALL the submission proceed to the API call.
+_For any_ submission attempt, if any milestone has an empty milestone name, the submission SHALL be rejected with a validation error. Only when all required fields are filled SHALL the submission proceed to the API call.
 
 **Validates: Requirements 6.1, 6.2**
 
 ### Property 10: Submission Payload Completeness
 
-*For any* successful submission to the API, the payload SHALL include: the complete PaymentPlan object, the original file name, and an extractedAt timestamp.
+_For any_ successful submission to the API, the payload SHALL include: the complete PaymentPlan object, the original file name, and an extractedAt timestamp.
 
 **Validates: Requirements 6.5**
 
 ### Property 11: Layout Detection Robustness
 
-*For any* image containing payment plan data (structured table, unstructured text, or timeline layout), the extraction pipeline SHALL produce a PaymentPlan with at least one milestone, regardless of the source layout format.
+_For any_ image containing payment plan data (structured table, unstructured text, or timeline layout), the extraction pipeline SHALL produce a PaymentPlan with at least one milestone, regardless of the source layout format.
 
 **Validates: Requirements 9.1, 9.2, 9.3**
 
@@ -431,44 +428,44 @@ interface SubmitResponse {
 
 ### File Upload Errors
 
-| Error Condition | User Message | Recovery Action |
-|----------------|--------------|-----------------|
+| Error Condition       | User Message                            | Recovery Action                 |
+| --------------------- | --------------------------------------- | ------------------------------- |
 | Unsupported file type | "Please upload a PNG, JPG, or PDF file" | Allow retry with different file |
-| File too large | "File size exceeds 10MB limit" | Allow retry with smaller file |
-| File read error | "Unable to read file. Please try again" | Allow retry |
+| File too large        | "File size exceeds 10MB limit"          | Allow retry with smaller file   |
+| File read error       | "Unable to read file. Please try again" | Allow retry                     |
 
 ### OCR Errors
 
-| Error Condition | User Message | Recovery Action |
-|----------------|--------------|-----------------|
-| Tesseract initialization failed | "OCR engine failed to initialize" | Retry or refresh page |
-| Image processing failed | "Unable to process image" | Allow retry with different image |
-| Low confidence extraction | "Low confidence extraction. Please review carefully" | Show results with warning |
+| Error Condition                 | User Message                                         | Recovery Action                  |
+| ------------------------------- | ---------------------------------------------------- | -------------------------------- |
+| Tesseract initialization failed | "OCR engine failed to initialize"                    | Retry or refresh page            |
+| Image processing failed         | "Unable to process image"                            | Allow retry with different image |
+| Low confidence extraction       | "Low confidence extraction. Please review carefully" | Show results with warning        |
 
 ### PDF Parsing Errors
 
-| Error Condition | User Message | Recovery Action |
-|----------------|--------------|-----------------|
-| Corrupted PDF | "PDF file appears to be corrupted" | Allow retry with different file |
-| Password protected | "Password-protected PDFs are not supported" | Allow retry with unprotected file |
-| No extractable content | "No text or images found in PDF" | Allow retry with different file |
+| Error Condition        | User Message                                | Recovery Action                   |
+| ---------------------- | ------------------------------------------- | --------------------------------- |
+| Corrupted PDF          | "PDF file appears to be corrupted"          | Allow retry with different file   |
+| Password protected     | "Password-protected PDFs are not supported" | Allow retry with unprotected file |
+| No extractable content | "No text or images found in PDF"            | Allow retry with different file   |
 
 ### LLM Processing Errors
 
-| Error Condition | User Message | Recovery Action |
-|----------------|--------------|-----------------|
-| API unavailable | "AI service temporarily unavailable" | Show raw text for manual entry |
-| Rate limit exceeded | "Too many requests. Please wait and retry" | Auto-retry after delay |
-| Invalid response | "Unable to structure data automatically" | Show raw text for manual entry |
-| Timeout | "Processing took too long" | Allow retry or manual entry |
+| Error Condition     | User Message                               | Recovery Action                |
+| ------------------- | ------------------------------------------ | ------------------------------ |
+| API unavailable     | "AI service temporarily unavailable"       | Show raw text for manual entry |
+| Rate limit exceeded | "Too many requests. Please wait and retry" | Auto-retry after delay         |
+| Invalid response    | "Unable to structure data automatically"   | Show raw text for manual entry |
+| Timeout             | "Processing took too long"                 | Allow retry or manual entry    |
 
 ### Submission Errors
 
-| Error Condition | User Message | Recovery Action |
-|----------------|--------------|-----------------|
-| Validation failed | "Please fill in all required fields" | Highlight missing fields |
-| Network error | "Network error. Please check connection" | Allow retry, preserve data |
-| API error | "Server error: {message}" | Allow retry, preserve data |
+| Error Condition   | User Message                             | Recovery Action            |
+| ----------------- | ---------------------------------------- | -------------------------- |
+| Validation failed | "Please fill in all required fields"     | Highlight missing fields   |
+| Network error     | "Network error. Please check connection" | Allow retry, preserve data |
+| API error         | "Server error: {message}"                | Allow retry, preserve data |
 
 ### Graceful Degradation Strategy
 
@@ -508,29 +505,29 @@ This feature requires both unit tests and property-based tests for comprehensive
 
 ### Unit Test Coverage
 
-| Component | Test Focus |
-|-----------|------------|
-| FileUploader | File type validation, size validation, drag-drop behavior |
-| OCREngine | Tesseract initialization, image preprocessing |
-| PDFParser | Text extraction, image extraction, multi-page handling |
-| LLMProcessor | Prompt construction, response parsing, error handling |
-| EditableTable | Cell editing, row add/delete, percentage validation |
-| Validators | Schema validation, required field checks |
+| Component     | Test Focus                                                |
+| ------------- | --------------------------------------------------------- |
+| FileUploader  | File type validation, size validation, drag-drop behavior |
+| OCREngine     | Tesseract initialization, image preprocessing             |
+| PDFParser     | Text extraction, image extraction, multi-page handling    |
+| LLMProcessor  | Prompt construction, response parsing, error handling     |
+| EditableTable | Cell editing, row add/delete, percentage validation       |
+| Validators    | Schema validation, required field checks                  |
 
 ### Property Test Coverage
 
-| Property | Generator Strategy |
-|----------|-------------------|
-| Property 1 | Generate random file names with various extensions |
-| Property 2 | Generate files with random sizes (0 to 50MB) |
-| Property 3 | Generate mock OCR results and verify structure |
-| Property 4 | Generate mock PDFs with 1-10 pages |
-| Property 5 | Generate random text inputs, verify output structure |
-| Property 6 | Generate tables with 0-20 rows, random insert positions |
-| Property 7 | Generate tables with 1-20 rows, random delete positions |
-| Property 8 | Generate milestone arrays with random percentages |
-| Property 9 | Generate milestone arrays with random field completeness |
-| Property 10 | Generate submission payloads, verify completeness |
+| Property    | Generator Strategy                                       |
+| ----------- | -------------------------------------------------------- |
+| Property 1  | Generate random file names with various extensions       |
+| Property 2  | Generate files with random sizes (0 to 50MB)             |
+| Property 3  | Generate mock OCR results and verify structure           |
+| Property 4  | Generate mock PDFs with 1-10 pages                       |
+| Property 5  | Generate random text inputs, verify output structure     |
+| Property 6  | Generate tables with 0-20 rows, random insert positions  |
+| Property 7  | Generate tables with 1-20 rows, random delete positions  |
+| Property 8  | Generate milestone arrays with random percentages        |
+| Property 9  | Generate milestone arrays with random field completeness |
+| Property 10 | Generate submission payloads, verify completeness        |
 | Property 11 | Use example images to verify extraction produces results |
 
 ### Integration Test Scenarios

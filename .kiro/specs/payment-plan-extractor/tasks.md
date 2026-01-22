@@ -25,7 +25,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Add file validation utilities (type, size)
     - _Requirements: 1.2, 1.3, 1.5, 6.1_
 
-  - [ ]* 1.4 Write property tests for file validation
+  - [ ]\* 1.4 Write property tests for file validation
     - **Property 1: File Type Validation**
     - **Property 2: File Size Validation**
     - **Validates: Requirements 1.2, 1.3, 1.5**
@@ -45,7 +45,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Add remove file button
     - _Requirements: 1.4_
 
-  - [ ]* 2.3 Write unit tests for FileUploader
+  - [ ]\* 2.3 Write unit tests for FileUploader
     - Test file type validation
     - Test file size validation
     - Test drag-drop behavior
@@ -68,7 +68,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Return OCRResult with text, confidence, and bounding boxes
     - _Requirements: 2.1, 2.3_
 
-  - [ ]* 4.3 Write property tests for OCR result structure
+  - [ ]\* 4.3 Write property tests for OCR result structure
     - **Property 3: OCR Result Structure**
     - **Validates: Requirements 2.3**
 
@@ -80,7 +80,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Combine text from multiple pages
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [ ]* 5.2 Write property tests for PDF processing
+  - [ ]\* 5.2 Write property tests for PDF processing
     - **Property 4: PDF Page Processing**
     - **Validates: Requirements 3.3**
 
@@ -93,7 +93,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Handle fallback to raw text on failure
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7_
 
-  - [ ]* 6.2 Write property tests for LLM output structure
+  - [ ]\* 6.2 Write property tests for LLM output structure
     - **Property 5: LLM Output Structure**
     - **Validates: Requirements 4.2**
 
@@ -119,7 +119,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Display warning if sum ≠ 100%
     - _Requirements: 5.6_
 
-  - [ ]* 8.4 Write property tests for table operations
+  - [ ]\* 8.4 Write property tests for table operations
     - **Property 6: Table Row Addition**
     - **Property 7: Table Row Deletion**
     - **Property 8: Percentage Sum Validation**
@@ -152,7 +152,7 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Build submission payload with file reference
     - _Requirements: 6.1, 6.2, 6.5_
 
-  - [ ]* 10.3 Write property tests for submission
+  - [ ]\* 10.3 Write property tests for submission
     - **Property 9: Submission Validation**
     - **Property 10: Submission Payload Completeness**
     - **Validates: Requirements 6.1, 6.2, 6.5**
@@ -196,14 +196,14 @@ Implement a self-contained payment plan extraction tool within `app/payment-plan
     - Handle varying font sizes
     - _Requirements: 9.1, 9.2, 9.3, 9.5_
 
-  - [ ]* 14.2 Write property tests for layout robustness
+  - [ ]\* 14.2 Write property tests for layout robustness
     - **Property 11: Layout Detection Robustness**
     - **Validates: Requirements 9.1, 9.2, 9.3**
 
 - [ ] 15. Final checkpoint - Full integration
   - Ensure all components work together end-to-end, ask the user if questions arise.
 
-- [ ]* 16. Write integration tests
+- [ ]\* 16. Write integration tests
   - Test happy path: Upload → Extract → Edit → Submit
   - Test PDF flow with multi-page documents
   - Test manual entry fallback

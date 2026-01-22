@@ -21,12 +21,7 @@ export const ACCEPTED_FILE_EXTENSIONS = ['png', 'jpg', 'jpeg', 'pdf'] as const;
 /**
  * Accepted MIME types for file uploads
  */
-export const ACCEPTED_MIME_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'image/jpg',
-  'application/pdf',
-] as const;
+export const ACCEPTED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'] as const;
 
 /**
  * Maximum file size in bytes (10MB)
@@ -61,11 +56,7 @@ export function getFileExtension({ filename }: { filename: string }): string {
  * @param file - The file to validate or filename string
  * @returns FileValidation result with valid boolean and error message
  */
-export function validateFileType({
-  file,
-}: {
-  file: File | string;
-}): FileValidation {
+export function validateFileType({ file }: { file: File | string }): FileValidation {
   const filename = typeof file === 'string' ? file : file.name;
   const extension = getFileExtension({ filename });
 
@@ -76,9 +67,7 @@ export function validateFileType({
     };
   }
 
-  const isValidExtension = ACCEPTED_FILE_EXTENSIONS.includes(
-    extension as (typeof ACCEPTED_FILE_EXTENSIONS)[number]
-  );
+  const isValidExtension = ACCEPTED_FILE_EXTENSIONS.includes(extension as (typeof ACCEPTED_FILE_EXTENSIONS)[number]);
 
   if (!isValidExtension) {
     return {

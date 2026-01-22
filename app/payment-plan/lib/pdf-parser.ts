@@ -10,11 +10,7 @@
 
 import type { PDFContent } from '@/app/payment-plan/types';
 import * as pdfjsLib from 'pdfjs-dist';
-import type {
-    PDFPageProxy,
-    TextContent,
-    TextItem
-} from 'pdfjs-dist/types/src/display/api';
+import type { PDFPageProxy, TextContent, TextItem } from 'pdfjs-dist/types/src/display/api';
 
 // ============================================================================
 // Types
@@ -42,8 +38,7 @@ interface ExtractedImage {
 function configureWorker(): void {
   if (typeof window !== 'undefined' && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
     // Use CDN worker matching the installed version
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 
-      `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
   }
 }
 
@@ -59,10 +54,7 @@ function configureWorker(): void {
  * @param params.onProgress - Optional progress callback (progress: 0-100, message: string)
  * @returns Promise<PDFContent> - Extracted text, page count, and images
  */
-export async function parsePDF({
-  pdfBlob,
-  onProgress,
-}: ParsePDFParams): Promise<PDFContent> {
+export async function parsePDF({ pdfBlob, onProgress }: ParsePDFParams): Promise<PDFContent> {
   try {
     onProgress?.(0, 'Initializing PDF parser...');
     configureWorker();
@@ -130,17 +122,11 @@ export async function parsePDF({
  * @param page - The PDF page to extract text from
  * @returns Promise<string> - Extracted text content
  */
-async function extractTextFromPage({
-  page,
-}: {
-  page: PDFPageProxy;
-}): Promise<string> {
+async function extractTextFromPage({ page }: { page: PDFPageProxy }): Promise<string> {
   const textContent: TextContent = await page.getTextContent();
 
   // Combine text items, preserving some structure
-  const textItems = textContent.items
-    .filter((item): item is TextItem => 'str' in item)
-    .map((item) => item.str);
+  const textItems = textContent.items.filter((item): item is TextItem => 'str' in item).map((item) => item.str);
 
   return textItems.join(' ');
 }
@@ -156,11 +142,7 @@ async function extractTextFromPage({
  * @param page - The PDF page to extract images from
  * @returns Promise<Blob[]> - Array of image blobs
  */
-async function extractImagesFromPage({
-  page,
-}: {
-  page: PDFPageProxy;
-}): Promise<Blob[]> {
+async function extractImagesFromPage({ page }: { page: PDFPageProxy }): Promise<Blob[]> {
   const images: Blob[] = [];
 
   try {
@@ -169,10 +151,7 @@ async function extractImagesFromPage({
 
     for (let i = 0; i < operatorList.fnArray.length; i++) {
       // Check for image painting operations
-      if (
-        operatorList.fnArray[i] === OPS.paintImageXObject ||
-        operatorList.fnArray[i] === OPS.paintJpegXObject
-      ) {
+      if (operatorList.fnArray[i] === OPS.paintImageXObject || operatorList.fnArray[i] === OPS.paintXObject) {
         const imageName = operatorList.argsArray[i][0];
         const imageBlob = await extractImageByName({ page, imageName });
         if (imageBlob) {
@@ -204,7 +183,7 @@ async function extractImageByName({
 }): Promise<Blob | null> {
   try {
     // Get the image object from common objects
-    const imgData = await page.objs.get(imageName) as ExtractedImage | null;
+    const imgData = (await page.objs.get(imageName)) as ExtractedImage | null;
 
     if (!imgData || !imgData.data || !imgData.width || !imgData.height) {
       return null;
@@ -251,7 +230,7 @@ async function imageDataToBlob({
     throw new Error('Failed to get canvas context');
   }
 
-  const imageData = new ImageData(data, width, height);
+  const imageData = new ImageData(new Uint8ClampedArray(data), width, height);
   ctx.putImageData(imageData, 0, 0);
 
   // Convert canvas to Blob
@@ -265,7 +244,7 @@ async function imageDataToBlob({
         }
       },
       'image/png',
-      1.0
+      1.0,
     );
   });
 }

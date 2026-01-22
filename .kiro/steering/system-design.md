@@ -23,7 +23,6 @@ ALWAYS follow the following system design principles and coding practises to wri
 
 - Object Oriented Programming
 
-
 ## Best Practises
 
 - Use type hints (e.g., function process({data}: {data: Record<string, string>[];}): Record<string, string>[] {return [];})

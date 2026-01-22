@@ -95,7 +95,7 @@ export async function preprocessImage({
         }
       },
       'image/png',
-      1.0
+      1.0,
     );
   });
 }
@@ -111,11 +111,7 @@ export async function preprocessImage({
  * @param imageData - The input ImageData object
  * @returns ImageData - The grayscale ImageData
  */
-export function convertToGrayscale({
-  imageData,
-}: {
-  imageData: ImageData;
-}): ImageData {
+export function convertToGrayscale({ imageData }: { imageData: ImageData }): ImageData {
   const data = imageData.data;
   const length = data.length;
 
@@ -127,7 +123,7 @@ export function convertToGrayscale({
     // Luminosity method for perceptually accurate grayscale
     const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
 
-    data[i] = gray;     // R
+    data[i] = gray; // R
     data[i + 1] = gray; // G
     data[i + 2] = gray; // B
     // Alpha channel (data[i + 3]) remains unchanged
@@ -148,13 +144,7 @@ export function convertToGrayscale({
  * @param factor - Contrast factor (1.0 = no change, >1.0 = more contrast)
  * @returns ImageData - The contrast-enhanced ImageData
  */
-export function enhanceContrast({
-  imageData,
-  factor = 1.5,
-}: {
-  imageData: ImageData;
-  factor?: number;
-}): ImageData {
+export function enhanceContrast({ imageData, factor = 1.5 }: { imageData: ImageData; factor?: number }): ImageData {
   const data = imageData.data;
   const length = data.length;
 
@@ -180,11 +170,7 @@ export function enhanceContrast({
  * @param imageData - The input ImageData object
  * @returns ImageData - The noise-reduced ImageData
  */
-export function reduceNoise({
-  imageData,
-}: {
-  imageData: ImageData;
-}): ImageData {
+export function reduceNoise({ imageData }: { imageData: ImageData }): ImageData {
   const { width, height, data } = imageData;
   const output = new Uint8ClampedArray(data);
 

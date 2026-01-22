@@ -166,11 +166,7 @@ function transformResult({ result }: { result: RecognizeResult }): OCRResult {
  * @param data - Tesseract recognition data
  * @returns TextBlock[] - Array of text blocks with positions
  */
-function extractTextBlocks({
-  data,
-}: {
-  data: Tesseract.Page;
-}): TextBlock[] {
+function extractTextBlocks({ data }: { data: Tesseract.Page }): TextBlock[] {
   const textBlocks: TextBlock[] = [];
 
   // Extract paragraphs from blocks for semantic grouping

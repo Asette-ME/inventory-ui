@@ -12,13 +12,16 @@ import { z } from 'zod';
 
 // Re-export file validators for convenience
 export {
-    ACCEPTED_FILE_EXTENSIONS,
-    ACCEPTED_MIME_TYPES, getFileExtension,
-    isImageFile,
-    isPdfFile, MAX_FILE_SIZE_BYTES,
-    MAX_FILE_SIZE_MB, validateFile,
-    validateFileSize,
-    validateFileType
+  ACCEPTED_FILE_EXTENSIONS,
+  ACCEPTED_MIME_TYPES,
+  getFileExtension,
+  isImageFile,
+  isPdfFile,
+  MAX_FILE_SIZE_BYTES,
+  MAX_FILE_SIZE_MB,
+  validateFile,
+  validateFileSize,
+  validateFileType,
 } from '@/app/payment-plan/lib/file-validators';
 
 // ============================================================================
@@ -114,11 +117,7 @@ export function validatePaymentPlan({ paymentPlan }: { paymentPlan: unknown }): 
 /**
  * Calculates the total percentage from milestones
  */
-export function calculateTotalPercentage({
-  milestones,
-}: {
-  milestones: PaymentMilestoneInput[];
-}): number {
+export function calculateTotalPercentage({ milestones }: { milestones: PaymentMilestoneInput[] }): number {
   return milestones.reduce((sum, milestone) => {
     return sum + (milestone.percentage ?? 0);
   }, 0);

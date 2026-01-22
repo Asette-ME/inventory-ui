@@ -11,12 +11,7 @@ import { Button } from '@/components/ui/button';
 import { FileWarning, Upload } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 
-export function FileUploader({
-  onFileSelect,
-  acceptedTypes,
-  maxSizeMB,
-  disabled = false,
-}: FileUploaderProps) {
+export function FileUploader({ onFileSelect, acceptedTypes, maxSizeMB, disabled = false }: FileUploaderProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -31,7 +26,7 @@ export function FileUploader({
       }
       onFileSelect(file);
     },
-    [onFileSelect]
+    [onFileSelect],
   );
 
   const handleDragOver = useCallback(
@@ -40,7 +35,7 @@ export function FileUploader({
       event.stopPropagation();
       if (!disabled) setIsDragOver(true);
     },
-    [disabled]
+    [disabled],
   );
 
   const handleDragLeave = useCallback((event: React.DragEvent<HTMLDivElement>) => {
@@ -58,7 +53,7 @@ export function FileUploader({
       const files = event.dataTransfer.files;
       if (files.length > 0) handleFile(files[0]);
     },
-    [disabled, handleFile]
+    [disabled, handleFile],
   );
 
   const handleFileInputChange = useCallback(
@@ -67,7 +62,7 @@ export function FileUploader({
       if (files && files.length > 0) handleFile(files[0]);
       event.target.value = '';
     },
-    [handleFile]
+    [handleFile],
   );
 
   const handleButtonClick = useCallback(() => {
@@ -81,12 +76,10 @@ export function FileUploader({
         handleButtonClick();
       }
     },
-    [disabled, handleButtonClick]
+    [disabled, handleButtonClick],
   );
 
-  const acceptedExtensionsDisplay = ACCEPTED_FILE_EXTENSIONS.map((ext) =>
-    ext.toUpperCase()
-  ).join(', ');
+  const acceptedExtensionsDisplay = ACCEPTED_FILE_EXTENSIONS.map((ext) => ext.toUpperCase()).join(', ');
 
   const dropZoneClasses = `
     relative flex flex-col items-center justify-center w-full min-h-[200px] p-8

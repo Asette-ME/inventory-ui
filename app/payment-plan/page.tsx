@@ -11,8 +11,10 @@ import type {
   TesseractLine,
 } from '@/app/payment-plan/types';
 import {
+  Building as BuildingIcon,
   Calculator,
   CheckCircle,
+  ChevronDown,
   CloudLightning,
   Code,
   Cpu,
@@ -29,6 +31,14 @@ import {
   Zap,
 } from 'lucide-react';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
+
+// --- Types ---
+
+interface BuildingData {
+  id: number;
+  title: string;
+  hand_over_date: string | null;
+}
 
 // --- Styles & Components ---
 
@@ -117,6 +127,47 @@ export default function PaymentPlanExtractor() {
   const [isAiProcessing, setIsAiProcessing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState('');
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+
+  // Building Data
+  const [buildings, setBuildings] = useState<BuildingData[]>([]);
+  const [isLoadingBuildings, setIsLoadingBuildings] = useState(false);
+  const [selectedBuildingId, setSelectedBuildingId] = useState<string>('');
+
+  // Fetch Buildings
+  useEffect(() => {
+    const fetchBuildings = async () => {
+      setIsLoadingBuildings(true);
+      try {
+        const res = await fetch(`${process.env.ASETTE_BE_API_URL}/buildings/?skip=0&limit=100`, {
+          headers: { 'x-api-key': process.env.ASETTE_BE_API_KEY || '' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setBuildings(data);
+        } else {
+          console.error('Failed to fetch buildings');
+        }
+      } catch (error) {
+        console.error('Error fetching buildings:', error);
+      } finally {
+        setIsLoadingBuildings(false);
+      }
+    };
+
+    fetchBuildings();
+  }, []);
+
+  const handleBuildingSelect = (id: string) => {
+    setSelectedBuildingId(id);
+    const building = buildings.find((b) => b.id.toString() === id);
+    if (building && building.hand_over_date) {
+      // Format date to YYYY-MM-DD for input[type="date"]
+      const dateObj = new Date(building.hand_over_date);
+      if (!isNaN(dateObj.getTime())) {
+        setHandoverDate(dateObj.toISOString().split('T')[0]);
+      }
+    }
+  };
 
   // Load Scripts (Tesseract + PDF.js)
   useEffect(() => {
@@ -491,6 +542,38 @@ export default function PaymentPlanExtractor() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Left Column: Upload & Preview */}
           <div className="lg:col-span-5 space-y-6">
+            {/* Building Selection */}
+            <Card className="p-4 border-indigo-100 bg-white">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2 mb-2">
+                <BuildingIcon className="w-4 h-4 text-indigo-600" />
+                Select Project / Building
+              </label>
+              <div className="relative">
+                <select
+                  className="w-full pl-3 pr-10 py-2.5 text-sm border border-slate-300 rounded-lg appearance-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white transition-all disabled:opacity-50 disabled:bg-slate-50 text-slate-700 font-medium"
+                  onChange={(e) => handleBuildingSelect(e.target.value)}
+                  disabled={isLoadingBuildings}
+                  value={selectedBuildingId}
+                >
+                  <option value="" disabled>
+                    {isLoadingBuildings ? 'Loading projects...' : 'Select a building to auto-fill details...'}
+                  </option>
+                  {buildings.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.title}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-slate-500">
+                  {isLoadingBuildings ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </div>
+              </div>
+            </Card>
+
             <Card className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">

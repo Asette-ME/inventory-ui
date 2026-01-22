@@ -50,7 +50,11 @@ export async function callGeminiAction({
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error(`API Error: ${response.status}`);
+      if (!response.ok) {
+        const errorBody = await response.text();
+        console.error('Gemini API Error:', response.status, errorBody);
+        throw new Error(`API Error: ${response.status} - ${errorBody}`);
+      }
 
       const data = await response.json();
       return data.candidates?.[0]?.content?.parts?.[0]?.text || '';

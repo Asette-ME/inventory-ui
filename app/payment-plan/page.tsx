@@ -1,6 +1,6 @@
 'use client';
 
-import { callGeminiAction, fetchBuildingsAction } from '@/app/payment-plan/actions';
+import { callGeminiAction, fetchBuildingsAction, savePaymentPlanAction } from '@/app/payment-plan/actions';
 import type {
   ButtonProps,
   ButtonVariant,
@@ -112,7 +112,7 @@ export default function PaymentPlanExtractor() {
   const [status, setStatus] = useState('');
   const [extractedData, setExtractedData] = useState<ExtractedRow[]>([]);
   const [rawText, setRawText] = useState('');
-  const [jsonResult, setJsonResult] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [tesseractReady, setTesseractReady] = useState(false);
   const [pdfJsReady, setPdfJsReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -139,6 +139,7 @@ export default function PaymentPlanExtractor() {
       setIsLoadingBuildings(true);
       try {
         const data = await fetchBuildingsAction();
+        data.sort((a: BuildingData, b: BuildingData) => a.title.localeCompare(b.title));
         setBuildings(data);
       } catch (error) {
         console.error('Error fetching buildings:', error);
@@ -203,7 +204,6 @@ export default function PaymentPlanExtractor() {
 
     // Reset state
     setExtractedData([]);
-    setJsonResult(null);
     setAiAnalysis('');
     setRawText('');
     setProgress(0);
@@ -298,7 +298,6 @@ export default function PaymentPlanExtractor() {
     setIsAiProcessing(true);
     setRawText('');
     setExtractedData([]);
-    setJsonResult(null);
 
     try {
       const base64Data = await new Promise<string>((resolve, reject) => {
@@ -412,7 +411,6 @@ export default function PaymentPlanExtractor() {
     setIsProcessing(true);
     setProgress(0);
     setStatus('Starting Engine...');
-    setJsonResult(null);
 
     try {
       const worker = await window.Tesseract.createWorker('eng', 1, {
@@ -507,9 +505,23 @@ export default function PaymentPlanExtractor() {
     ]);
   };
 
-  const handleSubmit = () => {
-    const payload = extractedData.map(({ id, originalText, ...rest }) => rest);
-    setJsonResult(JSON.stringify(payload, null, 2));
+  const handleSubmit = async () => {
+    if (!selectedBuildingId) {
+      alert('Please select a building first.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const payload = extractedData.map(({ id, originalText, ...rest }) => rest);
+      await savePaymentPlanAction(selectedBuildingId, payload);
+      alert('Payment plan saved successfully!');
+    } catch (error) {
+      console.error('Failed to save payment plan:', error);
+      alert('Failed to save payment plan. Please check console for details.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -895,42 +907,18 @@ export default function PaymentPlanExtractor() {
               </div>
 
               <div className="p-4 border-t border-slate-200 bg-white flex justify-end gap-3">
-                <Button variant="ghost" onClick={() => setExtractedData([])} disabled={extractedData.length === 0}>
+                <Button
+                  variant="ghost"
+                  onClick={() => setExtractedData([])}
+                  disabled={extractedData.length === 0 || isSubmitting}
+                >
                   Clear All
                 </Button>
-                <Button onClick={handleSubmit} disabled={extractedData.length === 0} icon={CheckCircle}>
-                  Confirm & Generate JSON
+                <Button onClick={handleSubmit} disabled={extractedData.length === 0 || isSubmitting} icon={CheckCircle}>
+                  {isSubmitting ? 'Saving...' : 'Confirm & Save'}
                 </Button>
               </div>
             </Card>
-
-            {/* JSON Result */}
-            {jsonResult && (
-              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                    <Code className="w-4 h-4 text-emerald-600" /> API Payload Preview
-                  </h3>
-                  <span className="text-xs text-emerald-600 font-medium bg-emerald-50 px-2 py-1 rounded">
-                    Ready to Send
-                  </span>
-                </div>
-                <div className="bg-slate-900 rounded-xl overflow-hidden shadow-lg border border-slate-800">
-                  <div className="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700">
-                    <div className="flex gap-1.5">
-                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                      <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                    </div>
-                    <span className="text-xs text-slate-400 font-mono">POST /api/payment-plans</span>
-                  </div>
-                  {/* Added max-h-96 and overflow-y-auto to prevent huge gaps */}
-                  <pre className="p-4 text-xs font-mono text-emerald-400 overflow-x-auto max-h-96 overflow-y-auto">
-                    {jsonResult}
-                  </pre>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

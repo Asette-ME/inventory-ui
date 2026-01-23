@@ -91,3 +91,28 @@ export async function fetchBuildingsAction() {
     return [];
   }
 }
+
+export async function savePaymentPlanAction(buildingId: string, paymentPlan: any[]) {
+  const apiKey = process.env.ASETTE_BE_API_KEY;
+  const baseUrl = process.env.ASETTE_BE_API_URL;
+
+  if (!apiKey || !baseUrl) {
+    throw new Error('API configuration missing');
+  }
+
+  const res = await fetch(`${baseUrl}/buildings/${buildingId}/payment-plan`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+    },
+    body: JSON.stringify(paymentPlan),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Failed to save payment plan: ${res.status} ${errorText}`);
+  }
+
+  return await res.json();
+}

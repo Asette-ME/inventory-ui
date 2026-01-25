@@ -4,7 +4,8 @@ import {
   closestCenter,
   DndContext,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -67,7 +68,7 @@ function SortableColumn({ column, id }: SortableColumnProps) {
       <span
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing p-1 -m-1 hover:bg-muted rounded"
+        className="cursor-grab active:cursor-grabbing p-1 -m-1 hover:bg-muted rounded touch-none"
         onClick={(e) => e.stopPropagation()}
       >
         <GripVertical className="size-4 text-muted-foreground" aria-hidden="true" />
@@ -80,14 +81,9 @@ export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps
   const [search, setSearch] = useState('');
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    useSensor(MouseSensor),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
   const columns = table.getAllLeafColumns();

@@ -22,7 +22,8 @@ import {
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { callGeminiAction, fetchBuildingsAction, savePaymentPlanAction } from '@/app/payment-plan/actions';
+import { callGeminiAction, savePaymentPlanAction } from '@/app/payment-plan/actions';
+import { fetchBuildingsAction } from '@/lib/actions/buildings';
 import type { ExtractedRow, ParsedAIRow, TesseractLine } from '@/app/payment-plan/types';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Badge } from '@/components/ui/badge';

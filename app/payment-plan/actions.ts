@@ -66,32 +66,6 @@ export async function callGeminiAction({
   }
 }
 
-export async function fetchBuildingsAction() {
-  const apiKey = process.env.ASETTE_BE_API_KEY;
-
-  if (!apiKey) {
-    console.error('ASETTE_API_KEY is not defined');
-    return [];
-  }
-
-  try {
-    const res = await fetch(`${process.env.ASETTE_BE_API_URL}/buildings/?skip=0&limit=1000`, {
-      headers: { 'x-api-key': apiKey },
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      console.error('Failed to fetch buildings:', res.status, await res.text());
-      return [];
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error('Error fetching buildings:', error);
-    return [];
-  }
-}
-
 export async function savePaymentPlanAction(buildingId: string, paymentPlan: any[]) {
   const apiKey = process.env.ASETTE_BE_API_KEY;
   const baseUrl = process.env.ASETTE_BE_API_URL;

@@ -6,6 +6,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'dn3kc9exuk533.cloudfront.net',
+      },
+    ],
+  },
   async redirects() {
     return [
       {

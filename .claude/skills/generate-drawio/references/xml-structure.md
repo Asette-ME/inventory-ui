@@ -31,24 +31,24 @@
 
 ## mxGraphModel Attributes
 
-| Attribute | Description | Recommended Value |
-|-----------|-------------|-------------------|
-| `dx` | Canvas width | 1200 |
-| `dy` | Canvas height | 800 |
-| `grid` | Show grid | 1 |
-| `gridSize` | Grid cell size | 10 |
-| `guides` | Show guides | 1 |
-| `tooltips` | Enable tooltips | 1 |
-| `connect` | Enable connections | 1 |
-| `arrows` | Enable arrows | 1 |
-| `fold` | Enable folding | 1 |
-| `page` | Page mode (0=transparent) | 0 |
-| `pageScale` | Page scale | 1 |
-| `pageWidth` | Page width | 850 |
-| `pageHeight` | Page height | 1100 |
-| `math` | Enable math rendering | 0 |
-| `shadow` | Enable shadows | 0 |
-| `defaultFontFamily` | Default font | Noto Sans JP |
+| Attribute           | Description               | Recommended Value |
+| ------------------- | ------------------------- | ----------------- |
+| `dx`                | Canvas width              | 1200              |
+| `dy`                | Canvas height             | 800               |
+| `grid`              | Show grid                 | 1                 |
+| `gridSize`          | Grid cell size            | 10                |
+| `guides`            | Show guides               | 1                 |
+| `tooltips`          | Enable tooltips           | 1                 |
+| `connect`           | Enable connections        | 1                 |
+| `arrows`            | Enable arrows             | 1                 |
+| `fold`              | Enable folding            | 1                 |
+| `page`              | Page mode (0=transparent) | 0                 |
+| `pageScale`         | Page scale                | 1                 |
+| `pageWidth`         | Page width                | 850               |
+| `pageHeight`        | Page height               | 1100              |
+| `math`              | Enable math rendering     | 0                 |
+| `shadow`            | Enable shadows            | 0                 |
+| `defaultFontFamily` | Default font              | Noto Sans JP      |
 
 ## Element Types
 
@@ -119,56 +119,56 @@ These two cells are ALWAYS required as the root of the diagram.
 
 ### Shape Styles
 
-| Property | Values | Description |
-|----------|--------|-------------|
-| `rounded` | 0, 1 | Rounded corners |
-| `whiteSpace` | wrap, nowrap | Text wrapping |
-| `html` | 0, 1 | HTML text support |
-| `fillColor` | #RRGGBB, none | Background color |
-| `strokeColor` | #RRGGBB, none | Border color |
-| `strokeWidth` | number | Border width |
-| `dashed` | 0, 1 | Dashed border |
-| `opacity` | 0-100 | Transparency |
-| `shadow` | 0, 1 | Drop shadow |
+| Property      | Values        | Description       |
+| ------------- | ------------- | ----------------- |
+| `rounded`     | 0, 1          | Rounded corners   |
+| `whiteSpace`  | wrap, nowrap  | Text wrapping     |
+| `html`        | 0, 1          | HTML text support |
+| `fillColor`   | #RRGGBB, none | Background color  |
+| `strokeColor` | #RRGGBB, none | Border color      |
+| `strokeWidth` | number        | Border width      |
+| `dashed`      | 0, 1          | Dashed border     |
+| `opacity`     | 0-100         | Transparency      |
+| `shadow`      | 0, 1          | Drop shadow       |
 
 ### Text Styles
 
-| Property | Values | Description |
-|----------|--------|-------------|
-| `fontFamily` | font name | Font family (REQUIRED) |
-| `fontSize` | number | Font size in px |
-| `fontColor` | #RRGGBB | Text color |
-| `fontStyle` | 0, 1, 2, 4 | 0=normal, 1=bold, 2=italic, 4=underline |
-| `align` | left, center, right | Horizontal alignment |
-| `verticalAlign` | top, middle, bottom | Vertical alignment |
-| `labelPosition` | left, center, right | Label horizontal position |
-| `verticalLabelPosition` | top, middle, bottom | Label vertical position |
+| Property                | Values              | Description                             |
+| ----------------------- | ------------------- | --------------------------------------- |
+| `fontFamily`            | font name           | Font family (REQUIRED)                  |
+| `fontSize`              | number              | Font size in px                         |
+| `fontColor`             | #RRGGBB             | Text color                              |
+| `fontStyle`             | 0, 1, 2, 4          | 0=normal, 1=bold, 2=italic, 4=underline |
+| `align`                 | left, center, right | Horizontal alignment                    |
+| `verticalAlign`         | top, middle, bottom | Vertical alignment                      |
+| `labelPosition`         | left, center, right | Label horizontal position               |
+| `verticalLabelPosition` | top, middle, bottom | Label vertical position                 |
 
 ### Edge Styles
 
-| Property | Values | Description |
-|----------|--------|-------------|
-| `edgeStyle` | orthogonalEdgeStyle, entityRelationEdgeStyle, elbowEdgeStyle, none | Edge routing |
-| `curved` | 0, 1 | Curved lines |
-| `orthogonalLoop` | 0, 1 | Orthogonal loops |
-| `jettySize` | auto, number | Connector size |
-| `startArrow` | none, classic, block, diamond, oval | Start arrow style |
-| `endArrow` | none, classic, block, diamond, oval | End arrow style |
-| `startFill` | 0, 1 | Fill start arrow |
-| `endFill` | 0, 1 | Fill end arrow |
+| Property         | Values                                                             | Description       |
+| ---------------- | ------------------------------------------------------------------ | ----------------- |
+| `edgeStyle`      | orthogonalEdgeStyle, entityRelationEdgeStyle, elbowEdgeStyle, none | Edge routing      |
+| `curved`         | 0, 1                                                               | Curved lines      |
+| `orthogonalLoop` | 0, 1                                                               | Orthogonal loops  |
+| `jettySize`      | auto, number                                                       | Connector size    |
+| `startArrow`     | none, classic, block, diamond, oval                                | Start arrow style |
+| `endArrow`       | none, classic, block, diamond, oval                                | End arrow style   |
+| `startFill`      | 0, 1                                                               | Fill start arrow  |
+| `endFill`        | 0, 1                                                               | Fill end arrow    |
 
 ### Connection Points
 
-| Property | Values | Description |
-|----------|--------|-------------|
-| `exitX` | 0-1 | Exit point X (0=left, 1=right) |
-| `exitY` | 0-1 | Exit point Y (0=top, 1=bottom) |
-| `entryX` | 0-1 | Entry point X |
-| `entryY` | 0-1 | Entry point Y |
-| `exitDx` | number | Exit X offset |
-| `exitDy` | number | Exit Y offset |
-| `entryDx` | number | Entry X offset |
-| `entryDy` | number | Entry Y offset |
+| Property  | Values | Description                    |
+| --------- | ------ | ------------------------------ |
+| `exitX`   | 0-1    | Exit point X (0=left, 1=right) |
+| `exitY`   | 0-1    | Exit point Y (0=top, 1=bottom) |
+| `entryX`  | 0-1    | Entry point X                  |
+| `entryY`  | 0-1    | Entry point Y                  |
+| `exitDx`  | number | Exit X offset                  |
+| `exitDy`  | number | Exit Y offset                  |
+| `entryDx` | number | Entry X offset                 |
+| `entryDy` | number | Entry Y offset                 |
 
 ## Predefined Shapes
 
@@ -220,11 +220,11 @@ style="shape=parallelogram;whiteSpace=wrap;html=1;"
 
 ### System Fonts
 
-| Font Name | Platform |
-|-----------|----------|
-| `Arial` | Cross-platform |
-| `Helvetica` | macOS |
-| `Segoe UI` | Windows |
+| Font Name   | Platform       |
+| ----------- | -------------- |
+| `Arial`     | Cross-platform |
+| `Helvetica` | macOS          |
+| `Segoe UI`  | Windows        |
 
 ## Coordinate System
 
@@ -246,6 +246,7 @@ style="shape=parallelogram;whiteSpace=wrap;html=1;"
 ## Z-Order (Layering)
 
 Elements are drawn in XML order:
+
 1. First element = bottom layer (background)
 2. Last element = top layer (foreground)
 
@@ -253,27 +254,27 @@ Elements are drawn in XML order:
 
 ## mxGeometry Attributes
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `x` | number | X position |
-| `y` | number | Y position |
-| `width` | number | Element width |
-| `height` | number | Element height |
-| `relative` | 0, 1 | Use relative positioning |
-| `as` | "geometry" | Required identifier |
+| Attribute  | Type       | Description              |
+| ---------- | ---------- | ------------------------ |
+| `x`        | number     | X position               |
+| `y`        | number     | Y position               |
+| `width`    | number     | Element width            |
+| `height`   | number     | Element height           |
+| `relative` | 0, 1       | Use relative positioning |
+| `as`       | "geometry" | Required identifier      |
 
 ## Special Characters in Values
 
 Use HTML entities for special characters:
 
-| Character | Entity |
-|-----------|--------|
-| `<` | `&lt;` |
-| `>` | `&gt;` |
-| `&` | `&amp;` |
-| `"` | `&quot;` |
-| `'` | `&apos;` |
-| newline | `&#xa;` or `<br>` (with html=1) |
+| Character | Entity                          |
+| --------- | ------------------------------- |
+| `<`       | `&lt;`                          |
+| `>`       | `&gt;`                          |
+| `&`       | `&amp;`                         |
+| `"`       | `&quot;`                        |
+| `'`       | `&apos;`                        |
+| newline   | `&#xa;` or `<br>` (with html=1) |
 
 ## Common Color Palettes
 

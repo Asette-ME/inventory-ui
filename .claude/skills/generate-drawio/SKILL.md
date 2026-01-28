@@ -66,7 +66,6 @@ Labels must be at least 20px away from arrow lines:
 </mxCell>
 ```
 
-
 ## Workflow
 
 1. Understand the diagram requirements

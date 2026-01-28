@@ -119,6 +119,7 @@ FUNCTION findShapeNear(elements, x, y, tolerance=15):
 **Cause**: Arrow `x,y` not calculated from shape edge.
 
 **Fix**:
+
 ```
 Rectangle bottom: arrow_x = shape.x + shape.width/2
                   arrow_y = shape.y + shape.height
@@ -129,6 +130,7 @@ Rectangle bottom: arrow_x = shape.x + shape.width/2
 **Cause**: Final point offset calculated incorrectly.
 
 **Fix**:
+
 ```
 target_edge = (target.x + target.width/2, target.y)
 offset_x = target_edge.x - arrow.x
@@ -141,6 +143,7 @@ Final point = [offset_x, offset_y]
 **Cause**: All arrows start from identical `x,y`.
 
 **Fix**: Stagger start positions:
+
 ```
 For 5 arrows from bottom edge:
   arrow1.x = shape.x + shape.width * 0.2
@@ -155,6 +158,7 @@ For 5 arrows from bottom edge:
 **Cause**: U-turn path lacks clearance.
 
 **Fix**: Use 4-point path:
+
 ```
 Points = [[0, 0], [clearance, 0], [clearance, -vert], [final_x, -vert]]
 clearance = 40-60px
@@ -165,6 +169,7 @@ clearance = 40-60px
 **Cause**: Using `label` property instead of separate text element.
 
 **Fix**: Create TWO elements:
+
 1. Shape with `boundElements` referencing text
 2. Text with `containerId` referencing shape
 
@@ -173,6 +178,7 @@ clearance = 40-60px
 **Cause**: Missing elbow properties.
 
 **Fix**: Add all three:
+
 ```json
 {
   "roughness": 0,

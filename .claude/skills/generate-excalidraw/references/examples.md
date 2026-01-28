@@ -229,7 +229,10 @@ This is a REFERENCE showing JSON structure. Replace IDs, labels, positions, and 
       "updated": 1,
       "link": null,
       "locked": false,
-      "points": [[0, 0], [0, 60]],
+      "points": [
+        [0, 0],
+        [0, 60]
+      ],
       "lastCommittedPoint": null,
       "startBinding": null,
       "endBinding": null,
@@ -263,7 +266,10 @@ This is a REFERENCE showing JSON structure. Replace IDs, labels, positions, and 
       "updated": 1,
       "link": null,
       "locked": false,
-      "points": [[0, 0], [0, 60]],
+      "points": [
+        [0, 0],
+        [0, 60]
+      ],
       "lastCommittedPoint": null,
       "startBinding": null,
       "endBinding": null,
@@ -364,18 +370,20 @@ Columns (x):
 
 ## Diagram Complexity Guidelines
 
-| Complexity | Max Elements | Max Arrows | Approach |
-|------------|-------------|------------|----------|
-| Simple | 5-10 | 5-10 | Single file, no groups |
-| Medium | 10-25 | 15-30 | Use grouping rectangles |
-| Complex | 25-50 | 30-60 | Split into multiple diagrams |
-| Very Complex | 50+ | 60+ | Multiple focused diagrams |
+| Complexity   | Max Elements | Max Arrows | Approach                     |
+| ------------ | ------------ | ---------- | ---------------------------- |
+| Simple       | 5-10         | 5-10       | Single file, no groups       |
+| Medium       | 10-25        | 15-30      | Use grouping rectangles      |
+| Complex      | 25-50        | 30-60      | Split into multiple diagrams |
+| Very Complex | 50+          | 60+        | Multiple focused diagrams    |
 
 **When to split:**
+
 - More than 50 elements
 - Create: `architecture-overview.excalidraw`, `architecture-data-layer.excalidraw`
 
 **When to use groups:**
+
 - 3+ related services
 - Same deployment unit
 - Logical boundaries (VPC, Security Zone)

@@ -148,6 +148,7 @@ Your expertise includes:
     - Multi-stage build optimization for CI
 
 When working with Docker:
+
 - Prioritize security and minimal attack surface
 - Optimize for build speed and image size
 - Use multi-stage builds for production images

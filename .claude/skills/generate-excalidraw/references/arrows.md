@@ -11,9 +11,9 @@ Three required properties for 90-degree corners:
 ```json
 {
   "type": "arrow",
-  "roughness": 0,        // Clean lines
-  "roundness": null,     // Sharp corners (not curved)
-  "elbowed": true        // Enables elbow mode
+  "roughness": 0, // Clean lines
+  "roundness": null, // Sharp corners (not curved)
+  "elbowed": true // Enables elbow mode
 }
 ```
 
@@ -23,14 +23,14 @@ Three required properties for 90-degree corners:
 
 ## Edge Calculation Formulas
 
-| Shape Type | Edge | Formula |
-|------------|------|---------|
-| Rectangle | Top | `(x + width/2, y)` |
-| Rectangle | Bottom | `(x + width/2, y + height)` |
-| Rectangle | Left | `(x, y + height/2)` |
-| Rectangle | Right | `(x + width, y + height/2)` |
-| Ellipse | Top | `(x + width/2, y)` |
-| Ellipse | Bottom | `(x + width/2, y + height)` |
+| Shape Type | Edge   | Formula                     |
+| ---------- | ------ | --------------------------- |
+| Rectangle  | Top    | `(x + width/2, y)`          |
+| Rectangle  | Bottom | `(x + width/2, y + height)` |
+| Rectangle  | Left   | `(x, y + height/2)`         |
+| Rectangle  | Right  | `(x + width, y + height/2)` |
+| Ellipse    | Top    | `(x + width/2, y)`          |
+| Ellipse    | Bottom | `(x + width/2, y + height)` |
 
 ---
 
@@ -86,16 +86,16 @@ FUNCTION getEdgePoint(shape, edge):
 
 ## Arrow Patterns Reference
 
-| Pattern | Points | Use Case |
-|---------|--------|----------|
-| Down | `[[0,0], [0,h]]` | Vertical connection |
-| Right | `[[0,0], [w,0]]` | Horizontal connection |
-| L-left-down | `[[0,0], [-w,0], [-w,h]]` | Go left, then down |
-| L-right-down | `[[0,0], [w,0], [w,h]]` | Go right, then down |
-| L-down-left | `[[0,0], [0,h], [-w,h]]` | Go down, then left |
-| L-down-right | `[[0,0], [0,h], [w,h]]` | Go down, then right |
-| S-shape | `[[0,0], [0,h1], [w,h1], [w,h2]]` | Navigate around obstacles |
-| U-turn | `[[0,0], [w,0], [w,-h], [0,-h]]` | Callback/return arrows |
+| Pattern      | Points                            | Use Case                  |
+| ------------ | --------------------------------- | ------------------------- |
+| Down         | `[[0,0], [0,h]]`                  | Vertical connection       |
+| Right        | `[[0,0], [w,0]]`                  | Horizontal connection     |
+| L-left-down  | `[[0,0], [-w,0], [-w,h]]`         | Go left, then down        |
+| L-right-down | `[[0,0], [w,0], [w,h]]`           | Go right, then down       |
+| L-down-left  | `[[0,0], [0,h], [-w,h]]`          | Go down, then left        |
+| L-down-right | `[[0,0], [0,h], [w,h]]`           | Go down, then right       |
+| S-shape      | `[[0,0], [0,h1], [w,h1], [w,h2]]` | Navigate around obstacles |
+| U-turn       | `[[0,0], [w,0], [w,-h], [0,-h]]`  | Callback/return arrows    |
 
 ---
 
@@ -191,7 +191,11 @@ For better visual attachment, use `startBinding` and `endBinding`:
   "y": 420,
   "width": 325,
   "height": 125,
-  "points": [[0, 0], [-325, 0], [-325, 125]],
+  "points": [
+    [0, 0],
+    [-325, 0],
+    [-325, 125]
+  ],
   "roughness": 0,
   "roundness": null,
   "elbowed": true,
@@ -257,8 +261,8 @@ Position standalone text near arrow midpoint:
 {
   "id": "arrow-api-db-label",
   "type": "text",
-  "x": 305,                        // Arrow x + offset
-  "y": 245,                        // Arrow midpoint
+  "x": 305, // Arrow x + offset
+  "y": 245, // Arrow midpoint
   "text": "SQL",
   "fontSize": 12,
   "containerId": null,
@@ -267,6 +271,7 @@ Position standalone text near arrow midpoint:
 ```
 
 **Positioning formula:**
+
 - Vertical: `label.y = arrow.y + (total_height / 2)`
 - Horizontal: `label.x = arrow.x + (total_width / 2)`
 - L-shaped: Position at corner or longest segment midpoint

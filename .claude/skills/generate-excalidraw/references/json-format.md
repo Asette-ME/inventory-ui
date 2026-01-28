@@ -24,19 +24,20 @@ Complete reference for Excalidraw JSON structure and element types.
 
 ## Element Types
 
-| Type | Use For | Arrow Reliability |
-|------|---------|-------------------|
-| `rectangle` | Services, components, databases, containers, orchestrators, decision points | Excellent |
-| `ellipse` | Users, external systems, start/end points | Good |
-| `text` | Labels inside shapes, titles, annotations | N/A |
-| `arrow` | Data flow, connections, dependencies | N/A |
-| `line` | Grouping boundaries, separators | N/A |
+| Type        | Use For                                                                     | Arrow Reliability |
+| ----------- | --------------------------------------------------------------------------- | ----------------- |
+| `rectangle` | Services, components, databases, containers, orchestrators, decision points | Excellent         |
+| `ellipse`   | Users, external systems, start/end points                                   | Good              |
+| `text`      | Labels inside shapes, titles, annotations                                   | N/A               |
+| `arrow`     | Data flow, connections, dependencies                                        | N/A               |
+| `line`      | Grouping boundaries, separators                                             | N/A               |
 
 ### BANNED: Diamond Shapes
 
 **NEVER use `type: "diamond"` in generated diagrams.**
 
 Diamond arrow connections are fundamentally broken in raw Excalidraw JSON:
+
 - Excalidraw applies `roundness` to diamond vertices during rendering
 - Visual edges appear offset from mathematical edge points
 - No offset formula reliably compensates
@@ -44,11 +45,11 @@ Diamond arrow connections are fundamentally broken in raw Excalidraw JSON:
 
 **Use styled rectangles instead** for visual distinction:
 
-| Semantic Meaning | Rectangle Style |
-|------------------|-----------------|
+| Semantic Meaning | Rectangle Style                              |
+| ---------------- | -------------------------------------------- |
 | Orchestrator/Hub | Coral (`#ffa8a8`/`#c92a2a`) + strokeWidth: 3 |
-| Decision Point | Orange (`#ffd8a8`/`#e8590c`) + dashed stroke |
-| Central Router | Larger size + bold color |
+| Decision Point   | Orange (`#ffd8a8`/`#e8590c`) + dashed stroke |
+| Central Router   | Larger size + bold color                     |
 
 ---
 
@@ -104,7 +105,7 @@ Every element MUST have these properties:
   "height": 90,
   "strokeColor": "#1971c2",
   "backgroundColor": "#a5d8ff",
-  "boundElements": [{ "type": "text", "id": "{component-id}-text" }],
+  "boundElements": [{ "type": "text", "id": "{component-id}-text" }]
   // ... other required properties
 }
 ```
@@ -115,9 +116,9 @@ Every element MUST have these properties:
 {
   "id": "{component-id}-text",
   "type": "text",
-  "x": 505,                          // shape.x + 5
-  "y": 220,                          // shape.y + (shape.height - text.height) / 2
-  "width": 190,                      // shape.width - 10
+  "x": 505, // shape.x + 5
+  "y": 220, // shape.y + (shape.height - text.height) / 2
+  "width": 190, // shape.width - 10
   "height": 50,
   "text": "{Component Name}\n{Subtitle}",
   "fontSize": 16,
@@ -126,7 +127,7 @@ Every element MUST have these properties:
   "verticalAlign": "middle",
   "containerId": "{component-id}",
   "originalText": "{Component Name}\n{Subtitle}",
-  "lineHeight": 1.25,
+  "lineHeight": 1.25
   // ... other required properties
 }
 ```
@@ -162,14 +163,14 @@ Always use pattern: `{shape-id}-text` for text element IDs.
 
 IDs and labels are generated from codebase analysis:
 
-| Discovered Component | Generated ID | Generated Label |
-|---------------------|--------------|-----------------|
-| Express API server | `express-api` | `"API Server\nExpress.js"` |
-| PostgreSQL database | `postgres-db` | `"PostgreSQL\nDatabase"` |
-| Redis cache | `redis-cache` | `"Redis\nCache Layer"` |
-| S3 bucket for uploads | `s3-uploads` | `"S3 Bucket\nuploads/"` |
-| Lambda function | `lambda-processor` | `"Lambda\nProcessor"` |
-| React frontend | `react-frontend` | `"React App\nFrontend"` |
+| Discovered Component  | Generated ID       | Generated Label            |
+| --------------------- | ------------------ | -------------------------- |
+| Express API server    | `express-api`      | `"API Server\nExpress.js"` |
+| PostgreSQL database   | `postgres-db`      | `"PostgreSQL\nDatabase"`   |
+| Redis cache           | `redis-cache`      | `"Redis\nCache Layer"`     |
+| S3 bucket for uploads | `s3-uploads`       | `"S3 Bucket\nuploads/"`    |
+| Lambda function       | `lambda-processor` | `"Lambda\nProcessor"`      |
+| React frontend        | `react-frontend`   | `"React App\nFrontend"`    |
 
 ---
 

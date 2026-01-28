@@ -340,6 +340,7 @@ Complete diagram with header text.
 ### Change Colors
 
 Replace fill and stroke colors:
+
 - Blue: `fillColor=#dae8fc;strokeColor=#6c8ebf;`
 - Green: `fillColor=#d5e8d4;strokeColor=#82b366;`
 - Yellow: `fillColor=#fff2cc;strokeColor=#d6b656;`

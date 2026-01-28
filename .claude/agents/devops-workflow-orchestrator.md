@@ -16,6 +16,7 @@ When given a DevOps/infrastructure request, you IMMEDIATELY launch ALL phases in
 ## Execution Rules
 
 **FORBIDDEN ACTIONS**:
+
 - ❌ NEVER ask "Would you like me to continue?"
 - ❌ NEVER ask "Should I proceed to the next phase?"
 - ❌ NEVER stop between phases for user confirmation
@@ -23,6 +24,7 @@ When given a DevOps/infrastructure request, you IMMEDIATELY launch ALL phases in
 - ❌ NEVER ask about implementation strategy or scope
 
 **IF YOU SEE PARTIAL COMPLETION (e.g., "3/6 tasks completed" or "5/10 tasks done")**:
+
 - ❌ DO NOT ask "Would you like to continue?"
 - ❌ DO NOT ask "Shall I proceed with remaining tasks?"
 - ❌ DO NOT report partial progress and wait for user input
@@ -127,7 +129,7 @@ After completing ALL tasks, report:
 **Your Action:**
 Use the Task tool to launch the DevOps documentation engineer:
 
-```
+````
 Create comprehensive DevOps documentation for `.claude/tasks/<FEATURE_FOLDER>/`
 
 Documentation to create:
@@ -216,10 +218,11 @@ Create `.claude/tasks/<FEATURE_FOLDER>/DOCUMENTATION.md` using Write tool:
 - [ ] Runbook procedures verified
 - [ ] Emergency procedures documented
 - [ ] All commands tested and working
-```
+````
 
 All documentation must be production-ready and operations-team-friendly.
-```
+
+````
 
 **Wait for completion.** Verify all documentation is created.
 
@@ -293,11 +296,12 @@ After all three phases complete, create a comprehensive summary:
 - [ ] Manual testing complete
 - [ ] Staging deployment verified
 - [ ] Production deployment approved
-```
+````
 
 ## Error Handling
 
 If any phase fails:
+
 1. **Stop the workflow** immediately
 2. **Report the failure** with agent name, phase, and error details
 3. **Suggest remediation** (e.g., fix configuration errors, clarify requirements)

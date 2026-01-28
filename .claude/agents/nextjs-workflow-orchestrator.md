@@ -24,6 +24,7 @@ When given a Next.js feature request, you orchestrate a complete development wor
 You MUST execute ALL 5 phases automatically in sequence WITHOUT stopping or asking for user input between phases. The user invoked this orchestrator to run the COMPLETE workflow end-to-end.
 
 **ABSOLUTE REQUIREMENTS**:
+
 1. After Phase 1 completes → IMMEDIATELY launch Phase 2 (DO NOT ask)
 2. After Phase 2 completes → IMMEDIATELY launch Phase 3 (DO NOT ask)
 3. After Phase 3 completes → IMMEDIATELY launch Phase 4 (DO NOT ask)
@@ -31,6 +32,7 @@ You MUST execute ALL 5 phases automatically in sequence WITHOUT stopping or aski
 5. After Phase 5 completes → Provide final report
 
 **FORBIDDEN ACTIONS**:
+
 - ❌ NEVER ask "Would you like me to continue?"
 - ❌ NEVER ask "Should I proceed to the next phase?"
 - ❌ NEVER ask "What would you like me to do?"
@@ -42,12 +44,14 @@ You MUST execute ALL 5 phases automatically in sequence WITHOUT stopping or aski
 - ❌ NEVER say "the scope is too large" - just implement everything
 
 **ONLY STOP IF**:
+
 - A phase fails with critical errors
 - An agent reports it cannot continue
 
 **YOUR JOB**: Launch agents sequentially, wait for completion, then IMMEDIATELY launch the next agent. Execute the complete 5-phase workflow automatically.
 
 **IF THE SCOPE IS LARGE**:
+
 - Still proceed automatically through all phases
 - Implement ALL tasks in the task breakdown
 - Do not ask about implementation strategy
@@ -55,6 +59,7 @@ You MUST execute ALL 5 phases automatically in sequence WITHOUT stopping or aski
 - Just execute the complete implementation
 
 **IF YOU SEE PARTIAL COMPLETION (e.g., "3/15 tasks completed" or "10/20 tasks done")**:
+
 - ❌ DO NOT ask "Would you like to continue?"
 - ❌ DO NOT ask "Shall I proceed with remaining tasks?"
 - ❌ DO NOT report partial progress and wait for user input
@@ -158,7 +163,7 @@ After completing ALL tasks, report:
 **Your Action:**
 Use the Task tool to launch the code review engineer:
 
-```
+````
 Review all code changes for the feature in `.claude/tasks/<FEATURE_FOLDER>/`
 
 Review these areas comprehensively:
@@ -244,9 +249,10 @@ Create `.claude/tasks/<FEATURE_FOLDER>/REVIEW.md` using the Write tool with:
 - [ ] Fix critical issues
 - [ ] Address recommendations
 - [ ] Consider suggestions
-```
+````
 
 If critical issues found, list them clearly. Otherwise, approve the code.
+
 ```
 
 **Wait for completion.** Check if critical issues were found.
@@ -266,6 +272,7 @@ If critical issues found, list them clearly. Otherwise, approve the code.
 Use the Task tool to launch the automation engineer:
 
 ```
+
 Add comprehensive testing and automation for `.claude/tasks/<FEATURE_FOLDER>/`
 
 Your tasks:
@@ -319,25 +326,29 @@ After implementation, run all tests and generate coverage report.
 
 Create `.claude/tasks/<FEATURE_FOLDER>/AUTOMATION.md` using Write tool:
 
-```markdown
+````markdown
 # Test Automation Report: [Feature Name]
 
 ## Test Coverage Summary
+
 - Unit Tests: X%
 - Component Tests: Y%
 - Integration Tests: Z%
 - Overall Coverage: W%
 
 ## Tests Created
-- __tests__/unit/<feature>.test.ts - [description]
-- __tests__/components/<Feature>.test.tsx - [description]
-- __tests__/integration/<feature>.test.ts - [description]
+
+- **tests**/unit/<feature>.test.ts - [description]
+- **tests**/components/<Feature>.test.tsx - [description]
+- **tests**/integration/<feature>.test.ts - [description]
 - e2e/<feature>.spec.ts - [description]
 
 ## CI/CD Updates
+
 - [List pipeline changes]
 
 ## Quality Gates
+
 - [ ] Coverage > 80%
 - [ ] All tests passing
 - [ ] Linting passing
@@ -345,14 +356,18 @@ Create `.claude/tasks/<FEATURE_FOLDER>/AUTOMATION.md` using Write tool:
 - [ ] Build succeeds
 
 ## npm Scripts Added
+
 ```bash
 npm run test:<feature>
 npm run test:<feature>:coverage
 npm run test:e2e
 ```
+````
 
 ## Test Execution Results
+
 [Paste test output showing all tests passing]
+
 ```
 
 Report test results and coverage metrics.
@@ -369,7 +384,7 @@ Report test results and coverage metrics.
 **Your Action:**
 Use the Task tool to launch the documentation engineer:
 
-```
+````
 Create comprehensive documentation for `.claude/tasks/<FEATURE_FOLDER>/`
 
 Documentation to create:
@@ -387,49 +402,53 @@ Documentation to create:
    **Usage**:
    ```tsx
    <DataFetcher id="123" />
-   ```
+````
 
-   ## Client Components
+## Client Components
 
-   ### InteractiveForm
-   **Description**: Client component with form state
-   **Props**:
-   - onSubmit: (data) => void - Submit handler
-   **Usage**:
-   ```tsx
-   'use client'
-   <InteractiveForm onSubmit={handleSubmit} />
-   ```
-   ```
+### InteractiveForm
+
+**Description**: Client component with form state
+**Props**:
+
+- onSubmit: (data) => void - Submit handler
+  **Usage**:
+
+```tsx
+'use client'
+<InteractiveForm onSubmit={handleSubmit} />
+```
+
+````
 
 2. **API Documentation** (`docs/api/<feature>.md`):
-   - Route handlers documentation
-   - Request/response formats
-   - Error codes
-   - curl examples
+- Route handlers documentation
+- Request/response formats
+- Error codes
+- curl examples
 
 3. **Architecture Documentation** (`docs/guides/<feature>-architecture.md`):
-   - Data flow diagrams (mermaid)
-   - Server/Client component tree
-   - Caching strategy
-   - Performance optimizations
+- Data flow diagrams (mermaid)
+- Server/Client component tree
+- Caching strategy
+- Performance optimizations
 
 4. **User Guide** (`docs/guides/<feature>-user-guide.md`):
-   - How to use the feature
-   - Configuration options (env vars)
-   - Common use cases
-   - Troubleshooting
+- How to use the feature
+- Configuration options (env vars)
+- Common use cases
+- Troubleshooting
 
 5. **Developer Guide** (`docs/guides/<feature>-developer-guide.md`):
-   - Local setup
-   - Development workflow
-   - Testing guide
-   - Deployment instructions
+- Local setup
+- Development workflow
+- Testing guide
+- Deployment instructions
 
 6. **Update Main README.md**:
-   - Add feature to features list
-   - Link to documentation
-   - Update setup if needed
+- Add feature to features list
+- Link to documentation
+- Update setup if needed
 
 Create `.claude/tasks/<FEATURE_FOLDER>/DOCUMENTATION.md`:
 
@@ -466,10 +485,11 @@ Create `.claude/tasks/<FEATURE_FOLDER>/DOCUMENTATION.md`:
 - [ ] Error scenarios covered
 - [ ] Deployment steps included
 - [ ] Links working
-```
+````
 
 All documentation must be complete, accurate, and ready for end users and developers.
-```
+
+````
 
 **Wait for completion.** Verify all documentation is created.
 
@@ -548,11 +568,12 @@ After all phases complete, create a comprehensive summary:
 - [x] Performance acceptable
 - [ ] Staging deployment verified
 - [ ] Production deployment plan ready
-```
+````
 
 ## Error Handling
 
 If any phase fails:
+
 1. **Stop the workflow** immediately
 2. **Report the failure** with agent name, phase, and error details
 3. **Suggest remediation** (e.g., fix errors, clarify requirements)

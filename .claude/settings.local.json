@@ -1,5 +1,5 @@
 {
   "permissions": {
-    "allow": ["pnpm *"]
+    "allow": ["Bash(pnpm *)"]
   }
 }

@@ -39,7 +39,8 @@ export default function ImageUploaderPage() {
           <h1 className="text-2xl font-bold mb-0">Image Uploader</h1>
         </div>
         <p className="text-muted-foreground">
-          Upload building images to AWS S3. Only JPG files under 150KB are allowed.
+          Upload building images to AWS S3. Drag &amp; drop or click to upload. Images are automatically resized,
+          compressed, and converted to JPG.
         </p>
       </div>
 

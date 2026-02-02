@@ -5,7 +5,8 @@ import { HeadObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 
 import { cloudFrontClient, getImageUrl, S3_CONFIG, s3Client } from '@/lib/s3-client';
 
-const MAX_FILE_SIZE = 150 * 1024; // 150KB
+// Max file size after processing (generous limit - processing keeps files small)
+const MAX_PROCESSED_FILE_SIZE = 500 * 1024; // 500KB
 const ALLOWED_MIME_TYPE = 'image/jpeg';
 
 interface UploadResult {
@@ -38,6 +39,10 @@ async function invalidateCloudFrontCache(path: string): Promise<void> {
   await cloudFrontClient.send(command);
 }
 
+/**
+ * Upload a processed image to S3
+ * Expects the image to already be processed (resized, compressed, converted to JPG)
+ */
 export async function uploadImageAction(uuid: string, formData: FormData): Promise<UploadResult> {
   const file = formData.get('file') as File | null;
 
@@ -45,13 +50,13 @@ export async function uploadImageAction(uuid: string, formData: FormData): Promi
     return { success: false, error: 'No file provided' };
   }
 
-  // Server-side validation
+  // Server-side validation (processed images should always be JPEG)
   if (file.type !== ALLOWED_MIME_TYPE) {
-    return { success: false, error: 'Only JPG files are allowed' };
+    return { success: false, error: 'Only processed JPG files are allowed' };
   }
 
-  if (file.size > MAX_FILE_SIZE) {
-    return { success: false, error: 'File size must be under 150KB' };
+  if (file.size > MAX_PROCESSED_FILE_SIZE) {
+    return { success: false, error: 'Processed file size exceeds limit' };
   }
 
   try {
@@ -87,4 +92,22 @@ export async function uploadImageAction(uuid: string, formData: FormData): Promi
     console.error('S3 upload error:', error);
     return { success: false, error: 'Failed to upload image to S3' };
   }
+}
+
+/**
+ * Batch upload multiple images to S3
+ * Returns results for each upload attempt
+ */
+export async function uploadImagesAction(
+  uploads: Array<{ uuid: string; formData: FormData }>,
+): Promise<Array<{ uuid: string; result: UploadResult }>> {
+  const results: Array<{ uuid: string; result: UploadResult }> = [];
+
+  // Process uploads sequentially to avoid overwhelming S3
+  for (const upload of uploads) {
+    const result = await uploadImageAction(upload.uuid, upload.formData);
+    results.push({ uuid: upload.uuid, result });
+  }
+
+  return results;
 }

@@ -2,6 +2,8 @@ import { ImageUp } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { BuildingGrid } from '@/app/image-uploader/components/building-grid';
+import { BulkUploadButton } from '@/app/image-uploader/components/bulk-upload-button';
+import { BulkUploadProvider } from '@/app/image-uploader/components/bulk-upload-context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchBuildingsAction } from '@/lib/actions/buildings';
 
@@ -32,20 +34,28 @@ async function BuildingGridLoader() {
 
 export default function ImageUploaderPage() {
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <div>
-        <div className="flex items-center gap-2">
-          <ImageUp className="text-primary" />
-          <h1 className="text-2xl font-bold mb-0">Image Uploader</h1>
+    <BulkUploadProvider>
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <ImageUp className="text-primary" />
+              <h1 className="text-2xl font-bold">Image Uploader</h1>
+            </div>
+            <p className="text-muted-foreground">
+              Upload building images to AWS S3. Drag & drop or click to upload. Images are automatically resized,
+              compressed, and converted to JPG.
+            </p>
+          </div>
+          <BulkUploadButton />
         </div>
-        <p className="text-muted-foreground">
-          Upload building images to AWS S3. Only JPG files under 150KB are allowed.
-        </p>
-      </div>
 
-      <Suspense fallback={<GridSkeleton />}>
-        <BuildingGridLoader />
-      </Suspense>
-    </div>
+        {/* Grid */}
+        <Suspense fallback={<GridSkeleton />}>
+          <BuildingGridLoader />
+        </Suspense>
+      </div>
+    </BulkUploadProvider>
   );
 }

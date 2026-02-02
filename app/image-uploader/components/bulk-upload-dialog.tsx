@@ -1,6 +1,17 @@
 'use client';
 
-import { AlertCircle, Building as BuildingIcon, Check, ChevronDown, Images, Loader2, Upload, X } from 'lucide-react';
+import {
+  AlertCircle,
+  AlertTriangle,
+  Building as BuildingIcon,
+  Check,
+  ChevronDown,
+  Images,
+  Loader2,
+  Plus,
+  Upload,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -239,6 +250,11 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
     e.target.value = '';
   };
 
+  // Click handler for dropzone
+  const handleDropzoneClick = () => {
+    fileInputRef.current?.click();
+  };
+
   // Drag and drop handlers for the dialog
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -281,13 +297,13 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="!max-w-screen h-screen rounded-none"
+        className="!max-w-screen h-screen rounded-none flex flex-col px-3 sm:px-6"
         onDragOver={handleDragOver}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <DialogHeader>
+        <DialogHeader className="shrink-0">
           <DialogTitle className="flex items-center gap-2">
             <Images className="h-5 w-5" />
             Bulk Upload Images
@@ -295,14 +311,18 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
         </DialogHeader>
 
         {/* Drop Zone or Items List */}
-        <div className="flex-1 overflow-hidden">
-          <ScrollArea className="h-full">
-            {items.length === 0 ? (
+        <div className="flex-1 min-h-0 overflow-hidden">
+          {items.length === 0 ? (
+            /* Clickable Dropzone - Full Height */
+            <div className="h-full p-4">
               <div
+                onClick={handleDropzoneClick}
                 className={cn(
-                  'h-full flex flex-col items-center justify-center gap-4 m-1 p-8 border-2 border-dashed rounded-lg',
-                  'transition-all duration-200',
-                  isDragOver ? 'border-primary bg-primary/5 scale-[1.01]' : 'border-muted-foreground/25',
+                  'h-full flex flex-col items-center justify-center gap-4 p-8 border-2 border-dashed rounded-lg',
+                  'transition-all duration-200 cursor-pointer',
+                  isDragOver
+                    ? 'border-primary bg-primary/5 scale-[1.005]'
+                    : 'border-muted-foreground/25 hover:border-primary/50 hover:bg-primary/1',
                 )}
               >
                 <div
@@ -321,90 +341,115 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
                     Supports JPG, PNG, GIF, WebP, BMP, TIFF - any size
                   </p>
                 </div>
-                <Button onClick={() => fileInputRef.current?.click()} disabled={isDragOver}>
-                  <Images className="h-4 w-4 mr-2" />
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fileInputRef.current?.click();
+                  }}
+                  disabled={isDragOver}
+                >
+                  <Images className="h-4 w-4" />
                   Select Images
                 </Button>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {/* Summary bar */}
-                <div className="flex items-center gap-4 p-3 bg-muted rounded-lg">
-                  <Badge variant="outline">{items.length} images</Badge>
-                  {isProcessing && (
-                    <Badge variant="secondary">
-                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      Processing...
-                    </Badge>
-                  )}
-                  {allProcessed && (
-                    <>
-                      {readyCount > 0 && (
-                        <Badge variant="default" className="bg-green-600">
-                          <Check className="h-3 w-3 mr-1" />
-                          {readyCount} ready
-                        </Badge>
-                      )}
-                      {unmappedCount > 0 && (
-                        <Badge variant="secondary" className="text-orange-600">
-                          <AlertCircle className="h-3 w-3 mr-1" />
-                          {unmappedCount} unmapped
-                        </Badge>
-                      )}
-                      {uploadedCount > 0 && (
-                        <Badge variant="default" className="bg-blue-600">
-                          <Check className="h-3 w-3 mr-1" />
-                          {uploadedCount} uploaded
-                        </Badge>
-                      )}
-                      {errorCount > 0 && (
-                        <Badge variant="destructive">
-                          <X className="h-3 w-3 mr-1" />
-                          {errorCount} failed
-                        </Badge>
-                      )}
-                    </>
-                  )}
-                  <div className="flex-1" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isProcessing || isUploading}
-                  >
-                    Add More
-                  </Button>
-                </div>
-
-                {/* Items list */}
-                {items.map((item) => (
-                  <BulkUploadItemCard
-                    key={item.id}
-                    item={item}
-                    buildings={buildings}
-                    onBuildingChange={(building) => handleBuildingChange(item.id, building)}
-                    onRemove={() => handleRemoveItem(item.id)}
-                    disabled={isUploading}
-                  />
-                ))}
+            </div>
+          ) : (
+            <div className="h-full flex flex-col">
+              {/* Summary bar - Responsive */}
+              <div className="shrink-0 flex flex-wrap items-center gap-2 p-3 bg-muted rounded-lg mb-3">
+                <Badge variant="outline">
+                  <Images className="h-4 w-4" />
+                  {items.length}
+                  <span className="hidden sm:inline">images</span>
+                </Badge>
+                {isProcessing && (
+                  <Badge variant="secondary">
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                    Processing...
+                  </Badge>
+                )}
+                {allProcessed && (
+                  <>
+                    {readyCount > 0 && (
+                      <Badge variant="default" className="bg-green-600">
+                        <Check className="h-4 w-4" />
+                        {readyCount}
+                        <span className="hidden sm:inline">ready</span>
+                      </Badge>
+                    )}
+                    {unmappedCount > 0 && (
+                      <Badge variant="secondary" className="text-orange-600">
+                        <AlertCircle className="h-4 w-4" />
+                        {unmappedCount}
+                        <span className="hidden sm:inline">unmapped</span>
+                      </Badge>
+                    )}
+                    {uploadedCount > 0 && (
+                      <Badge variant="default" className="bg-blue-600">
+                        <Check className="h-4 w-4" />
+                        {uploadedCount}
+                        <span className="hidden sm:inline">uploaded</span>
+                      </Badge>
+                    )}
+                    {errorCount > 0 && (
+                      <Badge variant="destructive">
+                        <X className="h-4 w-4" />
+                        {errorCount}
+                        <span className="hidden sm:inline">failed</span>
+                      </Badge>
+                    )}
+                  </>
+                )}
+                <div className="flex-1 min-w-0" />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isProcessing || isUploading}
+                  className="shrink-0"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add More</span>
+                </Button>
               </div>
-            )}
-          </ScrollArea>
+
+              {/* Items list - Scrollable */}
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="space-y-3">
+                  {items.map((item) => (
+                    <BulkUploadItemCard
+                      key={item.id}
+                      item={item}
+                      buildings={buildings}
+                      onBuildingChange={(building) => handleBuildingChange(item.id, building)}
+                      onRemove={() => handleRemoveItem(item.id)}
+                      disabled={isUploading}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isUploading}>
+        <DialogFooter className="shrink-0 flex-col-reverse sm:flex-row gap-2">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isUploading}
+            className="w-full sm:w-auto"
+          >
             {uploadedCount > 0 ? 'Close' : 'Cancel'}
           </Button>
-          <Button onClick={handleUploadAll} disabled={!canUpload}>
+          <Button onClick={handleUploadAll} disabled={!canUpload} className="w-full sm:w-auto">
             {isUploading ? (
               <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Uploading...
               </>
             ) : (
               <>
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="h-4 w-4" />
                 Upload {readyCount} Image{readyCount !== 1 ? 's' : ''}
               </>
             )}
@@ -424,7 +469,7 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
   );
 }
 
-// Individual item card component
+// Individual item card component - Responsive
 interface BulkUploadItemCardProps {
   item: BulkUploadItem;
   buildings: BuildingWithImage[];
@@ -450,14 +495,14 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
   return (
     <div
       className={cn(
-        'flex gap-4 p-4 border rounded-lg transition-all duration-200',
+        'flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg transition-all duration-200',
         isUploaded && 'border-green-500/50 bg-green-500/5',
         isError && 'border-destructive/50 bg-destructive/5',
         isUploading && 'border-blue-500/50 bg-blue-500/5',
       )}
     >
-      {/* Image Preview */}
-      <div className="relative w-32 h-24 rounded-md overflow-hidden bg-muted shrink-0">
+      {/* Image Preview - Responsive */}
+      <div className="relative w-full sm:w-32 h-32 sm:h-24 rounded-md overflow-hidden bg-muted shrink-0">
         {item.processedImage ? (
           <Image src={item.processedImage.dataUrl} alt={item.file.name} fill className="object-cover" unoptimized />
         ) : (
@@ -481,15 +526,27 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
             <Loader2 className="h-6 w-6 text-white animate-spin" />
           </div>
         )}
+
+        {/* Remove button on mobile - top right of image */}
+        {canChangeBuilding && (
+          <Button
+            variant="secondary"
+            size="icon"
+            className="absolute top-2 right-2 h-7 w-7 sm:hidden"
+            onClick={onRemove}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0 space-y-2">
         {/* File info */}
         <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <p className="font-medium truncate">{item.file.name}</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="min-w-0 flex-1">
+            <p className="font-medium truncate text-sm sm:text-base">{item.file.name}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">
               {formatFileSize(item.file.size)}
               {item.processedImage && (
                 <span className="text-green-600 dark:text-green-400">
@@ -499,21 +556,22 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
               )}
             </p>
           </div>
+          {/* Remove button on desktop */}
           {canChangeBuilding && (
-            <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8" onClick={onRemove}>
+            <Button variant="ghost" size="icon" className="hidden sm:flex shrink-0 h-8 w-8" onClick={onRemove}>
               <X className="h-4 w-4" />
             </Button>
           )}
         </div>
 
-        {/* Building selector */}
-        <div className="flex items-center gap-2">
+        {/* Building selector - Responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
           <Popover open={searchOpen} onOpenChange={setSearchOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className={cn('justify-between w-full max-w-xs', !item.building && 'text-muted-foreground')}
+                className={cn('justify-between w-full sm:max-w-xs', !item.building && 'text-muted-foreground')}
                 disabled={!canChangeBuilding}
               >
                 <span className="flex items-center gap-2 truncate">
@@ -523,7 +581,7 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0" align="start">
+            <PopoverContent className="w-[calc(100vw-4rem)] sm:w-80 p-0" align="start">
               <Command>
                 <CommandInput placeholder="Search buildings..." value={searchQuery} onValueChange={setSearchQuery} />
                 <CommandList>
@@ -541,14 +599,14 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
                       >
                         <Check
                           className={cn(
-                            'mr-2 h-4 w-4',
+                            'h-4 w-4 shrink-0',
                             item.building?.uuid === building.uuid ? 'opacity-100' : 'opacity-0',
                           )}
                         />
-                        <BuildingIcon className="mr-2 h-4 w-4 text-muted-foreground" />
+                        <BuildingIcon className="h-4 w-4 text-muted-foreground shrink-0" />
                         <span className="truncate">{building.title}</span>
                         {building.hasImage && (
-                          <Badge variant="outline" className="ml-auto text-xs">
+                          <Badge variant="outline" className="ml-auto text-xs shrink-0">
                             Has image
                           </Badge>
                         )}
@@ -562,12 +620,17 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
 
           {/* Match score badge */}
           {item.building && item.matchScore < 1 && (
-            <Badge variant="secondary" className="text-xs shrink-0">
+            <Badge
+              variant="outline"
+              className={cn('text-xs shrink-0 w-fit', item.matchScore < 0.75 && 'text-orange-400 border-orange-400')}
+            >
+              {item.matchScore < 0.75 && <AlertCircle className="h-4 w-4" />}
               {Math.round(item.matchScore * 100)}% match
             </Badge>
           )}
           {!item.building && item.uploadStatus === 'processed' && (
-            <Badge variant="outline" className="text-xs text-orange-600 shrink-0">
+            <Badge variant="outline" className="text-xs text-red-400 border-red-400 shrink-0 w-fit">
+              <AlertTriangle className="h-4 w-4" />
               No match found
             </Badge>
           )}
@@ -576,7 +639,7 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
         {/* Processing/Stats info */}
         {isProcessing && item.processingProgress && (
           <div className="space-y-1">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
               {item.processingProgress.message}
             </div>
@@ -586,7 +649,7 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
 
         {item.processedImage && !isProcessing && <ProcessingStats stats={item.processedImage.stats} compact />}
 
-        {isError && item.error && <p className="text-sm text-destructive">{item.error}</p>}
+        {isError && item.error && <p className="text-xs sm:text-sm text-destructive">{item.error}</p>}
       </div>
     </div>
   );

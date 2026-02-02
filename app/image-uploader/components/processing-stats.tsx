@@ -46,19 +46,19 @@ export function ProcessingStats({ stats, progress, className, compact = false }:
       <div className={cn('flex flex-wrap gap-1.5', className)}>
         {stats.wasResized && (
           <Badge variant="secondary" className="text-xs">
-            <Scale className="mr-1 h-3 w-3" />
+            <Scale className="h-3 w-3" />
             Resized
           </Badge>
         )}
         {stats.wasConverted && (
           <Badge variant="secondary" className="text-xs">
-            <FileImage className="mr-1 h-3 w-3" />
+            <FileImage className="h-3 w-3" />
             Converted
           </Badge>
         )}
         {stats.compressionRatio > 0 && (
           <Badge variant="outline" className="text-xs text-green-600 dark:text-green-400">
-            <Check className="mr-1 h-3 w-3" />
+            <Check className="h-3 w-3" />
             {stats.compressionRatio}% smaller
           </Badge>
         )}
@@ -122,18 +122,18 @@ export function ProcessingStats({ stats, progress, className, compact = false }:
       <div className="flex flex-wrap gap-1.5 pt-1">
         {stats.wasResized && (
           <Badge variant="secondary" className="text-xs">
-            <Check className="mr-1 h-3 w-3" />
+            <Check className="h-3 w-3" />
             Resized
           </Badge>
         )}
         {stats.wasConverted && (
           <Badge variant="secondary" className="text-xs">
-            <Check className="mr-1 h-3 w-3" />
+            <Check className="h-3 w-3" />
             Converted
           </Badge>
         )}
         <Badge variant="secondary" className="text-xs">
-          <Check className="mr-1 h-3 w-3" />
+          <Check className="h-3 w-3" />
           Compressed
         </Badge>
       </div>

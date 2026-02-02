@@ -160,7 +160,12 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
 
   const handleBuildingChange = useCallback((itemId: string, building: BuildingWithImage | null) => {
     setItems((prev) =>
-      prev.map((item) => (item.id === itemId ? { ...item, building, matchScore: building ? 1 : 0 } : item)),
+      prev.map((item) => {
+        if (item.id !== itemId) return item;
+        // Recalculate match score for the new building
+        const newScore = building ? findBestMatch(item.file.name, [building]).score : 0;
+        return { ...item, building, matchScore: newScore };
+      }),
     );
   }, []);
 
@@ -618,13 +623,21 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
             </PopoverContent>
           </Popover>
 
-          {/* Match score badge */}
-          {item.building && item.matchScore < 1 && (
+          {/* Match score badge - always show when a building is selected */}
+          {item.building && (
             <Badge
               variant="outline"
-              className={cn('text-xs shrink-0 w-fit', item.matchScore < 0.75 && 'text-orange-400 border-orange-400')}
+              className={cn(
+                'text-xs shrink-0 w-fit',
+                item.matchScore >= 0.9
+                  ? 'text-green-600 border-green-600'
+                  : item.matchScore >= 0.75
+                    ? 'text-blue-500 border-blue-500'
+                    : 'text-orange-400 border-orange-400',
+              )}
             >
               {item.matchScore < 0.75 && <AlertCircle className="h-4 w-4" />}
+              {item.matchScore >= 0.9 && <Check className="h-4 w-4" />}
               {Math.round(item.matchScore * 100)}% match
             </Badge>
           )}

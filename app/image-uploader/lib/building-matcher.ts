@@ -29,10 +29,11 @@ function extractNameFromFilename(filename: string): string {
   // Remove extension
   let name = filename.replace(/\.[^/.]+$/, '');
 
-  // Remove common image naming patterns
+  // Remove common image naming patterns (only when preceded by separator)
   name = name
-    .replace(/[-_]?(copy|final|v\d+|edit|edited|new|old|\d{4}[-_]?\d{2}[-_]?\d{2})$/i, '')
-    .replace(/^(img|image|photo|pic|picture)[-_]?/i, '')
+    .replace(/[-_](copy|final|v\d+|edited|new|old)$/i, '') // Only with separator prefix
+    .replace(/[-_]?\d{4}[-_]?\d{2}[-_]?\d{2}$/i, '') // Date patterns
+    .replace(/^(img|image|photo|pic|picture|small|large|thumb|thumbnail)[-_\s]+/i, '') // Common prefixes
     .replace(/[-_]?\(\d+\)$/, '') // Remove (1), (2), etc.
     .replace(/[-_]\d+$/, ''); // Remove trailing numbers like -1, _2
 
@@ -50,37 +51,62 @@ function calculateSimilarity(str1: string, str2: string): number {
   if (s1 === s2) return 1;
   if (s1.length === 0 || s2.length === 0) return 0;
 
-  // Check for exact substring match (partial match)
-  if (s1.includes(s2) || s2.includes(s1)) {
-    const shorter = s1.length < s2.length ? s1 : s2;
-    const longer = s1.length >= s2.length ? s1 : s2;
-    return shorter.length / longer.length;
+  // Determine which is the filename (longer) and which is the building name (shorter)
+  const filename = s1.length >= s2.length ? s1 : s2;
+  const buildingName = s1.length < s2.length ? s1 : s2;
+
+  // Check if the building name is fully contained in the filename
+  // This should give a HIGH score because it's likely the correct match
+  if (filename.includes(buildingName)) {
+    // Give high score (0.8-1.0) based on how much of the filename is the building name
+    // If building name is "the edit" and filename is "meraas the edit", this is a strong match
+    const ratio = buildingName.length / filename.length;
+    return 0.8 + ratio * 0.2; // Score between 0.8 and 1.0
   }
 
-  // Check for word overlap
-  const words1 = s1.split(' ').filter((w) => w.length > 2);
-  const words2 = s2.split(' ').filter((w) => w.length > 2);
+  // Check for word-based matching
+  const words1 = s1.split(' ').filter((w) => w.length > 1);
+  const words2 = s2.split(' ').filter((w) => w.length > 1);
 
   if (words1.length > 0 && words2.length > 0) {
-    let matchedWords = 0;
-    for (const word1 of words1) {
-      for (const word2 of words2) {
-        if (word1.includes(word2) || word2.includes(word1)) {
-          matchedWords++;
+    // Check if ALL words from the shorter string are in the longer string
+    const shorterWords = words1.length <= words2.length ? words1 : words2;
+    const longerWords = words1.length > words2.length ? words1 : words2;
+
+    let exactMatches = 0;
+    let partialMatches = 0;
+
+    for (const shortWord of shorterWords) {
+      let matched = false;
+      for (const longWord of longerWords) {
+        if (shortWord === longWord) {
+          exactMatches++;
+          matched = true;
+          break;
+        } else if (longWord.includes(shortWord) || shortWord.includes(longWord)) {
+          partialMatches++;
+          matched = true;
           break;
         }
       }
     }
 
-    if (matchedWords > 0) {
-      return matchedWords / Math.max(words1.length, words2.length);
+    // If all words from building name are found in filename, it's a strong match
+    if (exactMatches === shorterWords.length) {
+      return 0.85 + (exactMatches / longerWords.length) * 0.15;
+    }
+
+    // Partial word matches
+    const totalMatches = exactMatches + partialMatches * 0.5;
+    if (totalMatches > 0) {
+      return (totalMatches / shorterWords.length) * 0.7;
     }
   }
 
-  // Levenshtein distance for fuzzy matching
+  // Levenshtein distance for fuzzy matching (fallback)
   const distance = levenshteinDistance(s1, s2);
   const maxLength = Math.max(s1.length, s2.length);
-  return Math.max(0, 1 - distance / maxLength);
+  return Math.max(0, (1 - distance / maxLength) * 0.5); // Cap at 0.5 for fuzzy matches
 }
 
 /**

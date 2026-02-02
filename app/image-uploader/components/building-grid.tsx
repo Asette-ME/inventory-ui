@@ -1,11 +1,10 @@
 'use client';
 
-import { Images } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { BuildingCard } from '@/app/image-uploader/components/building-card';
+import { useBulkUpload } from '@/app/image-uploader/components/bulk-upload-context';
 import { BulkUploadDialog } from '@/app/image-uploader/components/bulk-upload-dialog';
-import { Button } from '@/components/ui/button';
 import { getImageUrl } from '@/lib/s3-client';
 import type { Building, BuildingWithImage } from '@/types/building';
 
@@ -14,8 +13,14 @@ interface BuildingGridProps {
 }
 
 export function BuildingGrid({ buildings }: BuildingGridProps) {
-  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const { isOpen, setOpen, setReady } = useBulkUpload();
   const [refreshKey, setRefreshKey] = useState(0);
+
+  // Mark as ready when component mounts (data is loaded)
+  useEffect(() => {
+    setReady(true);
+    return () => setReady(false);
+  }, [setReady]);
 
   // Convert buildings to BuildingWithImage for the bulk upload dialog
   const buildingsWithImage: BuildingWithImage[] = buildings.map((building) => ({
@@ -38,15 +43,7 @@ export function BuildingGrid({ buildings }: BuildingGridProps) {
   }
 
   return (
-    <div className="space-y-4">
-      {/* Bulk Upload Button */}
-      <div className="flex justify-end">
-        <Button onClick={() => setBulkUploadOpen(true)} variant="outline">
-          <Images className="h-4 w-4 mr-2" />
-          Bulk Upload
-        </Button>
-      </div>
-
+    <>
       {/* Building Grid */}
       <div key={refreshKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {buildings.map((building) => (
@@ -56,11 +53,11 @@ export function BuildingGrid({ buildings }: BuildingGridProps) {
 
       {/* Bulk Upload Dialog */}
       <BulkUploadDialog
-        open={bulkUploadOpen}
-        onOpenChange={setBulkUploadOpen}
+        open={isOpen}
+        onOpenChange={setOpen}
         buildings={buildingsWithImage}
         onComplete={handleBulkUploadComplete}
       />
-    </div>
+    </>
   );
 }

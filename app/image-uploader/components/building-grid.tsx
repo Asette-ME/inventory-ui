@@ -21,7 +21,7 @@ export function BuildingGrid({ buildings }: BuildingGridProps) {
   const buildingsWithImage: BuildingWithImage[] = buildings.map((building) => ({
     ...building,
     imageUrl: getImageUrl(building.uuid),
-    hasImage: true, // We'll assume all have images for now, the card handles errors
+    hasImage: false, // We don't know if the image exists until we try to load it
   }));
 
   const handleBulkUploadComplete = useCallback(() => {

@@ -93,9 +93,10 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
         };
       });
 
-      setItems(newItems);
+      // Append to existing items instead of replacing
+      setItems((prev) => [...prev, ...newItems]);
 
-      // Start processing immediately
+      // Start processing the new items only
       processAllImages(newItems);
     },
     [buildings],
@@ -297,7 +298,8 @@ export function BulkUploadDialog({ open, onOpenChange, buildings, onComplete }: 
   const unmappedCount = items.filter((item) => item.uploadStatus === 'processed' && !item.building).length;
   const uploadedCount = items.filter((item) => item.uploadStatus === 'uploaded').length;
   const errorCount = items.filter((item) => item.uploadStatus === 'error').length;
-  const canUpload = allProcessed && readyCount > 0 && !isUploading;
+  // Only enable upload when all images are processed, all have buildings assigned, and not currently uploading
+  const canUpload = allProcessed && readyCount > 0 && unmappedCount === 0 && !isUploading;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -602,19 +604,14 @@ function BulkUploadItemCard({ item, buildings, onBuildingChange, onRemove, disab
                           setSearchQuery('');
                         }}
                       >
+                        <BuildingIcon className="h-4 w-4 text-muted-foreground shrink-0" />
+                        <span className="truncate">{building.title}</span>
                         <Check
                           className={cn(
-                            'h-4 w-4 shrink-0',
+                            'h-4 w-4 shrink-0 ml-auto',
                             item.building?.uuid === building.uuid ? 'opacity-100' : 'opacity-0',
                           )}
                         />
-                        <BuildingIcon className="h-4 w-4 text-muted-foreground shrink-0" />
-                        <span className="truncate">{building.title}</span>
-                        {building.hasImage && (
-                          <Badge variant="outline" className="ml-auto text-xs shrink-0">
-                            Has image
-                          </Badge>
-                        )}
                       </CommandItem>
                     ))}
                   </CommandGroup>

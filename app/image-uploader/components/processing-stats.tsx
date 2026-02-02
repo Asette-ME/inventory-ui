@@ -3,8 +3,9 @@
 import { ArrowRight, Check, FileImage, ImageIcon, Loader2, Scale, X } from 'lucide-react';
 
 import type { ImageProcessingStats, ProcessingProgress } from '@/app/image-uploader/lib/image-processor';
-import { formatDimensions, formatFileSize } from '@/app/image-uploader/lib/image-processor';
+import { formatFileSize } from '@/app/image-uploader/lib/image-processor';
 import { Badge } from '@/components/ui/badge';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
 interface ProcessingStatsProps {
@@ -42,101 +43,60 @@ export function ProcessingStats({ stats, progress, className, compact = false }:
   if (!stats) return null;
 
   if (compact) {
+    // Show a single, clean compression badge
     return (
-      <div className={cn('flex flex-wrap gap-1.5', className)}>
+      <Badge variant="outline" className={cn('text-xs text-green-600 dark:text-green-400 shrink-0', className)}>
+        <Check className="h-3 w-3 mr-1" />
+        {stats.compressionRatio > 0 ? `${stats.compressionRatio}% smaller` : 'Optimized'}
+      </Badge>
+    );
+  }
+
+  // Full stats display - horizontal badges
+  return (
+    <ScrollArea>
+      <div className={cn('flex items-center gap-2', className)}>
+        {/* File Size Badge */}
+        <Badge variant="secondary" className="text-xs gap-1">
+          <Scale className="h-3 w-3" />
+          <span className="text-muted-foreground line-through">{formatFileSize(stats.originalSize)}</span>
+          <ArrowRight className="h-3 w-3" />
+          <span className="font-medium">{formatFileSize(stats.processedSize)}</span>
+        </Badge>
+
+        {/* Resolution Badge (if resized) */}
         {stats.wasResized && (
-          <Badge variant="secondary" className="text-xs">
-            <Scale className="h-3 w-3" />
-            Resized
+          <Badge variant="secondary" className="text-xs gap-1">
+            <ImageIcon className="h-3 w-3" />
+            <span className="text-muted-foreground line-through">
+              {stats.originalWidth}×{stats.originalHeight}
+            </span>
+            <ArrowRight className="h-3 w-3" />
+            <span className="font-medium">
+              {stats.processedWidth}×{stats.processedHeight}
+            </span>
           </Badge>
         )}
+
+        {/* Format Badge (if converted) */}
         {stats.wasConverted && (
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="text-xs gap-1">
             <FileImage className="h-3 w-3" />
-            Converted
+            <span className="text-muted-foreground line-through uppercase">.{stats.originalExtension}</span>
+            <ArrowRight className="h-3 w-3" />
+            <span className="font-medium uppercase">.{stats.processedExtension}</span>
           </Badge>
         )}
+
+        {/* Compression Badge */}
         {stats.compressionRatio > 0 && (
           <Badge variant="outline" className="text-xs text-green-600 dark:text-green-400">
-            <Check className="h-3 w-3" />
+            <Check className="h-3 w-3 mr-1" />
             {stats.compressionRatio}% smaller
           </Badge>
         )}
       </div>
-    );
-  }
-
-  return (
-    <div className={cn('space-y-3 rounded-lg border bg-muted/50 p-3 text-sm', className)}>
-      {/* File Name */}
-      <div className="flex items-center gap-2 text-muted-foreground">
-        <FileImage className="h-4 w-4 shrink-0" />
-        <span className="truncate font-medium">{stats.originalFileName}</span>
-      </div>
-
-      {/* Resolution */}
-      <div className="flex items-center gap-2">
-        <ImageIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-        <span className="text-muted-foreground">Resolution:</span>
-        <span className={cn(stats.wasResized && 'text-muted-foreground line-through')}>
-          {formatDimensions(stats.originalWidth, stats.originalHeight)}
-        </span>
-        {stats.wasResized && (
-          <>
-            <ArrowRight className="h-3 w-3 text-primary" />
-            <span className="font-medium text-primary">
-              {formatDimensions(stats.processedWidth, stats.processedHeight)}
-            </span>
-          </>
-        )}
-      </div>
-
-      {/* File Size */}
-      <div className="flex items-center gap-2">
-        <Scale className="h-4 w-4 shrink-0 text-muted-foreground" />
-        <span className="text-muted-foreground">Size:</span>
-        <span className={cn(stats.compressionRatio > 0 && 'text-muted-foreground line-through')}>
-          {formatFileSize(stats.originalSize)}
-        </span>
-        <ArrowRight className="h-3 w-3 text-primary" />
-        <span className="font-medium text-primary">{formatFileSize(stats.processedSize)}</span>
-        {stats.compressionRatio > 0 && (
-          <Badge variant="outline" className="ml-1 text-xs text-green-600 dark:text-green-400">
-            -{stats.compressionRatio}%
-          </Badge>
-        )}
-      </div>
-
-      {/* Extension */}
-      {stats.wasConverted && (
-        <div className="flex items-center gap-2">
-          <FileImage className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span className="text-muted-foreground">Format:</span>
-          <span className="text-muted-foreground line-through uppercase">.{stats.originalExtension}</span>
-          <ArrowRight className="h-3 w-3 text-primary" />
-          <span className="font-medium text-primary uppercase">.{stats.processedExtension}</span>
-        </div>
-      )}
-
-      {/* Summary badges */}
-      <div className="flex flex-wrap gap-1.5 pt-1">
-        {stats.wasResized && (
-          <Badge variant="secondary" className="text-xs">
-            <Check className="h-3 w-3" />
-            Resized
-          </Badge>
-        )}
-        {stats.wasConverted && (
-          <Badge variant="secondary" className="text-xs">
-            <Check className="h-3 w-3" />
-            Converted
-          </Badge>
-        )}
-        <Badge variant="secondary" className="text-xs">
-          <Check className="h-3 w-3" />
-          Compressed
-        </Badge>
-      </div>
-    </div>
+      <ScrollBar orientation="horizontal" className="hidden" />
+    </ScrollArea>
   );
 }

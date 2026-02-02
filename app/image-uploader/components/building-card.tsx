@@ -254,8 +254,14 @@ export function BuildingCard({ building }: BuildingCardProps) {
       </div>
 
       {/* Content */}
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between gap-2">
+      <CardContent className="p-4 relative overflow-hidden">
+        {/* Default state: Building title and button */}
+        <div
+          className={cn(
+            'flex items-center justify-between gap-2 transition-all duration-300',
+            showStats ? 'opacity-0 translate-y-2 absolute inset-x-4' : 'opacity-100 translate-y-0',
+          )}
+        >
           <div className="flex-1 min-w-0 flex items-center gap-2">
             <BuildingIcon className="w-4 h-4 text-muted-foreground shrink-0" />
             <h2 className="font-medium truncate">{building.title}</h2>
@@ -272,8 +278,15 @@ export function BuildingCard({ building }: BuildingCardProps) {
           </Button>
         </div>
 
-        {/* Processing Stats */}
-        {showStats && <ProcessingStats stats={processedStats} compact />}
+        {/* Stats state: Only show stats with animation */}
+        <div
+          className={cn(
+            'transition-all duration-300',
+            showStats ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 absolute inset-x-4',
+          )}
+        >
+          {processedStats && <ProcessingStats stats={processedStats} />}
+        </div>
 
         <input
           ref={fileInputRef}

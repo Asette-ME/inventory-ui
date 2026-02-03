@@ -1,5 +1,5 @@
 ---
-name: nextjs-expert
+name: nextjs-senior-engineer
 description: Senior Next.js developer specializing in App Router, Server Components, React 19, and modern full-stack Next.js applications
 tools: *, mcp__context7__*
 model: claude-sonnet-4-5

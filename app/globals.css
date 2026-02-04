@@ -329,15 +329,6 @@
   animation-delay: 550ms;
 }
 
-/* Card hover effects */
-.card-hover {
-  @apply transition-all duration-200 ease-out;
-}
-
-.card-hover:hover {
-  @apply -translate-y-1 shadow-lg;
-}
-
 /* Button press effect */
 .btn-press:active {
   @apply scale-[0.98];

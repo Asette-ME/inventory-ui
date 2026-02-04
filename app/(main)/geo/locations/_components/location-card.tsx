@@ -6,7 +6,7 @@ import { GeoLocation } from '@/app/(main)/geo/locations/_components/types';
 import { Badge } from '@/components/ui/badge';
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { Map, MapFitBounds, MapPolygon, MapTileLayer } from '@/components/ui/map';
-import { swapCoordinates } from '@/lib/utils';
+import { cn, swapCoordinates } from '@/lib/utils';
 
 interface LocationCardProps {
   data: GeoLocation;
@@ -23,11 +23,14 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
 
   return (
     <Item
-      className="bg-white dark:bg-transparent rounded-lg cursor-pointer card-hover transition-all duration-200"
+      className={cn(
+        'relative rounded-lg cursor-pointer p-0 overflow-hidden',
+        'hover:scale-102 hover:shadow-lg transition-transform duration-300',
+      )}
       variant="outline"
       onClick={() => onClick?.(data)}
     >
-      <ItemHeader className="h-[250px] overflow-hidden">
+      <ItemHeader className="h-[300px] overflow-hidden rounded-lg">
         <div className="h-full w-full">
           <Map
             key={data.id}
@@ -49,12 +52,21 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
         </div>
       </ItemHeader>
 
-      <ItemContent>
-        <ItemTitle className="text-lg">{data.name}</ItemTitle>
-        <ItemDescription>
-          <Badge>{data.code}</Badge>
-        </ItemDescription>
-      </ItemContent>
+      <div className="absolute z-1001 bottom-0 left-0 w-full p-2">
+        <ItemContent
+          className={cn(
+            'rounded-xl p-3',
+            'bg-clip-padding backdrop-filter backdrop-blur-xl',
+            'dark:border dark:border-white-900 shadow',
+            'flex flex-row items-center justify-between',
+          )}
+        >
+          <ItemTitle className="text-lg">{data.name}</ItemTitle>
+          <ItemDescription>
+            <Badge className="bg-primary/10 text-primary inset-ring inset-ring-primary/40">{data.code}</Badge>
+          </ItemDescription>
+        </ItemContent>
+      </div>
     </Item>
   );
 }

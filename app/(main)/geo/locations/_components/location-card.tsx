@@ -44,7 +44,7 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
           >
             <MapTileLayer />
             <MapFitBounds bounds={boundaries} padding={[20, 20]} />
-            <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />
+            {boundaries && <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />}
           </Map>
         </div>
       </ItemHeader>

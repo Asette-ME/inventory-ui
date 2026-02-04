@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { Bus, Plus, Search, RefreshCw, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, TableSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getTransports, deleteTransport } from '@/lib/actions/entities';
-import { Transport } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { Transport } from '@/types/entities';
 
 import { TransportSheet } from './transport-sheet';
 
@@ -42,7 +42,7 @@ export default function TransportsPage() {
       const response = await getTransports({ search, page, limit: 10 });
       setTransports(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load transports');
     } finally {
       setIsLoading(false);
@@ -51,7 +51,7 @@ export default function TransportsPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchTransports();
+      void fetchTransports();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchTransports]);
@@ -76,9 +76,9 @@ export default function TransportsPage() {
     try {
       await deleteTransport(transportToDelete.id);
       toast.success(`Transport "${transportToDelete.name}" deleted successfully`);
-      fetchTransports();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete transport');
+      void fetchTransports();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete transport');
     }
   }
 

@@ -1,19 +1,19 @@
 'use client';
 
+import { Square, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Square, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
 import { getAreas, createArea, updateArea, deleteArea } from '@/lib/actions/entities';
-import { Area, AreaCreateInput, AreaUpdateInput } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { Area, AreaCreateInput, AreaUpdateInput } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { AreaSheet } from './area-sheet';
+import { LocationCard } from '../_components/location-card';
 
 export default function AreasPage() {
   const [areas, setAreas] = useState<Area[]>([]);
@@ -36,7 +36,7 @@ export default function AreasPage() {
       const response = await getAreas({ search, page, limit: 12 });
       setAreas(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load areas');
     } finally {
       setIsLoading(false);
@@ -45,7 +45,7 @@ export default function AreasPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchAreas();
+      void fetchAreas();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchAreas]);
@@ -70,9 +70,9 @@ export default function AreasPage() {
     try {
       await deleteArea(areaToDelete.id);
       toast.success(`Area "${areaToDelete.name}" deleted successfully`);
-      fetchAreas();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete area');
+      void fetchAreas();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete area');
     }
   }
 
@@ -82,7 +82,7 @@ export default function AreasPage() {
     } else {
       await createArea(data as AreaCreateInput);
     }
-    fetchAreas();
+    void fetchAreas();
   }
 
   return (
@@ -133,13 +133,7 @@ export default function AreasPage() {
         ) : (
           <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {areas.map((area) => (
-              <LocationCard
-                key={area.id}
-                data={area as any}
-                onClick={() => handleEdit(area)}
-                onEdit={() => handleEdit(area)}
-                onDelete={() => handleDeleteClick(area)}
-              />
+              <LocationCard key={area.id} data={area as any} onClick={() => handleEdit(area)} />
             ))}
           </ItemGroup>
         )}

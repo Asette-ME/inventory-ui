@@ -23,7 +23,6 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { callGeminiAction, savePaymentPlanAction } from '@/app/payment-plan/actions';
-import { fetchBuildingsAction } from '@/lib/actions/buildings';
 import type { ExtractedRow, ParsedAIRow, TesseractLine } from '@/app/payment-plan/types';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Badge } from '@/components/ui/badge';
@@ -51,6 +50,7 @@ import { Input } from '@/components/ui/input';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { fetchBuildingsAction } from '@/lib/actions/buildings';
 
 // --- Types ---
 

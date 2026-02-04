@@ -1,22 +1,23 @@
 'use client';
 
 import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Plus } from 'lucide-react';
 
-import { DataTable, DataTablePagination } from '@/components/data-table';
 import { DeleteDialog } from '@/components/crud/delete-dialog';
+import { DataTable, DataTablePagination } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { useTableState } from '@/hooks/use-table-state';
 import { useUsers } from '@/hooks/use-users';
 import { useUsersParams } from '@/hooks/use-users-params';
 import { deleteUser } from '@/lib/actions/entities';
+import { cn } from '@/lib/utils';
 import { User } from '@/types/entities';
 
+import { UserSheet } from './user-sheet';
 import { DEFAULT_VISIBLE_COLUMNS, getUsersColumns } from './users-columns';
 import { UsersToolbar } from './users-toolbar';
-import { UserSheet } from './user-sheet';
 
 export function UsersTable() {
   const { params, setParams, resetParams } = useUsersParams();
@@ -105,7 +106,12 @@ export function UsersTable() {
           <span className="hidden sm:inline">Add User</span>
         </Button>
       </div>
-      <div className="bg-white dark:bg-muted/50 rounded-xl shadow-sm border border-gray-200 dark:border-0 overflow-hidden">
+      <div
+        className={cn(
+          'bg-white dark:bg-muted/50 rounded-xl shadow-sm border',
+          'border-gray-200 dark:border-0 overflow-hidden',
+        )}
+      >
         <DataTable table={table} columns={columns} isLoading={isLoading} isInitialLoading={isInitialLoading} />
       </div>
       <DataTablePagination

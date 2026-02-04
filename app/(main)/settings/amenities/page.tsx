@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { Coffee, Plus, Search, RefreshCw, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, TableSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getAmenities, deleteAmenity } from '@/lib/actions/entities';
-import { Amenity } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { Amenity } from '@/types/entities';
 
 import { AmenitySheet } from './amenity-sheet';
 
@@ -42,7 +42,7 @@ export default function AmenitiesPage() {
       const response = await getAmenities({ search, page, limit: 10 });
       setAmenities(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load amenities');
     } finally {
       setIsLoading(false);
@@ -51,7 +51,7 @@ export default function AmenitiesPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchAmenities();
+      void fetchAmenities();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchAmenities]);
@@ -76,9 +76,9 @@ export default function AmenitiesPage() {
     try {
       await deleteAmenity(amenityToDelete.id);
       toast.success(`Amenity "${amenityToDelete.name}" deleted successfully`);
-      fetchAmenities();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete amenity');
+      void fetchAmenities();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete amenity');
     }
   }
 

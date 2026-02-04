@@ -20,6 +20,7 @@ import {
   MapTileLayer,
   MapZoomControl,
 } from '@/components/ui/map';
+import type { PlaceFeature } from '@/components/ui/place-autocomplete';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { cn, swapCoordinates } from '@/lib/utils';
@@ -139,10 +140,11 @@ export function GeoEditor({
     [onCoordinatesChange, onBoundariesChange, showCoordinates, showBoundaries],
   );
 
-  const handlePlaceSelect = (place: { lat: number; lng: number; name: string }) => {
+  const handlePlaceSelect = (feature: PlaceFeature) => {
+    const [lng, lat] = feature.geometry.coordinates;
     onCoordinatesChange({
-      latitude: place.lat,
-      longitude: place.lng,
+      latitude: lat,
+      longitude: lng,
     });
   };
 

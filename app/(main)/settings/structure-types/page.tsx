@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { Building2, Plus, Search, RefreshCw, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, TableSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getStructureTypes, deleteStructureType } from '@/lib/actions/entities';
-import { StructureType } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { StructureType } from '@/types/entities';
 
 import { StructureTypeSheet } from './structure-type-sheet';
 
@@ -42,7 +42,7 @@ export default function StructureTypesPage() {
       const response = await getStructureTypes({ search, page, limit: 10 });
       setStructureTypes(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load structure types');
     } finally {
       setIsLoading(false);
@@ -51,7 +51,7 @@ export default function StructureTypesPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchStructureTypes();
+      void fetchStructureTypes();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchStructureTypes]);
@@ -76,9 +76,9 @@ export default function StructureTypesPage() {
     try {
       await deleteStructureType(structureTypeToDelete.id);
       toast.success(`Structure type "${structureTypeToDelete.name}" deleted successfully`);
-      fetchStructureTypes();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete structure type');
+      void fetchStructureTypes();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete structure type');
     }
   }
 

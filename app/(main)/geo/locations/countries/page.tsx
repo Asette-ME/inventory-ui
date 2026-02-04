@@ -1,19 +1,19 @@
 'use client';
 
+import { MapPin, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { MapPin, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
 import { getCountries, createCountry, updateCountry, deleteCountry } from '@/lib/actions/entities';
-import { Country, CountryCreateInput, CountryUpdateInput } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { Country, CountryCreateInput, CountryUpdateInput } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { CountrySheet } from './country-sheet';
+import { LocationCard } from '../_components/location-card';
 
 export default function CountriesPage() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -36,7 +36,7 @@ export default function CountriesPage() {
       const response = await getCountries({ search, page, limit: 12 });
       setCountries(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load countries');
     } finally {
       setIsLoading(false);
@@ -45,7 +45,7 @@ export default function CountriesPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchCountries();
+      void fetchCountries();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchCountries]);
@@ -70,9 +70,9 @@ export default function CountriesPage() {
     try {
       await deleteCountry(countryToDelete.id);
       toast.success(`Country "${countryToDelete.name}" deleted successfully`);
-      fetchCountries();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete country');
+      void fetchCountries();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete country');
     }
   }
 
@@ -82,7 +82,7 @@ export default function CountriesPage() {
     } else {
       await createCountry(data as CountryCreateInput);
     }
-    fetchCountries();
+    void fetchCountries();
   }
 
   return (
@@ -133,13 +133,7 @@ export default function CountriesPage() {
         ) : (
           <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {countries.map((country) => (
-              <LocationCard
-                key={country.id}
-                data={country as any}
-                onClick={() => handleEdit(country)}
-                onEdit={() => handleEdit(country)}
-                onDelete={() => handleDeleteClick(country)}
-              />
+              <LocationCard key={country.id} data={country as any} onClick={() => handleEdit(country)} />
             ))}
           </ItemGroup>
         )}

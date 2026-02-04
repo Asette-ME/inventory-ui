@@ -1,10 +1,17 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
+import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import type { FieldValues } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Map,
   MapTileLayer,
@@ -19,18 +26,13 @@ import {
   MapDrawUndo,
   MapSearchControl,
 } from '@/components/ui/map';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
+import type { PlaceFeature } from '@/components/ui/place-autocomplete';
 import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { swapCoordinates } from '@/lib/utils';
 import { Coordinates, Boundaries } from '@/types/common';
-import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
-import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
 
 interface GeoEntitySheetProps<
   T extends { id: string; name: string; coordinates?: Coordinates | null; boundaries?: Boundaries | null },
@@ -38,9 +40,8 @@ interface GeoEntitySheetProps<
   open: boolean;
   onOpenChange: (open: boolean) => void;
   entity: T | null;
-  title: string;
   entityName: string;
-  schema: z.ZodSchema;
+  schema: z.ZodType<FieldValues>;
   onSave: (data: any) => Promise<void>;
   renderExtraFields?: (control: any, isDisabled: boolean) => React.ReactNode;
   extraDefaultValues?: Record<string, any>;
@@ -52,7 +53,6 @@ export function GeoEntitySheet<
   open,
   onOpenChange,
   entity,
-  title,
   entityName,
   schema,
   onSave,
@@ -71,7 +71,8 @@ export function GeoEntitySheet<
   const [boundariesInput, setBoundariesInput] = useState('');
 
   const form = useForm({
-    resolver: zodResolver(schema),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(schema as any),
     defaultValues: {
       name: '',
       ...extraDefaultValues,
@@ -191,11 +192,12 @@ export function GeoEntitySheet<
     });
   };
 
-  const handlePlaceSelect = (place: { lat: number; lng: number; name: string }) => {
-    const newCoords = { latitude: place.lat, longitude: place.lng };
+  const handlePlaceSelect = (feature: PlaceFeature) => {
+    const [lng, lat] = feature.geometry.coordinates;
+    const newCoords = { latitude: lat, longitude: lng };
     setCoordinates(newCoords);
-    setLatInput(place.lat.toString());
-    setLngInput(place.lng.toString());
+    setLatInput(lat.toString());
+    setLngInput(lng.toString());
   };
 
   async function onSubmit(data: any) {
@@ -209,8 +211,8 @@ export function GeoEntitySheet<
       await onSave(payload);
       toast.success(`${entityName} ${isEditing ? 'updated' : 'created'} successfully`);
       onOpenChange(false);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'An error occurred');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsSubmitting(false);
     }

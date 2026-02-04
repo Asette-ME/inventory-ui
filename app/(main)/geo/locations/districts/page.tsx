@@ -1,8 +1,8 @@
 'use client';
 
+import { MapPinned, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { MapPinned, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getDistricts, createDistrict, updateDistrict, deleteDistrict, getCities } from '@/lib/actions/entities';
-import { District, DistrictCreateInput, DistrictUpdateInput, City } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { District, DistrictCreateInput, DistrictUpdateInput, City } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { DistrictSheet } from './district-sheet';
+import { LocationCard } from '../_components/location-card';
 
 export default function DistrictsPage() {
   const [districts, setDistricts] = useState<District[]>([]);
@@ -39,11 +39,11 @@ export default function DistrictsPage() {
       try {
         const response = await getCities({ limit: 100 });
         setCities(response.data);
-      } catch (error) {
-        console.error('Failed to load cities:', error);
+      } catch (err) {
+        console.error('Failed to load cities:', err);
       }
     }
-    loadCities();
+    void loadCities();
   }, []);
 
   const fetchDistricts = useCallback(async () => {
@@ -57,7 +57,7 @@ export default function DistrictsPage() {
       });
       setDistricts(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load districts');
     } finally {
       setIsLoading(false);
@@ -66,7 +66,7 @@ export default function DistrictsPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchDistricts();
+      void fetchDistricts();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchDistricts]);
@@ -91,9 +91,9 @@ export default function DistrictsPage() {
     try {
       await deleteDistrict(districtToDelete.id);
       toast.success(`District "${districtToDelete.name}" deleted successfully`);
-      fetchDistricts();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete district');
+      void fetchDistricts();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete district');
     }
   }
 
@@ -103,7 +103,7 @@ export default function DistrictsPage() {
     } else {
       await createDistrict(data as DistrictCreateInput);
     }
-    fetchDistricts();
+    void fetchDistricts();
   }
 
   function handleCityFilterChange(value: string) {
@@ -175,13 +175,7 @@ export default function DistrictsPage() {
         ) : (
           <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {districts.map((district) => (
-              <LocationCard
-                key={district.id}
-                data={district as any}
-                onClick={() => handleEdit(district)}
-                onEdit={() => handleEdit(district)}
-                onDelete={() => handleDeleteClick(district)}
-              />
+              <LocationCard key={district.id} data={district as any} onClick={() => handleEdit(district)} />
             ))}
           </ItemGroup>
         )}

@@ -1,12 +1,11 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
 
+import { GuestGuard } from '@/components/auth/guest-guard';
 import { LoginForm } from '@/components/auth/login-form';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import LoginImage from '@/public/img/login.jpg';
 import Logo from '@/public/img/logo.jpg';
-
-import { GuestGuard } from '@/components/auth/guest-guard';
 
 export default function LoginPage() {
   return (

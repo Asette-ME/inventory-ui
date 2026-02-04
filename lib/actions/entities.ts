@@ -1,5 +1,6 @@
 'use server';
 
+import { buildQueryString } from '@/lib/utils';
 import { ApiResponse, ApiListResponse } from '@/types/common';
 import {
   Role,
@@ -51,7 +52,8 @@ import {
   StructureTypeUpdateInput,
   StructureTypeQueryParams,
 } from '@/types/entities';
-import { apiGet, apiPost, apiPatch, apiDelete, buildQueryString } from './api';
+
+import { apiDelete, apiGet, apiPatch, apiPost } from './api';
 
 // ============= ROLE ACTIONS =============
 export async function getRoles(params: RoleQueryParams = {}): Promise<ApiListResponse<Role>> {

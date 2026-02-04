@@ -1,9 +1,15 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
+import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Map,
   MapTileLayer,
@@ -18,19 +24,15 @@ import {
   MapDrawUndo,
   MapSearchControl,
 } from '@/components/ui/map';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
+import type { PlaceFeature } from '@/components/ui/place-autocomplete';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { swapCoordinates } from '@/lib/utils';
 import { cityCreateSchema, CityFormData } from '@/lib/validations/entities';
 import { City, CityCreateInput, CityUpdateInput, Coordinates, Country } from '@/types/entities';
-import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
-import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
 
 interface CitySheetProps {
   open: boolean;
@@ -175,11 +177,12 @@ export function CitySheet({ open, onOpenChange, city, countries, onSave }: CityS
     });
   };
 
-  const handlePlaceSelect = (place: { lat: number; lng: number; name: string }) => {
-    const newCoords = { latitude: place.lat, longitude: place.lng };
+  const handlePlaceSelect = (feature: PlaceFeature) => {
+    const [lng, lat] = feature.geometry.coordinates;
+    const newCoords = { latitude: lat, longitude: lng };
     setCoordinates(newCoords);
-    setLatInput(place.lat.toString());
-    setLngInput(place.lng.toString());
+    setLatInput(lat.toString());
+    setLngInput(lng.toString());
   };
 
   async function onSubmit(data: CityFormData) {

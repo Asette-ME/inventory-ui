@@ -3,6 +3,7 @@
 // This file validates that all pages and layouts export the correct types
 
 import type { ResolvingMetadata, ResolvingViewport } from 'next/types.js';
+
 import type { AppRoutes, LayoutRoutes, ParamMap } from './routes.js';
 
 type AppPageConfig<Route extends AppRoutes = AppRoutes> = {

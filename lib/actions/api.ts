@@ -31,16 +31,18 @@ export async function serverFetch<T>(endpoint: string, options: FetchOptions = {
     headers.Authorization = `Bearer ${token}`;
   }
 
+  const { body, ...restOptions } = options;
+
   const config: RequestInit = {
-    ...options,
+    ...restOptions,
     headers: {
       ...headers,
       ...options.headers,
     },
   };
 
-  if (options.body) {
-    config.body = JSON.stringify(options.body);
+  if (body) {
+    config.body = JSON.stringify(body);
   }
 
   const response = await fetch(url, config);
@@ -72,21 +74,4 @@ export async function apiPatch<T>(endpoint: string, body: unknown): Promise<T> {
 
 export async function apiDelete<T>(endpoint: string): Promise<T> {
   return serverFetch<T>(endpoint, { method: 'DELETE' });
-}
-
-// Helper to build query string from params
-export function buildQueryString(params: Record<string, unknown>): string {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value === undefined || value === null || value === '') return;
-
-    if (Array.isArray(value)) {
-      value.forEach((v) => searchParams.append(key, String(v)));
-    } else {
-      searchParams.set(key, String(value));
-    }
-  });
-
-  return searchParams.toString();
 }

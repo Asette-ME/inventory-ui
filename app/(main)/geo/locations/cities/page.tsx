@@ -1,8 +1,8 @@
 'use client';
 
+import { Building2, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
-import { Building2, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
@@ -10,11 +10,11 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCities, createCity, updateCity, deleteCity, getCountries } from '@/lib/actions/entities';
-import { City, CityCreateInput, CityUpdateInput, Country } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { City, CityCreateInput, CityUpdateInput, Country } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { CitySheet } from './city-sheet';
+import { LocationCard } from '../_components/location-card';
 
 export default function CitiesPage() {
   const [cities, setCities] = useState<City[]>([]);
@@ -39,11 +39,11 @@ export default function CitiesPage() {
       try {
         const response = await getCountries({ limit: 100 });
         setCountries(response.data);
-      } catch (error) {
-        console.error('Failed to load countries:', error);
+      } catch (err) {
+        console.error('Failed to load countries:', err);
       }
     }
-    fetchCountries();
+    void fetchCountries();
   }, []);
 
   const fetchCities = useCallback(async () => {
@@ -57,7 +57,7 @@ export default function CitiesPage() {
       });
       setCities(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load cities');
     } finally {
       setIsLoading(false);
@@ -66,7 +66,7 @@ export default function CitiesPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchCities();
+      void fetchCities();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchCities]);
@@ -91,9 +91,9 @@ export default function CitiesPage() {
     try {
       await deleteCity(cityToDelete.id);
       toast.success(`City "${cityToDelete.name}" deleted successfully`);
-      fetchCities();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete city');
+      void fetchCities();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete city');
     }
   }
 
@@ -103,7 +103,7 @@ export default function CitiesPage() {
     } else {
       await createCity(data as CityCreateInput);
     }
-    fetchCities();
+    void fetchCities();
   }
 
   // Get country name for display
@@ -193,8 +193,6 @@ export default function CitiesPage() {
                   } as any
                 }
                 onClick={() => handleEdit(city)}
-                onEdit={() => handleEdit(city)}
-                onDelete={() => handleDeleteClick(city)}
               />
             ))}
           </ItemGroup>

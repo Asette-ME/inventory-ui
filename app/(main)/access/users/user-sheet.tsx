@@ -1,19 +1,17 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
 
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { userCreateSchema, userUpdateSchema, UserCreateFormData, UserUpdateFormData } from '@/lib/validations/entities';
 import { createUser, updateUser, getRoles } from '@/lib/actions/entities';
+import { cn } from '@/lib/utils';
+import { userCreateSchema, userUpdateSchema, UserCreateFormData, UserUpdateFormData } from '@/lib/validations/entities';
 import { User, Role } from '@/types/entities';
 
 interface UserSheetProps {
@@ -54,14 +52,14 @@ export function UserSheet({ open, onOpenChange, user, onSuccess }: UserSheetProp
       try {
         const response = await getRoles({ limit: 100 });
         setRoles(response.data);
-      } catch (error) {
+      } catch {
         toast.error('Failed to load roles');
       } finally {
         setRolesLoading(false);
       }
     }
     if (open) {
-      fetchRoles();
+      void fetchRoles();
     }
   }, [open]);
 
@@ -99,8 +97,8 @@ export function UserSheet({ open, onOpenChange, user, onSuccess }: UserSheetProp
 
       onOpenChange(false);
       onSuccess();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'An error occurred');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'An error occurred');
     }
   }
 
@@ -148,7 +146,10 @@ export function UserSheet({ open, onOpenChange, user, onSuccess }: UserSheetProp
               {roles.map((role) => (
                 <label
                   key={role.id}
-                  className="flex items-center gap-2 rounded-md border p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                  className={cn(
+                    'flex items-center gap-2 rounded-md border p-3',
+                    'cursor-pointer hover:bg-muted/50 transition-colors',
+                  )}
                 >
                   <Checkbox
                     checked={selectedRoles.includes(role.id)}

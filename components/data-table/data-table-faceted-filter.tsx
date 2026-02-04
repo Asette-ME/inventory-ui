@@ -24,6 +24,7 @@ interface DataTableFacetedFilterProps {
   selectedValues: string[];
   onChange: (values: string[]) => void;
   prependIcon?: LucideIcon;
+  disabled?: boolean;
 }
 
 export function DataTableFacetedFilter({
@@ -32,6 +33,7 @@ export function DataTableFacetedFilter({
   selectedValues,
   onChange,
   prependIcon: PrependIcon = PlusCircle,
+  disabled = false,
 }: DataTableFacetedFilterProps) {
   const [search, setSearch] = useState('');
 
@@ -54,7 +56,7 @@ export function DataTableFacetedFilter({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="border-dashed">
+        <Button variant="outline" className="border-dashed" disabled={disabled}>
           <PrependIcon />
           {title}
           {selectedLabels.length > 0 && (

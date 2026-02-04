@@ -28,3 +28,19 @@ export function swapCoordinates(coords: any): any {
   // Return as-is if it's just a number (though usually shouldn't happen here)
   return coords;
 }
+
+export function buildQueryString<T extends object>(params: T): string {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => searchParams.append(key, String(v)));
+    } else {
+      searchParams.set(key, String(value));
+    }
+  });
+
+  return searchParams.toString();
+}

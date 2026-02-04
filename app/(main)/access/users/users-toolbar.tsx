@@ -51,13 +51,13 @@ export function UsersToolbar({
             icon: Shield,
           })),
         );
-      } catch (error) {
-        console.error('Failed to fetch roles:', error);
+      } catch (err) {
+        console.error('Failed to fetch roles:', err);
       } finally {
         setRolesLoading(false);
       }
     }
-    fetchRoles();
+    void fetchRoles();
   }, []);
 
   // Debounce search input

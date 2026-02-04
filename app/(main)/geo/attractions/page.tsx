@@ -42,7 +42,7 @@ export default function AttractionsPage() {
       const response = await getAttractions({ search, page, limit: 10 });
       setAttractions(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load attractions');
     } finally {
       setIsLoading(false);
@@ -51,7 +51,7 @@ export default function AttractionsPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchAttractions();
+      void fetchAttractions();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchAttractions]);
@@ -76,9 +76,9 @@ export default function AttractionsPage() {
     try {
       await deleteAttraction(attractionToDelete.id);
       toast.success(`Attraction "${attractionToDelete.name}" deleted successfully`);
-      fetchAttractions();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete attraction');
+      void fetchAttractions();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete attraction');
     }
   }
 

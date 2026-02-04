@@ -1,15 +1,15 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
-import { ColorPicker } from '@/components/crud/color-picker';
-import { featureTypeCreateSchema, FeatureTypeFormData } from '@/lib/validations/entities';
 import { createFeatureType, updateFeatureType } from '@/lib/actions/entities';
+import { featureTypeCreateSchema, FeatureTypeFormData } from '@/lib/validations/entities';
 import { FeatureType } from '@/types/entities';
 
 interface FeatureTypeSheetProps {

@@ -1,10 +1,12 @@
 'use client';
 
+import L from 'leaflet';
+import { useMemo } from 'react';
+
 import { Map, MapMarker, MapPolygon, MapTileLayer, MapZoomControl } from '@/components/ui/map';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { swapCoordinates } from '@/lib/utils';
-import L from 'leaflet';
-import { useMemo } from 'react';
+
 import { GeoLocation } from './types';
 
 interface LocationSheetProps {

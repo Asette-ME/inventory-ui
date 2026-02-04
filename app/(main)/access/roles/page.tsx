@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
 import { KeyRound, Plus, Search, RefreshCw, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 import { PageLayout, FilterBar, EmptyState, DeleteDialog, TableSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,9 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getRoles, deleteRole } from '@/lib/actions/entities';
-import { Role } from '@/types/entities';
 import { PaginationMeta } from '@/types/common';
+import { Role } from '@/types/entities';
 
 import { RoleSheet } from './role-sheet';
 
@@ -42,7 +42,7 @@ export default function RolesPage() {
       const response = await getRoles({ search, page, limit: 10 });
       setRoles(response.data);
       setPagination(response.pagination);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load roles');
     } finally {
       setIsLoading(false);
@@ -51,7 +51,7 @@ export default function RolesPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchRoles();
+      void fetchRoles();
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchRoles]);
@@ -76,9 +76,9 @@ export default function RolesPage() {
     try {
       await deleteRole(roleToDelete.id);
       toast.success(`Role "${roleToDelete.name}" deleted successfully`);
-      fetchRoles();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete role');
+      void fetchRoles();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to delete role');
     }
   }
 

@@ -1,23 +1,20 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { Badge } from '@/components/ui/badge';
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { Map, MapPolygon, MapTileLayer } from '@/components/ui/map';
 import { swapCoordinates } from '@/lib/utils';
-import L from 'leaflet';
-import { useMemo } from 'react';
+
 import { GeoLocation } from './types';
 
 interface LocationCardProps {
   data: GeoLocation;
   onClick?: (data: GeoLocation) => void;
-  onEdit?: (data: GeoLocation) => void;
-  onDelete?: (data: GeoLocation) => void;
 }
 
-export function LocationCard({ data, onClick, onEdit, onDelete }: LocationCardProps) {
-  const center: L.LatLngExpression = [data.coordinates.latitude, data.coordinates.longitude];
-
+export function LocationCard({ data, onClick }: LocationCardProps) {
   const boundaries = useMemo(() => {
     if (!data.boundaries?.coordinates) return null;
     return swapCoordinates(data.boundaries.coordinates);

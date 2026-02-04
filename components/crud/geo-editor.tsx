@@ -247,7 +247,7 @@ export function GeoEditor({
                 value={boundariesInput}
                 onChange={(e) => handleBoundariesInputChange(e.target.value)}
                 disabled={disabled}
-                className="min-h-32 font-mono text-xs"
+                className="min-h-32 max-h-32 font-mono text-xs"
               />
               <p className="text-xs text-muted-foreground">
                 Enter GeoJSON MultiPolygon coordinates format: [[[[lng, lat], ...]]]

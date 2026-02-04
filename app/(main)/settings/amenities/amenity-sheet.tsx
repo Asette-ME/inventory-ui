@@ -10,7 +10,6 @@ import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { GeoEditor } from '@/components/crud/geo-editor';
 import { IconPicker } from '@/components/ui/icon-picker';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createAmenity, updateAmenity } from '@/lib/actions/entities';
 import { amenityCreateSchema, AmenityFormData } from '@/lib/validations/entities';

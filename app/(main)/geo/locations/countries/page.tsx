@@ -1,19 +1,19 @@
 'use client';
 
-import { MapPin, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, MapPin, Plus, RefreshCw, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
+import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
-import { getCountries, createCountry, updateCountry, deleteCountry } from '@/lib/actions/entities';
+import { deleteCountry, getCountries } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
-import { Country, CountryCreateInput, CountryUpdateInput } from '@/types/entities';
+import { Country } from '@/types/entities';
 
-import { CountrySheet } from './country-sheet';
 import { LocationCard } from '../_components/location-card';
+import { CountrySheet } from './country-sheet';
 
 export default function CountriesPage() {
   const [countries, setCountries] = useState<Country[]>([]);
@@ -74,15 +74,6 @@ export default function CountriesPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete country');
     }
-  }
-
-  async function handleSave(data: CountryCreateInput | CountryUpdateInput) {
-    if (selectedCountry) {
-      await updateCountry(selectedCountry.id, data);
-    } else {
-      await createCountry(data as CountryCreateInput);
-    }
-    void fetchCountries();
   }
 
   return (
@@ -162,7 +153,7 @@ export default function CountriesPage() {
         )}
       </div>
 
-      <CountrySheet open={sheetOpen} onOpenChange={setSheetOpen} country={selectedCountry} onSave={handleSave} />
+      <CountrySheet open={sheetOpen} onOpenChange={setSheetOpen} country={selectedCountry} onSuccess={fetchCountries} />
 
       <DeleteDialog
         open={deleteDialogOpen}

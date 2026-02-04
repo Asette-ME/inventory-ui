@@ -45,8 +45,13 @@ export type UserUpdateFormData = z.infer<typeof userUpdateSchema>;
 // ============= COUNTRY SCHEMAS =============
 export const countryCreateSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
-  code: z.string().min(2, 'Code must be at least 2 characters').max(3, 'Code must be at most 3 characters'),
-  currency: z.string().max(3, 'Currency must be at most 3 characters').nullable().optional(),
+  code: z.string().min(3, 'Please provide a correct ISO-3 code').max(3, 'Please provide a correct ISO-3 code'),
+  currency: z
+    .string()
+    .min(3, 'Please provide a valid 3 letter currency')
+    .max(3, 'Currency must be at most 3 characters')
+    .nullable()
+    .optional(),
   phone_code: z.string().max(5, 'Phone code must be at most 5 characters').nullable().optional(),
   coordinates: coordinatesSchema,
   boundaries: boundariesSchema,

@@ -1,13 +1,11 @@
 'use client';
 
 import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
-import { Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { DeleteDialog } from '@/components/crud/delete-dialog';
 import { DataTable, DataTablePagination } from '@/components/data-table';
-import { Button } from '@/components/ui/button';
 import { useTableState } from '@/hooks/use-table-state';
 import { useUsers } from '@/hooks/use-users';
 import { useUsersParams } from '@/hooks/use-users-params';
@@ -19,13 +17,15 @@ import { UserSheet } from './user-sheet';
 import { DEFAULT_VISIBLE_COLUMNS, getUsersColumns } from './users-columns';
 import { UsersToolbar } from './users-toolbar';
 
-export function UsersTable() {
+interface UsersTableContentProps {
+  sheetOpen: boolean;
+  onSheetOpenChange: (open: boolean) => void;
+}
+
+export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableContentProps) {
   const { params, setParams, resetParams } = useUsersParams();
   const { users, pagination, isLoading, isInitialLoading, refetch } = useUsers(params);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-
-  // Sheet state
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // Delete dialog state
@@ -39,9 +39,16 @@ export function UsersTable() {
     pinnedRight: ['actions'],
   });
 
+  // Reset selected user when sheet opens for create
+  useEffect(() => {
+    if (sheetOpen && !selectedUser) {
+      setSelectedUser(null);
+    }
+  }, [sheetOpen, selectedUser]);
+
   function handleEdit(user: User) {
     setSelectedUser(user);
-    setSheetOpen(true);
+    onSheetOpenChange(true);
   }
 
   function handleDelete(user: User) {
@@ -60,9 +67,11 @@ export function UsersTable() {
     }
   }
 
-  function handleCreate() {
-    setSelectedUser(null);
-    setSheetOpen(true);
+  function handleSheetChange(open: boolean) {
+    if (!open) {
+      setSelectedUser(null);
+    }
+    onSheetOpenChange(open);
   }
 
   const columns = getUsersColumns({
@@ -90,22 +99,16 @@ export function UsersTable() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between gap-4">
-        <UsersToolbar
-          table={table}
-          search={params.search || ''}
-          roles={params.roles || []}
-          onSearchChange={(search) => setParams({ search: search || undefined })}
-          onRolesChange={(roles) => setParams({ roles: roles.length > 0 ? roles : undefined })}
-          onReset={resetParams}
-          onRefresh={refetch}
-          isLoading={isLoading}
-        />
-        <Button onClick={handleCreate} className="gap-2 shrink-0">
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Add User</span>
-        </Button>
-      </div>
+      <UsersToolbar
+        table={table}
+        search={params.search || ''}
+        roles={params.roles || []}
+        onSearchChange={(search) => setParams({ search: search || undefined })}
+        onRolesChange={(roles) => setParams({ roles: roles.length > 0 ? roles : undefined })}
+        onReset={resetParams}
+        onRefresh={refetch}
+        isLoading={isLoading}
+      />
       <div
         className={cn(
           'bg-white dark:bg-muted/50 rounded-xl shadow-sm border',
@@ -121,10 +124,8 @@ export function UsersTable() {
         onLimitChange={(limit) => setParams({ limit, page: 1 })}
       />
 
-      {/* User Sheet for Create/Edit */}
-      <UserSheet open={sheetOpen} onOpenChange={setSheetOpen} user={selectedUser} onSuccess={refetch} />
+      <UserSheet open={sheetOpen} onOpenChange={handleSheetChange} user={selectedUser} onSuccess={refetch} />
 
-      {/* Delete Confirmation Dialog */}
       <DeleteDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}

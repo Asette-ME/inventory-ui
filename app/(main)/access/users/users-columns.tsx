@@ -202,7 +202,6 @@ export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }:
 
 // Default visible columns
 export const DEFAULT_VISIBLE_COLUMNS = {
-  select: true,
   username: true,
   email: true,
   phone: true,
@@ -210,5 +209,4 @@ export const DEFAULT_VISIBLE_COLUMNS = {
   created_at: false,
   last_login_at: false,
   updated_at: false,
-  actions: true,
 };

@@ -58,12 +58,16 @@ export function PageLayout({
 interface FilterBarProps {
   children: ReactNode;
   className?: string;
+  actions?: ReactNode;
 }
 
-export function FilterBar({ children, className }: FilterBarProps) {
+export function FilterBar({ children, className, actions }: FilterBarProps) {
   return (
-    <div className={cn('flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 animate-fade-in', className)}>
-      {children}
+    <div
+      className={cn('flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between animate-fade-in', className)}
+    >
+      <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">{children}</div>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
     </div>
   );
 }

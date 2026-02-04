@@ -10,7 +10,7 @@ import { FilterGroup } from '@/components/data-table/data-table-filter-drawer';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { getRoles } from '@/lib/actions/entities';
-import { User, Role } from '@/types/entities';
+import { Role, User } from '@/types/entities';
 
 interface UsersToolbarProps {
   table: Table<User>;

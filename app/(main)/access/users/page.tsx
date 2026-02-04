@@ -1,24 +1,32 @@
-import { Users } from 'lucide-react';
-import { Suspense } from 'react';
+'use client';
 
+import { Users } from 'lucide-react';
+import { Suspense, useState } from 'react';
+
+import { PageLayout } from '@/components/crud';
 import { Skeleton } from '@/components/ui/skeleton';
 
-import { UsersTable } from './users-table';
+import { UsersTableContent } from './users-table';
 
 export default function UsersPage() {
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  function handleCreate() {
+    setSheetOpen(true);
+  }
+
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
-      <div>
-        <div className="flex items-center gap-2">
-          <Users />
-          <h1 className="text-2xl font-bold mb-0">Users</h1>
-        </div>
-        <p className="text-muted-foreground">Manage users and their roles</p>
-      </div>
+    <PageLayout
+      title="Users"
+      description="Manage users and their roles"
+      icon={Users}
+      onAdd={handleCreate}
+      addLabel="Add User"
+    >
       <Suspense fallback={<TableSkeleton />}>
-        <UsersTable />
+        <UsersTableContent sheetOpen={sheetOpen} onSheetOpenChange={setSheetOpen} />
       </Suspense>
-    </div>
+    </PageLayout>
   );
 }
 

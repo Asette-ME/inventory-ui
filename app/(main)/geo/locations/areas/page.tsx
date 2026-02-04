@@ -4,15 +4,15 @@ import { ChevronLeft, ChevronRight, Plus, RefreshCw, Search, Square } from 'luci
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { LocationCard } from '@/app/(main)/geo/locations/_components/location-card';
+import { LocationGroup } from '@/app/(main)/geo/locations/_components/location-group';
 import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { ItemGroup } from '@/components/ui/item';
 import { deleteArea, getAreas } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
 import { Area } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { AreaSheet } from './area-sheet';
 
 export default function AreasPage() {
@@ -122,11 +122,11 @@ export default function AreasPage() {
             }
           />
         ) : (
-          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <LocationGroup>
             {areas.map((area) => (
               <LocationCard key={area.id} data={area as any} onClick={() => handleEdit(area)} />
             ))}
-          </ItemGroup>
+          </LocationGroup>
         )}
 
         {pagination && pagination.total_pages > 1 && (

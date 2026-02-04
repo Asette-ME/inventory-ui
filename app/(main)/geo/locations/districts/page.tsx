@@ -4,16 +4,16 @@ import { ChevronLeft, ChevronRight, MapPinned, Plus, RefreshCw, Search } from 'l
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { LocationCard } from '@/app/(main)/geo/locations/_components/location-card';
+import { LocationGroup } from '@/app/(main)/geo/locations/_components/location-group';
 import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { deleteDistrict, getCities, getDistricts } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
 import { City, District } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { DistrictSheet } from './district-sheet';
 
 export default function DistrictsPage() {
@@ -164,11 +164,11 @@ export default function DistrictsPage() {
             }
           />
         ) : (
-          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <LocationGroup>
             {districts.map((district) => (
               <LocationCard key={district.id} data={district as any} onClick={() => handleEdit(district)} />
             ))}
-          </ItemGroup>
+          </LocationGroup>
         )}
 
         {pagination && pagination.total_pages > 1 && (

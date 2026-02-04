@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { LocationCard } from '@/app/(main)/geo/locations/_components/location-card';
+import { LocationGroup } from '@/app/(main)/geo/locations/_components/location-group';
 import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { ItemGroup } from '@/components/ui/item';
 import { deleteCountry, getCountries } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
 import { Country } from '@/types/entities';
@@ -122,11 +122,11 @@ export default function CountriesPage() {
             }
           />
         ) : (
-          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+          <LocationGroup>
             {countries.map((country) => (
               <LocationCard key={country.id} data={country as any} onClick={() => handleEdit(country)} />
             ))}
-          </ItemGroup>
+          </LocationGroup>
         )}
 
         {pagination && pagination.total_pages > 1 && (

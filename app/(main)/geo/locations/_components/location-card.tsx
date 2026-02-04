@@ -62,9 +62,13 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
           )}
         >
           <ItemTitle className="text-lg">{data.name}</ItemTitle>
-          <ItemDescription className="shrink-0">
-            <Badge className="w-12 h-7 bg-primary/10 text-primary inset-ring inset-ring-primary/40">{data.code}</Badge>
-          </ItemDescription>
+          {data.code && (
+            <ItemDescription className="shrink-0">
+              <Badge className="w-12 h-7 bg-primary/10 text-primary inset-ring inset-ring-primary/40">
+                {data.code}
+              </Badge>
+            </ItemDescription>
+          )}
         </ItemContent>
       </div>
     </Item>

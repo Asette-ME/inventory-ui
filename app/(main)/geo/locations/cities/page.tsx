@@ -4,16 +4,16 @@ import { Building2, ChevronLeft, ChevronRight, Plus, RefreshCw, Search } from 'l
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { LocationCard } from '@/app/(main)/geo/locations/_components/location-card';
+import { LocationGroup } from '@/app/(main)/geo/locations/_components/location-group';
 import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { deleteCity, getCities, getCountries } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
 import { City, Country } from '@/types/entities';
 
-import { LocationCard } from '../_components/location-card';
 import { CitySheet } from './city-sheet';
 
 export default function CitiesPage() {
@@ -173,20 +173,19 @@ export default function CitiesPage() {
             }
           />
         ) : (
-          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <LocationGroup>
             {cities.map((city) => (
               <LocationCard
                 key={city.id}
                 data={
                   {
                     ...city,
-                    code: getCountryName(city.country_id),
                   } as any
                 }
                 onClick={() => handleEdit(city)}
               />
             ))}
-          </ItemGroup>
+          </LocationGroup>
         )}
 
         {pagination && pagination.total_pages > 1 && (

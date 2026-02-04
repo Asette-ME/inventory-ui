@@ -14,6 +14,7 @@ import {
   MapDrawMarker,
   MapDrawPolygon,
   MapDrawUndo,
+  MapFitBounds,
   MapMarker,
   MapPolygon,
   MapSearchControl,
@@ -66,7 +67,7 @@ export function GeoEditor({
     }
   }, [boundaries]);
 
-  const center: LatLngExpression = coordinates ? [coordinates.latitude, coordinates.longitude] : [25.2048, 55.2708]; // Default to Dubai
+  const center: LatLngExpression = coordinates ? [coordinates.latitude, coordinates.longitude] : [25.2048, 55.2708];
 
   const boundaryPositions = useMemo(() => {
     if (!boundaries?.coordinates) return null;
@@ -164,8 +165,13 @@ export function GeoEditor({
 
         <TabsContent value="map" className="mt-4">
           <div className="relative h-60 sm:h-80 w-full overflow-hidden rounded-lg border">
-            <Map center={center} zoom={coordinates ? 12 : 4} bounds={boundaryPositions} className="h-full w-full">
+            <Map center={center} zoom={4} className="h-full w-full">
               <MapTileLayer />
+              <MapFitBounds
+                bounds={boundaryPositions}
+                markerPosition={coordinates ? [coordinates.latitude, coordinates.longitude] : null}
+                maxZoom={12}
+              />
               <MapZoomControl className="top-2 right-2 left-auto" />
               <MapSearchControl className="top-2 left-2" onPlaceSelect={handlePlaceSelect} />
 
@@ -182,7 +188,7 @@ export function GeoEditor({
               {/* Display existing data */}
               {coordinates && <MapMarker position={[coordinates.latitude, coordinates.longitude]} />}
               {boundaryPositions && (
-                <MapPolygon positions={boundaryPositions} className="fill-primary/20 stroke-primary stroke-2" />
+                <MapPolygon positions={boundaryPositions} className="fill-purple-600/80 stroke-purple-600 stroke-1" />
               )}
             </Map>
           </div>

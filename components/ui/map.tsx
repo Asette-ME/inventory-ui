@@ -1197,6 +1197,46 @@ function useDebounceLoadingState(delay = 200) {
   return [showLoading, setIsLoading] as const;
 }
 
+interface MapFitBoundsProps {
+  bounds: LatLngExpression[] | LatLngExpression[][] | null;
+  markerPosition?: LatLngExpression | null;
+  padding?: [number, number];
+  maxZoom?: number;
+}
+
+function MapFitBounds({ bounds, markerPosition, padding = [20, 20], maxZoom = 16 }: MapFitBoundsProps) {
+  const map = useMap();
+  const { L } = useLeaflet();
+
+  useEffect(() => {
+    if (!L) return;
+
+    const featureGroup = L.featureGroup();
+
+    // Add polygon bounds if available
+    if (bounds && Array.isArray(bounds) && bounds.length > 0) {
+      const polygon = L.polygon(bounds as L.LatLngExpression[]);
+      featureGroup.addLayer(polygon);
+    }
+
+    // Add marker position if available and no bounds
+    if (markerPosition && featureGroup.getLayers().length === 0) {
+      const marker = L.marker(markerPosition as L.LatLngExpression);
+      featureGroup.addLayer(marker);
+    }
+
+    // Fit bounds if we have layers
+    if (featureGroup.getLayers().length > 0) {
+      const groupBounds = featureGroup.getBounds();
+      if (groupBounds.isValid()) {
+        map.fitBounds(groupBounds, { padding, maxZoom });
+      }
+    }
+  }, [L, map, bounds, markerPosition, padding, maxZoom]);
+
+  return null;
+}
+
 export {
   Map,
   MapCircle,
@@ -1212,6 +1252,7 @@ export {
   MapDrawRectangle,
   MapDrawUndo,
   MapFeatureGroup,
+  MapFitBounds,
   MapLayerGroup,
   MapLayers,
   MapLayersControl,

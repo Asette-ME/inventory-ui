@@ -1,26 +1,12 @@
 'use client';
 
-import type { LatLngBoundsExpression } from 'leaflet';
 import { useMemo } from 'react';
-import { useMap } from 'react-leaflet';
 
 import { GeoLocation } from '@/app/(main)/geo/locations/_components/types';
 import { Badge } from '@/components/ui/badge';
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { Map, MapPolygon, MapTileLayer } from '@/components/ui/map';
+import { Map, MapFitBounds, MapPolygon, MapTileLayer } from '@/components/ui/map';
 import { swapCoordinates } from '@/lib/utils';
-
-interface FitBoundsProps {
-  bounds: LatLngBoundsExpression | null;
-}
-
-function FitBounds({ bounds }: FitBoundsProps) {
-  const map = useMap();
-
-  if (bounds) map.fitBounds(bounds, { padding: [20, 20] });
-
-  return null;
-}
 
 interface LocationCardProps {
   data: GeoLocation;
@@ -57,7 +43,7 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
             className="h-full w-full"
           >
             <MapTileLayer />
-            <FitBounds bounds={boundaries} />
+            <MapFitBounds bounds={boundaries} padding={[20, 20]} />
             <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />
           </Map>
         </div>

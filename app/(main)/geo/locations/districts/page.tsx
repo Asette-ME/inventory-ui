@@ -1,20 +1,20 @@
 'use client';
 
-import { MapPinned, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, MapPinned, Plus, RefreshCw, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
+import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getDistricts, createDistrict, updateDistrict, deleteDistrict, getCities } from '@/lib/actions/entities';
+import { deleteDistrict, getCities, getDistricts } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
-import { District, DistrictCreateInput, DistrictUpdateInput, City } from '@/types/entities';
+import { City, District } from '@/types/entities';
 
-import { DistrictSheet } from './district-sheet';
 import { LocationCard } from '../_components/location-card';
+import { DistrictSheet } from './district-sheet';
 
 export default function DistrictsPage() {
   const [districts, setDistricts] = useState<District[]>([]);
@@ -95,15 +95,6 @@ export default function DistrictsPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete district');
     }
-  }
-
-  async function handleSave(data: DistrictCreateInput | DistrictUpdateInput) {
-    if (selectedDistrict) {
-      await updateDistrict(selectedDistrict.id, data);
-    } else {
-      await createDistrict(data as DistrictCreateInput);
-    }
-    void fetchDistricts();
   }
 
   function handleCityFilterChange(value: string) {
@@ -204,7 +195,12 @@ export default function DistrictsPage() {
         )}
       </div>
 
-      <DistrictSheet open={sheetOpen} onOpenChange={setSheetOpen} district={selectedDistrict} onSave={handleSave} />
+      <DistrictSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        district={selectedDistrict}
+        onSuccess={fetchDistricts}
+      />
 
       <DeleteDialog
         open={deleteDialogOpen}

@@ -1,19 +1,19 @@
 'use client';
 
-import { Square, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { ChevronLeft, ChevronRight, Plus, RefreshCw, Search, Square } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
+import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
-import { getAreas, createArea, updateArea, deleteArea } from '@/lib/actions/entities';
+import { deleteArea, getAreas } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
-import { Area, AreaCreateInput, AreaUpdateInput } from '@/types/entities';
+import { Area } from '@/types/entities';
 
-import { AreaSheet } from './area-sheet';
 import { LocationCard } from '../_components/location-card';
+import { AreaSheet } from './area-sheet';
 
 export default function AreasPage() {
   const [areas, setAreas] = useState<Area[]>([]);
@@ -74,15 +74,6 @@ export default function AreasPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete area');
     }
-  }
-
-  async function handleSave(data: AreaCreateInput | AreaUpdateInput) {
-    if (selectedArea) {
-      await updateArea(selectedArea.id, data);
-    } else {
-      await createArea(data as AreaCreateInput);
-    }
-    void fetchAreas();
   }
 
   return (
@@ -162,7 +153,7 @@ export default function AreasPage() {
         )}
       </div>
 
-      <AreaSheet open={sheetOpen} onOpenChange={setSheetOpen} area={selectedArea} onSave={handleSave} />
+      <AreaSheet open={sheetOpen} onOpenChange={setSheetOpen} area={selectedArea} onSuccess={fetchAreas} />
 
       <DeleteDialog
         open={deleteDialogOpen}

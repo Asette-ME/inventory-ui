@@ -49,7 +49,7 @@ export async function serverFetch<T>(endpoint: string, options: FetchOptions = {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: 'Request failed' }));
-    throw new Error(error.detail || error.message || 'Request failed');
+    throw new Error(error.message || error.detail || 'Request failed');
   }
 
   // Handle 204 No Content

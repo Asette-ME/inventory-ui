@@ -182,3 +182,8 @@ When developing Next.js applications:
 - Optimize images and assets
 - Implement proper caching strategies
 - Test critical user flows
+
+## ❌ DON'T
+
+- Do NOT exceed more than 200 + 10% lines of code
+- Do NOT use `any`, `unknown`, or `as any` unless justified

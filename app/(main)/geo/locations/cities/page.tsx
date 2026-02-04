@@ -1,20 +1,20 @@
 'use client';
 
-import { Building2, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
+import { Building2, ChevronLeft, ChevronRight, Plus, RefreshCw, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
+import { CardGridSkeleton, DeleteDialog, EmptyState, FilterBar, PageLayout } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getCities, createCity, updateCity, deleteCity, getCountries } from '@/lib/actions/entities';
+import { deleteCity, getCities, getCountries } from '@/lib/actions/entities';
 import { PaginationMeta } from '@/types/common';
-import { City, CityCreateInput, CityUpdateInput, Country } from '@/types/entities';
+import { City, Country } from '@/types/entities';
 
-import { CitySheet } from './city-sheet';
 import { LocationCard } from '../_components/location-card';
+import { CitySheet } from './city-sheet';
 
 export default function CitiesPage() {
   const [cities, setCities] = useState<City[]>([]);
@@ -95,15 +95,6 @@ export default function CitiesPage() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Failed to delete city');
     }
-  }
-
-  async function handleSave(data: CityCreateInput | CityUpdateInput) {
-    if (selectedCity) {
-      await updateCity(selectedCity.id, data);
-    } else {
-      await createCity(data as CityCreateInput);
-    }
-    void fetchCities();
   }
 
   // Get country name for display
@@ -227,7 +218,7 @@ export default function CitiesPage() {
         onOpenChange={setSheetOpen}
         city={selectedCity}
         countries={countries}
-        onSave={handleSave}
+        onSuccess={fetchCities}
       />
 
       <DeleteDialog

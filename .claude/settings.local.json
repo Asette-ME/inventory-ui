@@ -1,5 +1,12 @@
 {
   "permissions": {
-    "allow": ["Bash(pnpm *)"]
-  }
+    "allow": [
+      "Bash(pnpm *)"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "next-devtools",
+    "shadcn"
+  ],
+  "enableAllProjectMcpServers": true
 }

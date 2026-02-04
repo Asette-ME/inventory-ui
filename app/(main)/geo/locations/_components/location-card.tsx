@@ -1,13 +1,26 @@
 'use client';
 
+import type { LatLngBoundsExpression } from 'leaflet';
 import { useMemo } from 'react';
+import { useMap } from 'react-leaflet';
 
+import { GeoLocation } from '@/app/(main)/geo/locations/_components/types';
 import { Badge } from '@/components/ui/badge';
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
 import { Map, MapPolygon, MapTileLayer } from '@/components/ui/map';
 import { swapCoordinates } from '@/lib/utils';
 
-import { GeoLocation } from './types';
+interface FitBoundsProps {
+  bounds: LatLngBoundsExpression | null;
+}
+
+function FitBounds({ bounds }: FitBoundsProps) {
+  const map = useMap();
+
+  if (bounds) map.fitBounds(bounds, { padding: [20, 20] });
+
+  return null;
+}
 
 interface LocationCardProps {
   data: GeoLocation;
@@ -20,12 +33,7 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
     return swapCoordinates(data.boundaries.coordinates);
   }, [data.boundaries]);
 
-  const bounds = useMemo(() => {
-    if (boundaries && boundaries.length > 0) {
-      return boundaries;
-    }
-    return undefined;
-  }, [boundaries]);
+  const defaultCenter: [number, number] = [25.2048, 55.2708];
 
   return (
     <Item
@@ -34,20 +42,25 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
       onClick={() => onClick?.(data)}
     >
       <ItemHeader className="h-[250px] overflow-hidden">
-        <Map
-          key={data.id}
-          bounds={bounds}
-          dragging={false}
-          scrollWheelZoom={false}
-          doubleClickZoom={false}
-          touchZoom={false}
-          boxZoom={false}
-          keyboard={false}
-          attributionControl={false}
-        >
-          <MapTileLayer />
-          <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />
-        </Map>
+        <div className="h-full w-full">
+          <Map
+            key={data.id}
+            center={defaultCenter}
+            zoom={4}
+            dragging={false}
+            scrollWheelZoom={false}
+            doubleClickZoom={false}
+            touchZoom={false}
+            boxZoom={false}
+            keyboard={false}
+            attributionControl={false}
+            className="h-full w-full"
+          >
+            <MapTileLayer />
+            <FitBounds bounds={boundaries} />
+            <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />
+          </Map>
+        </div>
       </ItemHeader>
 
       <ItemContent>

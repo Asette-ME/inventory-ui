@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-const API_URL = process.env.INVENTORY_API_URL || 'http://localhost:8000';
+const API_URL = process.env.INVENTORY_API_URL;
 
 interface FetchOptions extends Omit<RequestInit, 'body'> {
   body?: unknown;

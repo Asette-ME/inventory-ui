@@ -26,7 +26,8 @@ function DrawerOverlay({ className, ...props }: React.ComponentProps<typeof Draw
     <DrawerPrimitive.Overlay
       data-slot="drawer-overlay"
       className={cn(
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50',
+        'data-[state=open]:animate-in data-[state=closed]:animate-out',
+        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50',
         className,
       )}
       {...props}
@@ -58,7 +59,12 @@ function DrawerContent({ className, children, ...props }: React.ComponentProps<t
         )}
         {...props}
       >
-        <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        <div
+          className={cn(
+            'bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full',
+            'group-data-[vaul-drawer-direction=bottom]/drawer-content:block',
+          )}
+        />
         {children}
       </DrawerPrimitive.Content>
     </DrawerPortal>

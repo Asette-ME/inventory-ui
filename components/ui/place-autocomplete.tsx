@@ -1,12 +1,13 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { Spinner } from '@/components/ui/spinner';
 import type { BBox, Feature, FeatureCollection, Point } from 'geojson';
 import { MapPinIcon, SearchIcon } from 'lucide-react';
 import * as React from 'react';
+
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
+import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/lib/utils';
 
 interface PlaceFeatureProperties {
   osm_id: number;
@@ -291,7 +292,7 @@ function PlaceAutocomplete({
             )}
           >
             {error && <CommandEmpty>Error: {error.message}</CommandEmpty>}
-            {hasNoResults && <CommandEmpty>Can't find {displayValue}.</CommandEmpty>}
+            {hasNoResults && <CommandEmpty>Can&apos;t find {displayValue}.</CommandEmpty>}
             {results.length > 0 && (
               <CommandGroup>
                 {results.map((feature) => {

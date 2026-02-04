@@ -181,7 +181,10 @@ function MapTileLayer({
     resolvedTheme === 'dark' && darkAttribution
       ? darkAttribution
       : (attribution ??
-        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>');
+        cn(
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>,',
+          '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+        ));
 
   useEffect(() => {
     if (context) {
@@ -285,7 +288,10 @@ function MapLayers({
       !tileLayers.some((tileLayer) => tileLayer.name === defaultTileLayer)
     ) {
       throw new Error(
-        `Invalid defaultTileLayer "${defaultTileLayer}" provided to MapLayers. It must match a MapTileLayer's name prop.`,
+        'Invalid defaultTileLayer "' +
+          defaultTileLayer +
+          '" provided to MapLayers. ' +
+          "It must match a MapTileLayer's name prop.",
       );
     }
 
@@ -500,7 +506,9 @@ function MapPopup({ className, ...props }: Omit<PopupProps, 'content'> & { ref?:
   return (
     <LeafletPopup
       className={cn(
-        'bg-popover text-popover-foreground animate-in fade-out-0 fade-in-0 zoom-out-95 zoom-in-95 slide-in-from-bottom-2 z-50 w-72 rounded-md border p-4 font-sans shadow-md outline-hidden',
+        'bg-popover text-popover-foreground animate-in fade-out-0 fade-in-0',
+        'zoom-out-95 zoom-in-95 slide-in-from-bottom-2 z-50 w-72 rounded-md',
+        'border p-4 font-sans shadow-md outline-hidden',
         className,
       )}
       {...props}
@@ -535,7 +543,10 @@ function MapTooltip({
   return (
     <LeafletTooltip
       className={cn(
-        'animate-in fade-in-0 zoom-in-95 fade-out-0 zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 w-fit text-xs text-balance transition-opacity',
+        'animate-in fade-in-0 zoom-in-95 fade-out-0 zoom-out-95',
+        'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2',
+        'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+        'relative z-50 w-fit text-xs text-balance transition-opacity',
         className,
       )}
       data-side={side}

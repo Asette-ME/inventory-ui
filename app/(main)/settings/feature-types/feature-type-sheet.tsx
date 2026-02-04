@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
+import { IconPicker } from '@/components/ui/icon-picker';
 import { createFeatureType, updateFeatureType } from '@/lib/actions/entities';
 import { featureTypeCreateSchema, FeatureTypeFormData } from '@/lib/validations/entities';
 import { FeatureType } from '@/types/entities';
@@ -41,6 +42,7 @@ export function FeatureTypeSheet({ open, onOpenChange, featureType, onSuccess }:
     formState: { isSubmitting },
   } = form;
   const colorValue = watch('color');
+  const iconValue = watch('icon');
 
   useEffect(() => {
     if (featureType) {
@@ -95,13 +97,14 @@ export function FeatureTypeSheet({ open, onOpenChange, featureType, onSuccess }:
           required
         />
 
-        <FormField
-          control={control}
-          name="icon"
-          label="Icon"
-          placeholder="e.g., home, building, factory"
-          description="Lucide icon name (optional)"
-        />
+        <FormFieldWrapper label="Icon" description="Choose a Lucide icon (optional)">
+          <IconPicker
+            value={iconValue}
+            onChange={(icon) => setValue('icon', icon)}
+            placeholder="Select an icon..."
+            disabled={isSubmitting}
+          />
+        </FormFieldWrapper>
 
         <FormField
           control={control}

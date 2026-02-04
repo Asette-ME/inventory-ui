@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getAmenities, deleteAmenity } from '@/lib/actions/entities';
@@ -154,11 +155,11 @@ export default function AmenitiesPage() {
                     <TableCell className="font-medium">{amenity.name}</TableCell>
                     <TableCell className="text-muted-foreground">{truncateDescription(amenity.description)}</TableCell>
                     <TableCell>
-                      {amenity.icon ? (
-                        <span className="text-sm text-muted-foreground font-mono">{amenity.icon}</span>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                      <IconDisplay
+                        name={amenity.icon}
+                        className="h-5 w-5"
+                        fallback={<span className="text-muted-foreground">—</span>}
+                      />
                     </TableCell>
                     <TableCell>
                       {amenity.color ? (

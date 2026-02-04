@@ -9,6 +9,7 @@ import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { GeoEditor } from '@/components/crud/geo-editor';
+import { IconPicker } from '@/components/ui/icon-picker';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createAmenity, updateAmenity } from '@/lib/actions/entities';
@@ -49,6 +50,7 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
     register,
   } = form;
   const colorValue = watch('color');
+  const iconValue = watch('icon');
   const coordinatesValue = watch('coordinates') as Coordinates | null;
   const boundariesValue = watch('boundaries');
 
@@ -116,13 +118,14 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
           {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="icon"
-          label="Icon"
-          placeholder="e.g., pool, dumbbell, car"
-          description="Lucide icon name (optional)"
-        />
+        <FormFieldWrapper label="Icon" description="Choose a Lucide icon (optional)">
+          <IconPicker
+            value={iconValue}
+            onChange={(icon) => setValue('icon', icon)}
+            placeholder="Select an icon..."
+            disabled={isSubmitting}
+          />
+        </FormFieldWrapper>
 
         <FormField
           control={control}

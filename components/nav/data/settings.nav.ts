@@ -1,4 +1,4 @@
-import { Bus, Layers, Settings, Sparkles, Tags } from 'lucide-react';
+import { Bus, Settings, Sparkles, Tags } from 'lucide-react';
 
 import { NavGroupItem } from '@/components/nav/interfaces/nav.interface';
 
@@ -32,21 +32,6 @@ export const settingsNav: NavGroupItem = {
         {
           title: 'Structure Types',
           url: '/settings/structure-types',
-        },
-      ],
-    },
-    {
-      title: 'More',
-      url: '#',
-      icon: Layers,
-      subItems: [
-        {
-          title: 'Developers',
-          url: '/developers',
-        },
-        {
-          title: 'Projects',
-          url: '/projects',
         },
       ],
     },

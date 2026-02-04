@@ -32,6 +32,11 @@ export function LocationSheet({ data, open, onOpenChange }: LocationSheetProps) 
       <SheetContent className="sm:max-w-xl w-full p-0 flex flex-col gap-0 overflow-hidden" side="right">
         {data && (
           <>
+            <SheetHeader>
+              <SheetTitle className="text-2xl">{data.name}</SheetTitle>
+              <SheetDescription>Detailed information about {data.name}</SheetDescription>
+            </SheetHeader>
+
             <div className="relative h-64 w-full bg-muted shrink-0">
               <Map key={data.id} bounds={boundaries} className="h-full w-full rounded-none">
                 <MapTileLayer />
@@ -42,11 +47,6 @@ export function LocationSheet({ data, open, onOpenChange }: LocationSheetProps) 
             </div>
 
             <div className="flex flex-col p-6 overflow-y-auto flex-1">
-              <SheetHeader>
-                <SheetTitle className="text-2xl">{data.name}</SheetTitle>
-                <SheetDescription>Detailed information about {data.name}</SheetDescription>
-              </SheetHeader>
-
               <div className="mt-8 space-y-6">
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-1">

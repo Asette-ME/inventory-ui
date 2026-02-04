@@ -29,11 +29,11 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
 
   return (
     <Item
-      className="bg-white dark:bg-transparent rounded-4xl cursor-pointer card-hover transition-all duration-200"
+      className="bg-white dark:bg-transparent rounded-lg cursor-pointer card-hover transition-all duration-200"
       variant="outline"
       onClick={() => onClick?.(data)}
     >
-      <ItemHeader className="rounded-3xl h-[250px] overflow-hidden">
+      <ItemHeader className="h-[250px] overflow-hidden">
         <Map
           key={data.id}
           bounds={bounds}

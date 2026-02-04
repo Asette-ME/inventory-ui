@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getStructureTypes, deleteStructureType } from '@/lib/actions/entities';
@@ -146,11 +147,11 @@ export default function StructureTypesPage() {
                   <TableRow key={structureType.id}>
                     <TableCell className="font-medium">{structureType.name}</TableCell>
                     <TableCell>
-                      {structureType.icon ? (
-                        <span className="text-sm text-muted-foreground font-mono">{structureType.icon}</span>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
+                      <IconDisplay
+                        name={structureType.icon}
+                        className="h-5 w-5"
+                        fallback={<span className="text-muted-foreground">—</span>}
+                      />
                     </TableCell>
                     <TableCell>
                       {structureType.color ? (

@@ -1,7 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-
 import type { CheckboxItem } from '@radix-ui/react-dropdown-menu';
 import type {
   Circle,
@@ -46,8 +44,8 @@ import {
   Undo2Icon,
   WaypointsIcon,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
 import { useTheme } from 'next-themes';
+import dynamic from 'next/dynamic';
 import {
   createContext,
   useContext,
@@ -75,7 +73,9 @@ import {
   type TooltipProps,
 } from 'react-leaflet';
 import type { MarkerClusterGroupProps } from 'react-leaflet-markercluster';
+import 'react-leaflet-markercluster/styles';
 
+import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
 import {
   DropdownMenu,
@@ -89,7 +89,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { PlaceAutocomplete, type PlaceAutocompleteProps } from '@/components/ui/place-autocomplete';
 import { cn } from '@/lib/utils';
-import 'react-leaflet-markercluster/styles';
 
 const LeafletMapContainer = dynamic(async () => (await import('react-leaflet')).MapContainer, { ssr: false });
 const LeafletTileLayer = dynamic(async () => (await import('react-leaflet')).TileLayer, { ssr: false });
@@ -122,7 +121,7 @@ function Map({
       maxZoom={maxZoom}
       attributionControl={false}
       zoomControl={false}
-      className={cn('z-50 size-full min-h-96 flex-1 rounded-md', className)}
+      className={className}
       {...props}
     />
   );

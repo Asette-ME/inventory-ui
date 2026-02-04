@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
+import { IconPicker } from '@/components/ui/icon-picker';
 import { createStructureType, updateStructureType } from '@/lib/actions/entities';
 import { structureTypeCreateSchema, StructureTypeFormData } from '@/lib/validations/entities';
 import { StructureType } from '@/types/entities';
@@ -41,6 +42,7 @@ export function StructureTypeSheet({ open, onOpenChange, structureType, onSucces
     formState: { isSubmitting },
   } = form;
   const colorValue = watch('color');
+  const iconValue = watch('icon');
 
   useEffect(() => {
     if (structureType) {
@@ -97,13 +99,14 @@ export function StructureTypeSheet({ open, onOpenChange, structureType, onSucces
           required
         />
 
-        <FormField
-          control={control}
-          name="icon"
-          label="Icon"
-          placeholder="e.g., building, home, warehouse"
-          description="Lucide icon name (optional)"
-        />
+        <FormFieldWrapper label="Icon" description="Choose a Lucide icon (optional)">
+          <IconPicker
+            value={iconValue}
+            onChange={(icon) => setValue('icon', icon)}
+            placeholder="Select an icon..."
+            disabled={isSubmitting}
+          />
+        </FormFieldWrapper>
 
         <FormField
           control={control}

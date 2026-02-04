@@ -1,11 +1,11 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
-import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import type { FeatureGroup, LatLng, LatLngExpression } from 'leaflet';
+import { Loader2, MapPin, Save, Shapes, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import type { FieldValues } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -14,17 +14,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Map,
-  MapTileLayer,
-  MapZoomControl,
-  MapMarker,
-  MapPolygon,
   MapDrawControl,
+  MapDrawDelete,
+  MapDrawEdit,
   MapDrawMarker,
   MapDrawPolygon,
-  MapDrawEdit,
-  MapDrawDelete,
   MapDrawUndo,
+  MapMarker,
+  MapPolygon,
   MapSearchControl,
+  MapTileLayer,
+  MapZoomControl,
 } from '@/components/ui/map';
 import type { PlaceFeature } from '@/components/ui/place-autocomplete';
 import { Separator } from '@/components/ui/separator';
@@ -32,7 +32,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { swapCoordinates } from '@/lib/utils';
-import { Coordinates, Boundaries } from '@/types/common';
+import { Boundaries, Coordinates } from '@/types/common';
 
 interface GeoEntitySheetProps<
   T extends { id: string; name: string; coordinates?: Coordinates | null; boundaries?: Boundaries | null },
@@ -220,9 +220,16 @@ export function GeoEntitySheet<
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="flex w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-xl">
+      <SheetContent side="right">
+        <SheetHeader className="shrink-0 border-b p-6">
+          <SheetTitle className="text-xl">{isEditing ? `Edit ${entityName}` : `Create ${entityName}`}</SheetTitle>
+          <SheetDescription>
+            {isEditing ? `Update ${entity?.name}` : `Add a new ${entityName.toLowerCase()}`}
+          </SheetDescription>
+        </SheetHeader>
+
         {/* Map Header */}
-        <div className="relative h-64 w-full shrink-0 bg-muted">
+        <div className="relative h-50 w-full shrink-0 bg-muted">
           <Map
             key={entity?.id || 'new'}
             center={center}
@@ -251,13 +258,6 @@ export function GeoEntitySheet<
 
         {/* Form Content */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <SheetHeader className="shrink-0 border-b p-6">
-            <SheetTitle className="text-xl">{isEditing ? `Edit ${entityName}` : `Create ${entityName}`}</SheetTitle>
-            <SheetDescription>
-              {isEditing ? `Update ${entity?.name}` : `Add a new ${entityName.toLowerCase()}`}
-            </SheetDescription>
-          </SheetHeader>
-
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
             <div className="flex-1 space-y-6 overflow-y-auto p-6">
               {/* Name Field */}

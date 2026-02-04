@@ -9,6 +9,7 @@ import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { GeoEditor } from '@/components/crud/geo-editor';
+import { IconPicker } from '@/components/ui/icon-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { createAttraction, updateAttraction } from '@/lib/actions/entities';
 import { attractionCreateSchema, AttractionFormData } from '@/lib/validations/entities';
@@ -50,6 +51,7 @@ export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: A
     formState: { isSubmitting, errors },
   } = form;
   const colorValue = watch('color');
+  const iconValue = watch('icon');
 
   useEffect(() => {
     if (attraction) {
@@ -134,13 +136,14 @@ export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: A
           {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="icon"
-          label="Icon"
-          placeholder="e.g., landmark, castle, tree"
-          description="Lucide icon name (optional)"
-        />
+        <FormFieldWrapper label="Icon" description="Choose a Lucide icon (optional)">
+          <IconPicker
+            value={iconValue}
+            onChange={(icon) => setValue('icon', icon)}
+            placeholder="Select an icon..."
+            disabled={isSubmitting}
+          />
+        </FormFieldWrapper>
 
         <FormField
           control={control}

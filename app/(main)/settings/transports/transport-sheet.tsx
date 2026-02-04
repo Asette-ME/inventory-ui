@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
+import { IconPicker } from '@/components/ui/icon-picker';
 import { createTransport, updateTransport } from '@/lib/actions/entities';
 import { transportCreateSchema, TransportFormData } from '@/lib/validations/entities';
 import { Transport } from '@/types/entities';
@@ -41,6 +42,7 @@ export function TransportSheet({ open, onOpenChange, transport, onSuccess }: Tra
     formState: { isSubmitting },
   } = form;
   const colorValue = watch('color');
+  const iconValue = watch('icon');
 
   useEffect(() => {
     if (transport) {
@@ -89,13 +91,14 @@ export function TransportSheet({ open, onOpenChange, transport, onSuccess }: Tra
       <form className="space-y-6">
         <FormField control={control} name="name" label="Name" placeholder="e.g., Bus, Train, Metro" required />
 
-        <FormField
-          control={control}
-          name="icon"
-          label="Icon"
-          placeholder="e.g., bus, train, car"
-          description="Lucide icon name (optional)"
-        />
+        <FormFieldWrapper label="Icon" description="Choose a Lucide icon (optional)">
+          <IconPicker
+            value={iconValue}
+            onChange={(icon) => setValue('icon', icon)}
+            placeholder="Select an icon..."
+            disabled={isSubmitting}
+          />
+        </FormFieldWrapper>
 
         <FormField
           control={control}

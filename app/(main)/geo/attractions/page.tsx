@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { getAttractions, deleteAttraction } from '@/lib/actions/entities';
@@ -160,11 +161,11 @@ export default function AttractionsPage() {
                       )}
                     </TableCell>
                     <TableCell>
-                      {attraction.icon ? (
-                        <span className="text-sm text-muted-foreground font-mono">{attraction.icon}</span>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                      <IconDisplay
+                        name={attraction.icon}
+                        className="h-5 w-5"
+                        fallback={<span className="text-muted-foreground">—</span>}
+                      />
                     </TableCell>
                     <TableCell>
                       {attraction.color ? (

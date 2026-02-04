@@ -1,9 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { LatLngExpression, FeatureGroup, LatLng } from 'leaflet';
-import { Loader2, MapPin, Shapes, Save, X } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
+import type { FeatureGroup, LatLng, LatLngExpression } from 'leaflet';
+import { Loader2, MapPin, Save, Shapes, X } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -12,17 +12,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
   Map,
-  MapTileLayer,
-  MapZoomControl,
-  MapMarker,
-  MapPolygon,
   MapDrawControl,
+  MapDrawDelete,
+  MapDrawEdit,
   MapDrawMarker,
   MapDrawPolygon,
-  MapDrawEdit,
-  MapDrawDelete,
   MapDrawUndo,
+  MapMarker,
+  MapPolygon,
   MapSearchControl,
+  MapTileLayer,
+  MapZoomControl,
 } from '@/components/ui/map';
 import type { PlaceFeature } from '@/components/ui/place-autocomplete';
 import { Separator } from '@/components/ui/separator';
@@ -31,7 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { swapCoordinates } from '@/lib/utils';
 import { countryCreateSchema, CountryFormData } from '@/lib/validations/entities';
-import { Country, CountryCreateInput, CountryUpdateInput, Coordinates } from '@/types/entities';
+import { Coordinates, Country, CountryCreateInput, CountryUpdateInput } from '@/types/entities';
 
 interface CountrySheetProps {
   open: boolean;
@@ -207,6 +207,13 @@ export function CountrySheet({ open, onOpenChange, country, onSave }: CountryShe
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="flex w-full flex-col gap-0 overflow-hidden p-0 sm:max-w-xl max-sm:h-full">
+        <SheetHeader className="shrink-0 border-b p-6">
+          <SheetTitle className="text-xl">{isEditing ? 'Edit Country' : 'Create Country'}</SheetTitle>
+          <SheetDescription>
+            {isEditing ? `Update ${country?.name}` : 'Add a new country to the system'}
+          </SheetDescription>
+        </SheetHeader>
+
         {/* Map Header */}
         <div className="relative h-48 sm:h-64 w-full shrink-0 bg-muted">
           <Map
@@ -237,48 +244,42 @@ export function CountrySheet({ open, onOpenChange, country, onSave }: CountryShe
 
         {/* Form Content */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <SheetHeader className="shrink-0 border-b p-6">
-            <SheetTitle className="text-xl">{isEditing ? 'Edit Country' : 'Create Country'}</SheetTitle>
-            <SheetDescription>
-              {isEditing ? `Update ${country?.name}` : 'Add a new country to the system'}
-            </SheetDescription>
-          </SheetHeader>
-
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-1 flex-col overflow-hidden">
             <div className="flex-1 space-y-6 overflow-y-auto p-6">
-              {/* Name Field */}
-              <div className="space-y-2">
-                <Label htmlFor="name">
-                  Name <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="name"
-                  placeholder="e.g., United Arab Emirates"
-                  disabled={isSubmitting}
-                  {...register('name')}
-                  className={errors.name ? 'border-destructive' : ''}
-                />
-                {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
-              </div>
-
-              {/* Code Field */}
-              <div className="space-y-2">
-                <Label htmlFor="code">
-                  Code <span className="text-destructive">*</span>
-                </Label>
-                <Input
-                  id="code"
-                  placeholder="e.g., UAE, USA"
-                  maxLength={3}
-                  disabled={isSubmitting}
-                  {...register('code')}
-                  className={errors.code ? 'border-destructive' : ''}
-                />
-                {errors.code && <p className="text-sm text-destructive">{errors.code.message}</p>}
-                <p className="text-xs text-muted-foreground">2-3 character country code</p>
-              </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Name Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="name">
+                    Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    placeholder="e.g., United Arab Emirates"
+                    disabled={isSubmitting}
+                    {...register('name')}
+                    className={errors.name ? 'border-destructive' : ''}
+                  />
+                  {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+                </div>
+
+                {/* Code Field */}
+                <div className="space-y-2">
+                  <Label htmlFor="code">
+                    Code <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="code"
+                    placeholder="e.g., UAE, USA"
+                    minLength={2}
+                    maxLength={3}
+                    disabled={isSubmitting}
+                    {...register('code')}
+                    className={errors.code ? 'border-destructive' : ''}
+                  />
+                  {errors.code && <p className="text-sm text-destructive">{errors.code.message}</p>}
+                  <p className="text-xs text-muted-foreground">3 character country code</p>
+                </div>
+
                 {/* Currency Field */}
                 <div className="space-y-2">
                   <Label htmlFor="currency">Currency</Label>
@@ -297,12 +298,13 @@ export function CountrySheet({ open, onOpenChange, country, onSave }: CountryShe
                   <Label htmlFor="phone_code">Phone Code</Label>
                   <Input
                     id="phone_code"
-                    placeholder="e.g., +971"
+                    type="number"
+                    placeholder="e.g., 971"
                     maxLength={5}
                     disabled={isSubmitting}
                     {...register('phone_code')}
                   />
-                  <p className="text-xs text-muted-foreground">Include + prefix</p>
+                  <p className="text-xs text-muted-foreground">Do not include + prefix</p>
                 </div>
               </div>
 

@@ -58,12 +58,12 @@ export function LocationCard({ data, onClick }: LocationCardProps) {
             'rounded-xl p-3',
             'bg-clip-padding backdrop-filter backdrop-blur-xl',
             'dark:border dark:border-white-900 shadow',
-            'flex flex-row items-center justify-between',
+            'flex flex-row items-start justify-between gap-2',
           )}
         >
           <ItemTitle className="text-lg">{data.name}</ItemTitle>
-          <ItemDescription>
-            <Badge className="bg-primary/10 text-primary inset-ring inset-ring-primary/40">{data.code}</Badge>
+          <ItemDescription className="shrink-0">
+            <Badge className="w-12 h-7 bg-primary/10 text-primary inset-ring inset-ring-primary/40">{data.code}</Badge>
           </ItemDescription>
         </ItemContent>
       </div>

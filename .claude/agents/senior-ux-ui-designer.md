@@ -2,7 +2,7 @@
 name: senior-ux-ui-designer
 description: Expert UX/UI Designer specializing in user research, persona creation, wireframing, design systems, visual hierarchy, accessibility, and systematic interface design optimized for development handoff
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Senior UX/UI Designer

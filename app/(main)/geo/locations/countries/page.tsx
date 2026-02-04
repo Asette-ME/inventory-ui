@@ -1,83 +1,105 @@
 'use client';
 
+import { useState, useEffect, useCallback } from 'react';
+import { toast } from 'sonner';
+import { MapPin, Plus, Search, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
+
+import { PageLayout, FilterBar, EmptyState, DeleteDialog, CardGridSkeleton } from '@/components/crud';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { ItemGroup } from '@/components/ui/item';
-import { api } from '@/lib/api';
-import { ChevronLeft, ChevronRight, MapPin, SearchIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { getCountries, createCountry, updateCountry, deleteCountry } from '@/lib/actions/entities';
+import { Country, CountryCreateInput, CountryUpdateInput } from '@/types/entities';
+import { PaginationMeta } from '@/types/common';
+
 import { LocationCard } from '../_components/location-card';
-import { LocationSheet } from '../_components/location-sheet';
-import { ApiResponse, GeoLocation, PaginationMeta } from '../_components/types';
+import { CountrySheet } from './country-sheet';
 
 export default function CountriesPage() {
-  const [data, setData] = useState<GeoLocation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<GeoLocation | null>(null);
-  const [limit] = useState(10);
 
-  const fetchData = async () => {
-    setLoading(true);
+  // Sheet state
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
+
+  // Delete dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [countryToDelete, setCountryToDelete] = useState<Country | null>(null);
+
+  const fetchCountries = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: limit.toString(),
-      });
-      if (search) params.append('search', search);
-
-      const res = await api.get(`/country/?${params.toString()}`);
-      if (res.ok) {
-        const json = (await res.json()) as ApiResponse<GeoLocation>;
-        if (json.success) {
-          setData(json.data);
-          setPagination(json.pagination);
-        }
-      }
+      const response = await getCountries({ search, page, limit: 12 });
+      setCountries(response.data);
+      setPagination(response.pagination);
     } catch (error) {
-      console.error('Failed to fetch countries', error);
+      toast.error('Failed to load countries');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
-  };
+  }, [search, page]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData();
-    }, 500); // Increased debounce slightly
+      fetchCountries();
+    }, 300);
     return () => clearTimeout(timer);
-  }, [search, page]);
+  }, [fetchCountries]);
 
-  const handleEdit = (item: GeoLocation) => {
-    console.log('Edit', item);
-    // TODO: Implement edit logic
-  };
+  function handleCreate() {
+    setSelectedCountry(null);
+    setSheetOpen(true);
+  }
 
-  const handleDelete = (item: GeoLocation) => {
-    console.log('Delete', item);
-    // TODO: Implement delete logic
-  };
+  function handleEdit(country: Country) {
+    setSelectedCountry(country);
+    setSheetOpen(true);
+  }
+
+  function handleDeleteClick(country: Country) {
+    setCountryToDelete(country);
+    setDeleteDialogOpen(true);
+  }
+
+  async function handleDeleteConfirm() {
+    if (!countryToDelete) return;
+    try {
+      await deleteCountry(countryToDelete.id);
+      toast.success(`Country "${countryToDelete.name}" deleted successfully`);
+      fetchCountries();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete country');
+    }
+  }
+
+  async function handleSave(data: CountryCreateInput | CountryUpdateInput) {
+    if (selectedCountry) {
+      await updateCountry(selectedCountry.id, data);
+    } else {
+      await createCountry(data as CountryCreateInput);
+    }
+    fetchCountries();
+  }
 
   return (
-    <div className="flex flex-1 flex-col gap-6 p-6 h-full">
-      <div>
-        <div className="flex items-center gap-2">
-          <MapPin />
-          <h1 className="text-2xl font-bold mb-0">Countries</h1>
-        </div>
-        <p className="text-muted-foreground">Manage countries</p>
-      </div>
-
-      <div className="flex items-center gap-4">
-        <div className="max-w-sm w-full">
-          <InputGroup className="bg-white">
+    <PageLayout
+      title="Countries"
+      description="Manage countries and their geographic boundaries"
+      icon={MapPin}
+      onAdd={handleCreate}
+      addLabel="Add Country"
+    >
+      <div className="space-y-6">
+        <FilterBar>
+          <InputGroup className="w-full sm:w-64 bg-white dark:bg-muted/50">
             <InputGroupAddon>
-              <SearchIcon />
+              <Search />
             </InputGroupAddon>
             <InputGroupInput
-              type="search"
               placeholder="Search countries..."
               value={search}
               onChange={(e) => {
@@ -86,92 +108,75 @@ export default function CountriesPage() {
               }}
             />
           </InputGroup>
-        </div>
-      </div>
+          <Button variant="outline" onClick={fetchCountries} disabled={isLoading} className="gap-2">
+            <RefreshCw className={isLoading ? 'animate-spin' : ''} />
+            <span className="hidden sm:inline">Refresh</span>
+          </Button>
+        </FilterBar>
 
-      <LocationList
-        data={data}
-        isLoading={loading}
-        setSelectedLocation={setSelectedLocation}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
+        {isLoading && countries.length === 0 ? (
+          <CardGridSkeleton count={8} />
+        ) : countries.length === 0 ? (
+          <EmptyState
+            title="No countries found"
+            description={search ? 'Try adjusting your search' : 'Get started by creating your first country'}
+            icon={MapPin}
+            action={
+              !search && (
+                <Button onClick={handleCreate} className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Country
+                </Button>
+              )
+            }
+          />
+        ) : (
+          <ItemGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {countries.map((country) => (
+              <LocationCard
+                key={country.id}
+                data={country as any}
+                onClick={() => handleEdit(country)}
+                onEdit={() => handleEdit(country)}
+                onDelete={() => handleDeleteClick(country)}
+              />
+            ))}
+          </ItemGroup>
+        )}
 
-      {pagination && (
-        <div className="flex items-center justify-between border-t pt-4">
-          <div className="text-sm text-muted-foreground">
-            Showing {(pagination.page - 1) * pagination.limit + 1} to{' '}
-            {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} entries
+        {pagination && pagination.total_pages > 1 && (
+          <div className="flex items-center justify-between border-t pt-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {(page - 1) * 12 + 1} to {Math.min(page * 12, pagination.total)} of {pagination.total} countries
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!pagination.has_previous}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                <ChevronLeft className="mr-1 h-4 w-4" />
+                Previous
+              </Button>
+              <Button variant="outline" size="sm" disabled={!pagination.has_next} onClick={() => setPage((p) => p + 1)}>
+                Next
+                <ChevronRight className="ml-1 h-4 w-4" />
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!pagination.has_previous}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Previous
-            </Button>
-            <Button variant="outline" size="sm" disabled={!pagination.has_next} onClick={() => setPage((p) => p + 1)}>
-              Next
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      <LocationSheet
-        data={selectedLocation}
-        open={!!selectedLocation}
-        onOpenChange={(open) => !open && setSelectedLocation(null)}
+      <CountrySheet open={sheetOpen} onOpenChange={setSheetOpen} country={selectedCountry} onSave={handleSave} />
+
+      <DeleteDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Delete Country"
+        itemName={countryToDelete?.name}
+        onConfirm={handleDeleteConfirm}
       />
-    </div>
-  );
-}
-
-function LocationList({
-  data,
-  isLoading,
-  setSelectedLocation,
-  handleEdit,
-  handleDelete,
-}: {
-  data: GeoLocation[];
-  isLoading: boolean;
-  setSelectedLocation: (location: GeoLocation | null) => void;
-  handleEdit: (location: GeoLocation) => void;
-  handleDelete: (location: GeoLocation) => void;
-}) {
-  if (isLoading) {
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-64 rounded-lg bg-muted animate-pulse" />
-        ))}
-      </div>
-    );
-  }
-
-  if (data.length === 0) {
-    return (
-      <div className="flex h-64 items-center justify-center rounded-lg border border-dashed text-muted-foreground">
-        No countries found
-      </div>
-    );
-  }
-
-  return (
-    <ItemGroup className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {data.map((country) => (
-        <LocationCard
-          key={country.id}
-          data={country}
-          onClick={setSelectedLocation}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      ))}
-    </ItemGroup>
+    </PageLayout>
   );
 }

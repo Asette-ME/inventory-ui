@@ -2,7 +2,7 @@
 name: nextjs-senior-automation-engineer
 description: Expert Next.js automation engineer specializing in testing, API automation, and CI/CD workflows
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Next.js Automation Engineer

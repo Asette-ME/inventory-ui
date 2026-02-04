@@ -45,7 +45,7 @@ export function useUsers(params: UsersParams): UseUsersReturn {
     setError(null);
 
     try {
-      const res = await api.get(`/user/?${queryString}`);
+      const res = await api.get(`/user?${queryString}`);
 
       if (!res.ok) {
         const errorData = await res.json();

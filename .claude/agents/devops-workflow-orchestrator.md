@@ -2,7 +2,7 @@
 name: devops-workflow-orchestrator
 description: Orchestrates DevOps infrastructure development through Product Manager → DevOps Engineer → Documentation Engineer workflow. Use when building production-ready infrastructure, CI/CD pipelines, or containerization.
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # DevOps Workflow Orchestrator

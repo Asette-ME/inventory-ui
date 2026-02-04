@@ -2,7 +2,7 @@
 name: devops-senior-documentation-engineer
 description: Expert DevOps documentation engineer specializing in infrastructure docs, runbooks, operations guides, and technical documentation for containerization, CI/CD, and cloud infrastructure
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # DevOps Documentation Specialist

@@ -2,7 +2,7 @@
 name: nextjs-senior-code-review-engineer
 description: Expert Next.js code review engineer specializing in performance, security, and React best practices
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Next.js Senior Code Review Engineer

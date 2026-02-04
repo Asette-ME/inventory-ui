@@ -2,6 +2,21 @@ type FetchOptions = RequestInit & {
   headers?: Record<string, string>;
 };
 
+/**
+ * Normalize endpoint to ensure trailing slash before query params
+ * This prevents 308 redirects from FastAPI's redirect_slashes behavior
+ */
+function normalizeEndpoint(endpoint: string): string {
+  // Split path and query string
+  const [path, query] = endpoint.split('?');
+
+  // Ensure path ends with trailing slash (FastAPI routes expect this)
+  const normalizedPath = path.endsWith('/') ? path : `${path}/`;
+
+  // Reconstruct with query string if present
+  return query ? `${normalizedPath}?${query}` : normalizedPath;
+}
+
 export const api = {
   async fetch(endpoint: string, options: FetchOptions = {}) {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
@@ -14,8 +29,9 @@ export const api = {
 
     const config = { ...options, headers };
 
-    // Use relative path /api to trigger Next.js rewrites
-    const response = await fetch(`/api${endpoint}`, config);
+    // Normalize endpoint to prevent 308 redirects and use relative path /api
+    const normalizedEndpoint = normalizeEndpoint(endpoint);
+    const response = await fetch(`/api${normalizedEndpoint}`, config);
 
     if (response.status === 401) {
       // TODO: Handle token refresh or logout

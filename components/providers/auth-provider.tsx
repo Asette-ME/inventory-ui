@@ -115,6 +115,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const handleToken = (token: string) => {
     localStorage.setItem('token', token);
+    // Also set cookie for server-side access
+    document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
     const decoded = jwtDecode<AuthToken>(token);
     setUser(decoded.user);
 
@@ -126,6 +128,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('token');
+    // Clear cookie
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     setUser(null);
     router.push('/login');
   };

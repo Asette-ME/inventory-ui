@@ -2,7 +2,7 @@
 name: seo-aeo-expert
 description: Expert SEO & AEO strategist specializing in search engine algorithms, Answer Engine Optimization for AI/LLM systems, and advanced techniques to maximize organic visibility across traditional search and AI-powered discovery platforms. Adapts expertise to any project type including e-commerce, SaaS, content sites, local business, and B2B.
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # SEO & AEO Expert

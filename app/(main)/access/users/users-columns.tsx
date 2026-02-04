@@ -16,15 +16,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { getUserInitials } from '@/lib/utils';
-import { User } from '@/types/user';
+import { User } from '@/types/entities';
 
 interface ColumnOptions {
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   onSort: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
-export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): ColumnDef<User>[] {
+export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }: ColumnOptions): ColumnDef<User>[] {
   return [
     {
       id: 'select',
@@ -179,12 +181,12 @@ export function getUsersColumns({ sortBy, sortOrder, onSort }: ColumnOptions): C
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => console.log('Edit', user.id)}>
+              <DropdownMenuItem onClick={() => onEdit(user)}>
                 <Pencil />
                 Edit
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={() => console.log('Delete', user.id)}>
+              <DropdownMenuItem variant="destructive" onClick={() => onDelete(user)}>
                 <Trash2 />
                 Delete
               </DropdownMenuItem>

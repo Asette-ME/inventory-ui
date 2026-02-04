@@ -1,7 +1,7 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { KeyRound, RefreshCw, Search, Shield, ShieldCheck, User as UserIcon, X } from 'lucide-react';
+import { KeyRound, RefreshCw, Search, Shield, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { DataTableFacetedFilter, DataTableFilterDrawer, DataTableViewOptions } from '@/components/data-table';
@@ -9,14 +9,8 @@ import { FilterOption } from '@/components/data-table/data-table-faceted-filter'
 import { FilterGroup } from '@/components/data-table/data-table-filter-drawer';
 import { Button } from '@/components/ui/button';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
-import { User } from '@/types/user';
-
-// Hardcoded roles for now - will be fetched from API later
-const ROLE_OPTIONS: FilterOption[] = [
-  { label: 'Superadmin', value: 'superadmin', icon: ShieldCheck },
-  { label: 'Admin', value: 'admin', icon: Shield },
-  { label: 'User', value: 'user', icon: UserIcon },
-];
+import { getRoles } from '@/lib/actions/entities';
+import { User, Role } from '@/types/entities';
 
 interface UsersToolbarProps {
   table: Table<User>;
@@ -40,8 +34,31 @@ export function UsersToolbar({
   isLoading,
 }: UsersToolbarProps) {
   const [searchValue, setSearchValue] = useState(search);
+  const [roleOptions, setRoleOptions] = useState<FilterOption[]>([]);
+  const [rolesLoading, setRolesLoading] = useState(true);
   const hasFilters = search || roles.length > 0;
   const filterCount = roles.length;
+
+  // Fetch roles from backend
+  useEffect(() => {
+    async function fetchRoles() {
+      try {
+        const response = await getRoles({ limit: 100 });
+        setRoleOptions(
+          response.data.map((role: Role) => ({
+            label: role.name,
+            value: role.id,
+            icon: Shield,
+          })),
+        );
+      } catch (error) {
+        console.error('Failed to fetch roles:', error);
+      } finally {
+        setRolesLoading(false);
+      }
+    }
+    fetchRoles();
+  }, []);
 
   // Debounce search input
   useEffect(() => {
@@ -62,7 +79,7 @@ export function UsersToolbar({
     {
       id: 'roles',
       title: 'Role',
-      options: ROLE_OPTIONS,
+      options: roleOptions,
       selectedValues: roles,
       onChange: onRolesChange,
     },
@@ -90,10 +107,11 @@ export function UsersToolbar({
         <div className="hidden sm:flex items-center gap-2">
           <DataTableFacetedFilter
             title="Role"
-            options={ROLE_OPTIONS}
+            options={roleOptions}
             selectedValues={roles}
             onChange={onRolesChange}
             prependIcon={KeyRound}
+            disabled={rolesLoading}
           />
           {hasFilters && (
             <Button className="flex items-center gap-2" variant="ghost" onClick={onReset}>

@@ -2,7 +2,7 @@
 name: user-experience-expert
 description: Expert UX Designer and Strategist specializing in visual hierarchy, design psychology, color theory, accessibility, UX laws, systematic design systems, user research, and comprehensive design critique with mandatory self-review and documentation
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # User Experience Expert

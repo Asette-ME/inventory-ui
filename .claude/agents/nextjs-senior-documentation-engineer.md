@@ -2,7 +2,7 @@
 name: nextjs-senior-documentation-engineer
 description: Expert Next.js documentation engineer specializing in component docs, API docs, and technical guides
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Next.js Documentation Specialist

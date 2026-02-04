@@ -2,7 +2,7 @@
 name: nextjs-workflow-orchestrator
 description: Orchestrates complete Next.js feature development through Product Manager → Developer → Code Review → Automation → Documentation workflow. Use when building production-ready Next.js features end-to-end.
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Next.js Workflow Orchestrator

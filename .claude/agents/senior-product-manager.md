@@ -2,7 +2,7 @@
 name: senior-product-manager
 description: Expert Product Manager specializing in breaking down requirements into actionable task lists optimized for AI agent (Claude Code) implementation
 tools: *, mcp__context7__*
-model: claude-sonnet-4-5
+model: opus
 ---
 
 # Senior Product Manager

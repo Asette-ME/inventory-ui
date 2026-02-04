@@ -32,7 +32,7 @@ export function LocationCard({ data, onClick, onEdit, onDelete }: LocationCardPr
 
   return (
     <Item
-      className="bg-white dark:bg-transparent rounded-4xl cursor-pointer"
+      className="bg-white dark:bg-transparent rounded-4xl cursor-pointer card-hover transition-all duration-200"
       variant="outline"
       onClick={() => onClick?.(data)}
     >

@@ -91,17 +91,21 @@ See `references/skill_discovery_patterns.md` for comprehensive skill discovery c
 
 **Match the task domain to the right agent persona:**
 
-| Domain/Technology                | Correct Agent                  | Key Indicators                         |
-| -------------------------------- | ------------------------------ | -------------------------------------- |
-| Laravel backend, APIs, Eloquent  | `laravel-senior-engineer`      | `*.php`, `/app/`, `/routes/`, Eloquent |
-| Next.js, React Server Components | `nextjs-senior-engineer`       | `*.tsx`, `/app/`, `next.config.*`      |
-| NestJS APIs, microservices       | `nestjs-senior-engineer`       | `*.ts`, `@nestjs/*`, DI patterns       |
-| Remix full-stack apps            | `remix-senior-engineer`        | `*.tsx`, `remix.config.*`, loaders     |
-| Express.js APIs, middleware      | `express-senior-engineer`      | `*.js/*.ts`, `express` imports         |
-| Expo React Native mobile         | `expo-react-native-engineer`   | `*.tsx`, `app.json`, Expo modules      |
-| Flutter mobile apps              | `flutter-senior-engineer`      | `*.dart`, `pubspec.yaml`               |
-| Magento 2 e-commerce             | `magento-senior-engineer`      | `*.php`, `/app/code/`, Magento DI      |
-| General exploration, research    | `general-purpose` or `Explore` | Non-framework work, discovery          |
+| Domain/Technology                | Correct Agent                   | Key Indicators                         |
+| -------------------------------- | ------------------------------- | -------------------------------------- |
+| Laravel backend, APIs, Eloquent  | `laravel-senior-engineer`       | `*.php`, `/app/`, `/routes/`, Eloquent |
+| Next.js, React Server Components | `nextjs-senior-engineer`        | `*.tsx`, `/app/`, `next.config.*`      |
+| NestJS APIs, microservices       | `nestjs-senior-engineer`        | `*.ts`, `@nestjs/*`, DI patterns       |
+| Remix full-stack apps            | `remix-senior-engineer`         | `*.tsx`, `remix.config.*`, loaders     |
+| Express.js APIs, middleware      | `express-senior-engineer`       | `*.js/*.ts`, `express` imports         |
+| Node.js CLI tools                | `nodejs-cli-senior-engineer`    | `commander`, `inquirer`, `ora`, CLI    |
+| AWS infrastructure, CDK          | `devops-aws-senior-engineer`    | CDK, CloudFormation, Terraform, AWS    |
+| Docker, containers               | `devops-docker-senior-engineer` | Dockerfile, docker-compose, containers |
+| Expo React Native mobile         | `expo-react-native-engineer`    | `*.tsx`, `app.json`, Expo modules      |
+| Flutter mobile apps              | `flutter-senior-engineer`       | `*.dart`, `pubspec.yaml`               |
+| Magento 2 e-commerce             | `magento-senior-engineer`       | `*.php`, `/app/code/`, Magento DI      |
+| Architecture planning            | `Plan`                          | Design decisions, implementation plans |
+| General exploration, research    | `general-purpose` or `Explore`  | Non-framework work, discovery          |
 
 See `references/agent_matching_logic.md` for comprehensive agent catalog, detailed matching rules, confidence scoring, edge cases, and delegation brief templates.
 
@@ -151,41 +155,104 @@ See `references/agent_matching_logic.md` for comprehensive agent catalog, detail
 
 ## When This Skill Is Invoked
 
-**When the user explicitly invokes this skill (e.g., "use start skill"), you MUST first:**
+**When the user explicitly invokes this skill (e.g., "use start skill"), you MUST perform file system discovery:**
 
-1. **Discover all available skills** - Look at the `<available_skills>` section in your system prompt and extract all skill names and descriptions
-2. **Discover all available agents** - Look at the Task tool description in your system prompt and extract all available agent types (subagent_type options)
-3. **Output to the user** - Present a complete, explicit list of discovered skills and agents
-4. **Create a mental map** - Internalize this inventory for future reference throughout the conversation
+### Discovery Process (Required Steps)
 
-**This discovery step only happens when the skill is explicitly invoked, not for every task.**
+#### Step 1: Discover Skills from File System
 
-**How to discover:**
-
-- **Skills**: Read from `<available_skills>` section → list each `<name>` and `<description>`
-- **Agents**: Read from Task tool parameters → list each subagent_type option from the agent catalog
-
-**Example output format:**
+Use Glob to scan `.claude/skills/*/SKILL.md`:
 
 ```
-I'm using the start skill. Let me first discover and show you what's available:
+Glob: .claude/skills/*/SKILL.md
+```
 
-**Available Skills:**
-[Dynamically list from <available_skills>]
-- skill-name: Description
-- skill-name: Description
-...
+For each SKILL.md found:
 
-**Available Agents:**
-[Dynamically list from Task tool agent types]
-- agent-name: Description
-- agent-name: Description
-...
+1. Read the first 10 lines to extract the skill name and description
+2. The skill name is the directory name (e.g., `.claude/skills/commit/SKILL.md` → skill: `commit`)
+3. Extract the description from the first heading or description line
+
+**Why file system:** The file system is the source of truth. Skills are installed as directories with SKILL.md files. Scanning ensures you discover ALL skills, including newly installed ones.
+
+**IMPORTANT - Naming Convention:** Skill files **MUST** be named `SKILL.md` (uppercase). The discovery pattern is case-sensitive. Using `skill.md` (lowercase) will cause the skill to be missed during discovery.
+
+#### Step 2: Discover Agents from Task Tool
+
+Read the Task tool description in your available tools. Extract all `subagent_type` options from the agent catalog section.
+
+Common agents include:
+
+- `laravel-senior-engineer` - Laravel/PHP backend development
+- `nextjs-senior-engineer` - Next.js/React applications
+- `express-senior-engineer` - Express.js APIs and middleware
+- `devops-aws-senior-engineer` - AWS infrastructure and CDK/CloudFormation
+- `devops-docker-senior-engineer` - Docker containerization and orchestration
+- `nodejs-cli-senior-engineer` - Node.js CLI tool development
+- `Plan` - Software architecture and implementation planning
+- `Explore` - Fast codebase exploration and discovery
+- `general-purpose` - Multi-step research and complex tasks
+
+#### Step 3: Discover Plugins from Tool Names
+
+Scan all available tools for the `mcp__` prefix pattern:
+
+**Pattern:** `mcp__<plugin-name>__<tool-name>`
+
+Examples:
+
+- `mcp__mastra__mastraDocs` → plugin: **mastra**, tool: `mastraDocs`
+- `mcp__context7__resolve-library-id` → plugin: **context7**, tool: `resolve-library-id`
+
+Group tools by plugin name and list each plugin with its available tools.
+
+#### Step 4: Output Discovery Results
+
+Present a complete, explicit list of discovered capabilities:
+
+```
+I'm using the start skill. Discovering capabilities from file system and tools...
+
+**Available Skills:** (from .claude/skills/*/SKILL.md)
+- commit: Commit changes with intelligent conventional commit messages
+- create-pr: Create pull requests with validation
+- [other discovered skills...]
+
+**Available Agents:** (from Task tool subagent_type)
+- laravel-senior-engineer: Laravel/PHP backend development
+- nextjs-senior-engineer: Next.js/React applications
+- [other available agents...]
+
+**Available Plugins (MCP):** (from mcp__ prefixed tools)
+- mastra: Mastra framework documentation and tooling
+  Tools: mastraDocs, mastraMigration, startMastraCourse...
+- [other discovered plugins...]
 
 Now, let's proceed with your task...
 ```
 
+#### Step 5: Sync CLAUDE.md
+
+After discovery, update the `## Skills, Agents & Plugins` section in CLAUDE.md:
+
+1. Read the existing tables in CLAUDE.md
+2. Compare against discovered skills, agents, and plugins
+3. Use the Edit tool to add any missing entries or update outdated ones
+4. Keep entries concise: one row per skill/agent/plugin
+
+**This ensures CLAUDE.md stays current as new capabilities are installed.**
+
+### Discovery Reference
+
+For detailed discovery procedures with exact commands, see `references/discovery.md`.
+
 ## Core Workflow
+
+---
+
+## Phase 1: Discovery (MANDATORY)
+
+Complete this phase before ANY execution. Gate: You must have identified skills, agents, and gathered context.
 
 ### Step 1: Understand the Request
 
@@ -225,6 +292,7 @@ If the request is ambiguous, use the AskUserQuestion tool to clarify:
 - User: "Add JWT auth to Laravel API" → Identify Laravel, delegate to `laravel-senior-engineer`
 - User: "Build checkout page in Next.js" → Identify Next.js, delegate to `nextjs-senior-engineer`
 - User: "Find all API endpoints" → Use Explore agent for discovery
+- User: "Find all async functions without error handling" → Use `ast-grep` skill for structural code search
 - User: "Fix typo in README" → Simple task, handle directly
 
 See `references/agent_matching_logic.md` for detailed delegation decision trees, confidence scoring, and multi-agent scenarios.
@@ -244,6 +312,7 @@ See `references/agent_matching_logic.md` for detailed delegation decision trees,
 - Use the Task tool with `subagent_type=Explore` for broad codebase exploration
 - Use Glob to find relevant files by pattern
 - Use Grep to search for existing implementations
+- Use the `ast-grep` skill for structural code pattern searches (AST-based, beyond text matching)
 - Use Read to examine specific files
 
 **Context gathering is MANDATORY - never skip this step.**
@@ -254,6 +323,12 @@ See `references/agent_matching_logic.md` for detailed delegation decision trees,
 - "Search for similar API endpoint patterns"
 - "Locate where user data is currently handled"
 - "Identify the framework and tech stack in use"
+
+---
+
+## Phase 2: Execution
+
+With discovery complete, now execute the task with proper planning and communication.
 
 ### Step 4: Create a Task Plan
 
@@ -426,6 +501,41 @@ For straightforward work not requiring deep domain expertise:
 7. **Execute:** Fix typo directly with Edit tool
 8. **Result:** Complete simple task without agent delegation
 
+---
+
+## Phase 3: Verification (MANDATORY)
+
+Before marking ANY task complete, verify these checks pass:
+
+### Check 1: Skill Usage
+
+- [ ] Checked ALL available skills before starting
+- [ ] Used applicable skill OR documented why none apply
+
+### Check 2: Agent Selection
+
+- [ ] Identified technology stack correctly
+- [ ] Used correct specialized agent OR justified direct execution
+
+### Check 3: Context Gathered
+
+- [ ] Explored existing patterns and related files
+- [ ] Understood current state before making changes
+
+### Check 4: Task Tracked
+
+- [ ] Created todos for multi-step work (3+ steps)
+- [ ] Marked completed tasks as finished
+
+### Check 5: User Informed
+
+- [ ] Communicated plan before executing
+- [ ] Reported results and any blockers found
+
+**Gate:** Do NOT mark complete until all checks pass.
+
+---
+
 ## Best Practices
 
 ### Context First, Code Second
@@ -470,6 +580,7 @@ The `start` skill is the entry point that leads to other skills:
 
 - **run-parallel-agents-feature-build** - When 3+ independent features are identified
 - **run-parallel-agents-feature-debug** - When multiple independent bugs are found
+- **ast-grep** - When searching for code patterns using AST structural matching (beyond text search)
 - **Specialized agents** - When domain expertise is required (Laravel, Next.js, NestJS, etc.)
 - **Explore agent** - During context gathering for broad codebase exploration
 - **Any domain-specific skill** - If a relevant skill exists, invoke it
@@ -514,6 +625,90 @@ The `start` skill is the entry point that leads to other skills:
 7. **Follow workflows exactly** - User instructions = WHAT to do, skills = HOW to do it
 8. **Communicate clearly** - Inform user of plan before executing
 9. **Stay disciplined** - Catch yourself rationalizing shortcuts
+
+---
+
+## Quality Checklist (Must Score 8/10)
+
+Score yourself honestly before marking any task complete:
+
+### Skill Discovery (0-2 points)
+
+- **0 points:** Skipped skill check entirely
+- **1 point:** Checked some skills but not systematically
+- **2 points:** Systematically checked ALL available skills
+
+### Agent Selection (0-2 points)
+
+- **0 points:** Did specialized work myself instead of delegating
+- **1 point:** Used an agent but selected the wrong one
+- **2 points:** Correctly matched task domain to specialized agent
+
+### Context Gathering (0-2 points)
+
+- **0 points:** Jumped straight to code without context
+- **1 point:** Read some files but incomplete exploration
+- **2 points:** Explored patterns, dependencies, and current state
+
+### Task Planning (0-2 points)
+
+- **0 points:** No todos for multi-step work
+- **1 point:** Partial todo coverage
+- **2 points:** All steps tracked with todos, dependencies noted
+
+### Communication (0-2 points)
+
+- **0 points:** No plan shared with user
+- **1 point:** Started without confirming approach
+- **2 points:** Communicated plan, got alignment before executing
+
+**Minimum passing score: 8/10**
+
+---
+
+## Quick Workflow Summary
+
+```
+PHASE 1: DISCOVERY (MANDATORY)
+├── Check ALL available skills
+├── Identify technology stack
+├── Select correct specialized agent
+├── Gather context (explore codebase)
+└── Gate: Skill/agent decision made, context gathered
+
+PHASE 2: EXECUTION
+├── Create task plan (TodoWrite)
+├── Communicate plan to user
+├── Delegate to specialized agent OR execute directly
+└── Track progress, update todos
+
+PHASE 3: VERIFICATION (MANDATORY)
+├── All 5 checks passed
+├── Quality score ≥ 8/10
+└── Announce completion with metrics
+```
+
+---
+
+## Completion Announcement
+
+When task is complete, announce:
+
+```
+Task complete.
+
+**Quality Score: X/10**
+- Skill Discovery: X/2
+- Agent Selection: X/2
+- Context Gathering: X/2
+- Task Planning: X/2
+- Communication: X/2
+
+**Workflow followed:**
+- Skills checked: [list skills checked]
+- Agent used: [agent name] or "direct execution"
+- Todos completed: X/Y
+```
 
 ---
 

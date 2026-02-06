@@ -3,7 +3,33 @@ name: run-parallel-agents-feature-build
 description: Automatically orchestrate multiple specialized agents working in parallel when building independent features, modules, or performing separate investigations. Use when the task list contains 3+ unrelated features/tasks that don't share state, don't have execution dependencies, and can be understood independently. Match each feature to the right expert agent (Laravel, Next.js, React, Node, NestJS, Remix, Express, Expo, Flutter, Magento) and run them concurrently to maximize development speed.
 ---
 
+<EXTREMELY-IMPORTANT>
+Before launching parallel agents, you **ABSOLUTELY MUST**:
+
+1. Verify tasks are truly independent (no shared files, no data flow between them)
+2. Match each task to the correct specialized agent
+3. Create complete briefs with scope, files, output, and success criteria
+4. Launch ALL agents in a SINGLE message with multiple Task tool calls
+
+**Launching agents without verification = conflicts, wasted work, merge hell**
+
+This is not optional. Parallel execution requires independence verification.
+</EXTREMELY-IMPORTANT>
+
 # Run Parallel Agents Feature Build
+
+## MANDATORY FIRST RESPONSE PROTOCOL
+
+Before launching ANY parallel agents, you **MUST** complete this checklist:
+
+1. ☐ Count tasks — are there 3+ independent tasks?
+2. ☐ Check dependencies — do any tasks depend on others?
+3. ☐ Check file overlap — do tasks modify the same files?
+4. ☐ Match agents — assign correct agent type per task
+5. ☐ Prepare briefs — scope, files, output, success criteria for each
+6. ☐ Announce to user — "Launching N agents in parallel for [tasks]"
+
+**Launching agents WITHOUT completing this checklist = conflicts and failures.**
 
 ## Overview
 
@@ -172,6 +198,37 @@ Parallel execution complete. Results:
 **Overall:** [X/Y features completed, any conflicts, next steps]
 ```
 
+### Step 6: Verification (MANDATORY)
+
+After aggregating results, verify the parallel execution was successful:
+
+#### Check 1: All Agents Completed
+
+- [ ] Every launched agent returned a result
+- [ ] No agents timed out or crashed
+
+#### Check 2: No File Conflicts
+
+- [ ] No two agents modified the same file
+- [ ] If conflicts exist, they are resolved
+
+#### Check 3: Deliverables Match Briefs
+
+- [ ] Each agent delivered what was specified
+- [ ] Output matches expected format
+
+#### Check 4: No Integration Issues
+
+- [ ] Features work together (if they interact)
+- [ ] No broken imports or references
+
+#### Check 5: User Informed
+
+- [ ] Completion announced with summary
+- [ ] Any issues or partial results documented
+
+**Gate:** Do NOT mark task complete until all 5 checks pass.
+
 ## Example Scenarios
 
 ### Example A: Feature Build
@@ -287,7 +344,7 @@ I've identified 3 independent features that can be built in parallel:
 Launching agents now...
 ```
 
-### Failure Handling
+### Handling Partial Success
 
 If an agent fails or gets blocked:
 
@@ -295,6 +352,167 @@ If an agent fails or gets blocked:
 - Report partial results
 - Provide clear next steps for blocked work
 - Don't retry automatically without user input
+
+---
+
+## Quality Checklist (Must Score 8/10)
+
+Score yourself honestly before marking parallel execution complete:
+
+### Independence Verification (0-2 points)
+
+- **0 points:** Launched without checking dependencies
+- **1 point:** Checked some dependencies
+- **2 points:** Full dependency check (files, data flow, state)
+
+### Agent Matching (0-2 points)
+
+- **0 points:** Wrong agents for tasks
+- **1 point:** Agents assigned without justification
+- **2 points:** Each task matched to correct agent with indicators
+
+### Brief Quality (0-2 points)
+
+- **0 points:** No briefs or generic briefs
+- **1 point:** Partial briefs (missing fields)
+- **2 points:** Complete briefs with scope, files, output, success criteria
+
+### Execution Correctness (0-2 points)
+
+- **0 points:** Agents launched sequentially
+- **1 point:** Parallel launch but incomplete briefs
+- **2 points:** Single message with all Task tool calls, complete briefs
+
+### Result Aggregation (0-2 points)
+
+- **0 points:** No summary provided
+- **1 point:** Partial summary
+- **2 points:** Complete summary with status, deliverables, conflicts, next steps
+
+**Minimum passing score: 8/10**
+
+---
+
+## Common Rationalizations (All Wrong)
+
+These are excuses. Don't fall for them:
+
+- **"These tasks look independent"** → STILL check for file overlap
+- **"I know the right agents"** → STILL document the matching rationale
+- **"Briefs are obvious"** → STILL write complete scope, files, output, success criteria
+- **"Sequential is safer"** → If tasks are independent, parallel is FASTER with no downside
+- **"I'll merge conflicts later"** → Check for conflicts BEFORE launching
+- **"One message is too long"** → ALL Task tool calls MUST be in one message
+- **"The user just wants it done"** → Correct execution = faster completion
+- **"Two tasks don't need parallel agents"** → Correct, need 3+ tasks
+
+---
+
+## Failure Modes
+
+### Failure Mode 1: Launching Dependent Tasks in Parallel
+
+**Symptom:** Agents fail or produce conflicting output because Task B needed Task A's result
+**Fix:** Run dependency checks. If Output(A) ∈ Input(B), execute sequentially.
+
+### Failure Mode 2: Wrong Agent Assignment
+
+**Symptom:** Laravel work done by nextjs-senior-engineer, poor results
+**Fix:** Use technology detection patterns. Match `*.php` → Laravel agent.
+
+### Failure Mode 3: Sequential Launch Instead of Parallel
+
+**Symptom:** Sent multiple messages with Task tool calls, agents ran one at a time
+**Fix:** ALL Task tool calls in a SINGLE message. This is critical for parallel execution.
+
+### Failure Mode 4: Incomplete Briefs
+
+**Symptom:** Agents ask clarifying questions or deliver wrong output
+**Fix:** Every brief must have Scope, Files, Output, Success criteria. No placeholders.
+
+### Failure Mode 5: No Conflict Check After Completion
+
+**Symptom:** Agents modified same files, changes overwrite each other
+**Fix:** After aggregation, check file overlap. If conflicts, merge intelligently.
+
+---
+
+## Quick Workflow Summary
+
+```
+STEP 1: ANALYZE
+├── Count tasks (need 3+)
+├── Check dependencies
+├── Check file overlap
+└── Gate: Tasks are independent
+
+STEP 2: MATCH AGENTS
+├── Identify technology per task
+├── Assign correct agent type
+└── Document matching rationale
+
+STEP 3: PREPARE BRIEFS
+├── Scope, Files, Output, Success criteria
+└── No placeholders allowed
+
+STEP 4: LAUNCH PARALLEL
+├── Single message with ALL Task tool calls
+├── Do NOT wait between launches
+└── Gate: All agents launched
+
+STEP 5: AGGREGATE RESULTS
+├── Collect outputs
+├── Check for conflicts
+└── Merge into summary
+
+STEP 6: VERIFICATION
+├── All agents completed
+├── No file conflicts
+├── Deliverables match briefs
+└── Gate: All 5 checks pass
+```
+
+---
+
+## Completion Announcement
+
+When parallel execution is complete, announce:
+
+```
+Parallel execution complete.
+
+**Quality Score: X/10**
+- Independence Verification: X/2
+- Agent Matching: X/2
+- Brief Quality: X/2
+- Execution Correctness: X/2
+- Result Aggregation: X/2
+
+**Results:**
+- Features completed: X/Y
+- Agents used: [list]
+- Conflicts: [none/resolved/pending]
+
+**Summary:**
+[Brief description of what was delivered]
+
+**Next steps:**
+[Any remaining work or follow-up needed]
+```
+
+---
+
+## Integration with Other Skills
+
+The `run-parallel-agents-feature-build` skill integrates with:
+
+- **`plan-enhanced`** — Use `plan-enhanced` FIRST to structure a plan for parallel execution, then this skill to execute it
+- **`start`** — Use `start` to identify if parallel agents are appropriate
+- **`run-parallel-agents-feature-debug`** — For debugging, use the debug variant instead
+
+**Workflow:** `start` → `plan-enhanced` → `run-parallel-agents-feature-build`
+
+---
 
 ## Resources
 

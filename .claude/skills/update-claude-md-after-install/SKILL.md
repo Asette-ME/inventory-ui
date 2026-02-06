@@ -3,13 +3,174 @@ name: update-claude-md-after-install
 description: Use when user has just installed framework agents and CLAUDE.md contains generic examples - systematically discovers actual project patterns (custom commands, architecture decisions, team conventions) and updates CLAUDE.md and imported files with real project-specific information
 ---
 
+<EXTREMELY-IMPORTANT>
+If you are about to update CLAUDE.md, you **ABSOLUTELY MUST** complete Phase 1 discovery first.
+
+**SKIPPING DISCOVERY = INCOMPLETE DOCUMENTATION = AI AGENT FAILURE**
+
+This is not optional. You cannot rationalize "good enough" without running verification checks.
+</EXTREMELY-IMPORTANT>
+
 # Update CLAUDE.md After Installation
+
+## MANDATORY FIRST RESPONSE PROTOCOL
+
+Before writing ANY documentation:
+
+1. ☐ Complete Phase 1 discovery checklist (ALL 6 steps)
+2. ☐ Create export inventory with counts
+3. ☐ Verify >90% coverage is achievable
+4. ☐ Announce: "Starting documentation update targeting 10/10"
+
+**Writing docs without discovery = guaranteed gaps. Phase 1 is NON-NEGOTIABLE.**
 
 ## Overview
 
 After installing framework agents, CLAUDE.md and its imported files contain generic placeholder examples. This skill guides you to systematically discover the actual project patterns and update these files with real, project-specific information.
 
-**Core principle:** Discover, don't assume. Analyze the codebase to find actual patterns instead of keeping generic examples.
+**Core principle:** Discover exhaustively, then document. Analyze ALL exports before writing.
+
+**Quality target:** 10/10 AI agent effectiveness - documentation should enable an AI to implement features correctly on the first attempt.
+
+## Context Budget Limits
+
+Your documentation MUST fit within these constraints:
+
+| Component            | Max Lines | Rationale                    |
+| -------------------- | --------- | ---------------------------- |
+| Main CLAUDE.md       | 1,000     | Always loaded, keep lean     |
+| Each @import file    | 500       | Lazy-loaded, can be detailed |
+| All imports combined | 1,500     | ~3k tokens = 1.5% of context |
+| **Total**            | 2,500     | Leaves 98%+ for actual work  |
+
+### Why This Matters
+
+- `@imports` are **lazy-loaded** - only loaded when relevant to current task
+- Even worst-case (all imports loaded) uses <2% of context
+- Exceeding limits = bloated context = degraded AI performance
+
+### If Over Budget
+
+1. Move code examples >30 lines to "reference by path" format
+2. Convert prose to tables (3x more token-efficient)
+3. Consolidate overlapping sections
+4. Remove redundant information between files
+
+## What Makes 10/10 Documentation
+
+AI agents are most effective when documentation provides:
+
+### 1. Step-by-Step Implementation Guides
+
+Instead of just describing what exists, show HOW to add new things:
+
+❌ Poor (4/10): "We use Express.js with controllers"
+✅ Excellent (10/10):
+
+````markdown
+## Adding a New API Endpoint
+
+### Step 1: Choose the Router
+
+| Router         | Auth              | Use For        |
+| -------------- | ----------------- | -------------- |
+| publicRouter   | conditionalAuth() | Read-only GETs |
+| internalRouter | requireAuth()     | All mutations  |
+
+### Step 2: Create Handler
+
+```typescript
+export async function handleYourRoute(context: ServerContext, req: Request): Promise<Response> {
+  try {
+    const body = await req.json();
+    const result = await processData(body);
+    return new Response(JSON.stringify({ success: true, data: result }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: error instanceof Error ? error.message : 'Unknown error',
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
+    );
+  }
+}
+```
+````
+
+### 2. Exact Response Formats with TypeScript
+
+❌ Poor: "API returns JSON with success flag"
+✅ Excellent:
+
+````markdown
+### Success Response
+
+```typescript
+{ success: true, data: T, timestamp: string }
+```
+````
+
+### Error Response
+
+```typescript
+{ success: false, error: string, code?: string }
+// With status code 4xx or 5xx
+```
+
+````
+
+### 3. State Machines with Visual Diagrams
+
+❌ Poor: "Sessions have different statuses"
+✅ Excellent:
+
+```markdown
+## Session State Machine
+
+````
+
+pending → active → decided → removed
+↓
+orphaned
+
+```
+
+| Current | Action | New State |
+|---------|--------|-----------|
+| pending | User views | active |
+| active | User decides | decided |
+| active | Hook disconnects | orphaned |
+| decided | After 5 min | removed |
+```
+
+### 4. Complete API Route Tables
+
+❌ Poor: "Routes are in routes/ folder"
+✅ Excellent:
+
+```markdown
+| Route               | Method | Handler            | Description      |
+| ------------------- | ------ | ------------------ | ---------------- |
+| `/api/plan`         | GET    | handleGetPlan      | Get current plan |
+| `/api/decision`     | POST   | handlePostDecision | Submit decision  |
+| `/api/hub/register` | POST   | inline             | Register session |
+```
+
+### 5. Export Tables with Types
+
+❌ Poor: "Core package has parsing utilities"
+✅ Excellent:
+
+```markdown
+| Export                | Type      | Purpose                      |
+| --------------------- | --------- | ---------------------------- |
+| parseMarkdownToBlocks | function  | Parse plan text → Block[]    |
+| extractSections       | function  | Extract sections from blocks |
+| Plan                  | interface | Full plan with versions      |
+| PlanVersion           | interface | Single version snapshot      |
+```
 
 ## When to Use
 
@@ -17,426 +178,508 @@ Use this skill when:
 
 - **Initial install:** User just installed agents and CLAUDE.md has generic examples
 - **Project start:** Beginning work on a project for the first time
-- **Key milestones:** After major architecture changes, new custom commands added, team conventions updated
+- **Key milestones:** After major architecture changes
 - **Periodic refresh:** User asks to "update docs" or "sync CLAUDE.md with project"
 - **Discovery gaps:** CLAUDE.md outdated or missing new project patterns
 
 **Symptoms:**
 
 - CLAUDE.md has comments like "customize for your project"
-- project-commands.md shows `app:sync-users` but project has different commands
-- architecture.md describes patterns the project doesn't use
-- conventions.md has generic git workflow but project uses different process
-- New features added but not documented in CLAUDE.md
-- Team asks "is the CLAUDE.md file current?"
+- Generic examples that don't match actual code
+- Missing exports, routes, or state machines
+- New features added but not documented
 
-## Discovery Modes
+---
 
-### Full Discovery (Initial Install)
+## Common Rationalizations (All Wrong)
 
-Run all discovery steps to build complete project documentation from generic templates.
+If you catch yourself thinking any of these, STOP - you're about to fail:
 
-### Incremental Update (Periodic Refresh)
+- "I already know this codebase" → STILL do Phase 1 discovery
+- "The exports haven't changed much" → STILL verify counts
+- "This is a small project" → STILL create all 3 required files
+- "80% coverage is good enough" → NO, 90% minimum
+- "I'll add the rest later" → NO, complete now
+- "The user didn't ask for full docs" → The skill requires 10/10
+- "Phase 1 takes too long" → Skipping it takes longer (rework)
+- "I can eyeball the exports" → Use bash commands, not memory
 
-Focus on what changed:
+**The skill requirements are not negotiable based on convenience.**
 
-1. Check for new custom commands added since last update
-2. Scan for architecture changes (new queues, services, patterns)
-3. Review for updated team conventions
+---
 
-### Targeted Update (Specific Change)
+## Phase 1: Exhaustive Export Discovery (MANDATORY)
 
-User says "I just added multi-tenancy" or "we have new deployment scripts":
+**Do NOT skip this phase.** Before writing ANY documentation, complete this discovery checklist.
 
-1. Discover only the mentioned area
-2. Update relevant section
-3. Verify no conflicts with existing documentation
+### Step 1: Find All Package Entry Points
 
-## Discovery Process
+```bash
+# List all packages
+ls packages/*/package.json apps/*/package.json 2>/dev/null
 
-Follow these steps systematically. Use TodoWrite to track progress.
+# For each package, find main export file
+cat packages/*/package.json | jq -r '.name, .main, .exports'
+```
 
-### Step 1: Announce and Plan
+**Create inventory table:**
+
+| Package       | Entry Point  | Export Count |
+| ------------- | ------------ | ------------ |
+| @scope/core   | src/index.ts | ?            |
+| @scope/server | src/index.ts | ?            |
+
+### Step 2: Extract ALL Exports
+
+For EACH package entry point, run:
+
+```bash
+# Count exports
+grep -c "^export" packages/core/src/index.ts
+
+# List all exports (types, functions, constants)
+grep "^export" packages/core/src/index.ts
+```
+
+**Document in scratch file:**
 
 ```markdown
-I'm using the **update-claude-md-after-install** skill to discover your actual project patterns.
+## @scope/core exports (src/index.ts)
 
-I'll systematically analyze:
+### Types/Interfaces
 
-1. Custom artisan commands
-2. Architecture patterns
-3. Team conventions
+- Plan
+- PlanVersion
+- Annotation
+  ...
 
-This ensures CLAUDE.md matches your real project.
+### Functions
+
+- parseMarkdownToBlocks
+- extractSections
+  ...
+
+### Constants
+
+- DEFAULT_PORT
+  ...
 ```
 
-### Step 2: Discover Custom Commands
+### Step 3: Find Subpath Exports
 
-**What to look for:**
-
-- Custom artisan commands in `app/Console/Commands/`
-- Deployment scripts (`deploy.sh`, `rollback.sh`, etc.)
-- Package.json scripts
-- Custom bash/python scripts in project root or `bin/`
-
-**How to discover:**
+Many packages re-export from subpaths:
 
 ```bash
-# Find custom artisan commands
-find app/Console/Commands -name "*.php" -type f
+# Find all index.ts files that might have exports
+find packages/*/src -name "index.ts" | head -20
 
-# Check for deployment scripts
-ls -la *.sh 2>/dev/null || echo "No shell scripts"
-
-# Check package.json scripts
-cat package.json | grep -A 20 "\"scripts\""
+# Check for subpath exports in package.json
+grep -A20 '"exports"' packages/*/package.json
 ```
 
-**What to extract:**
+**Common patterns:**
 
-- Command signature (e.g., `php artisan app:command-name`, `npm run custom-task`, `yarn workspace:sync`)
-- Description from docblock, comments, or help text
-- When it's used (schedule, manual, deployment)
+- `@scope/server/hub` → `packages/server/src/hub/index.ts`
+- `@scope/server/storage` → `packages/server/src/storage/index.ts`
 
-**Update:** Replace generic examples in `.claude/claude-md-refs/project-commands.md` with discovered commands.
+**Add subpath exports to your inventory.**
 
-### Step 3: Discover Architecture Patterns
-
-**What to look for:**
-
-- Multi-tenancy: Search for `TenantScope`, `tenant_id`, subdomain resolution
-- Event-driven: Check `app/Events/`, `app/Listeners/`, event service providers
-- API versioning: Look in `routes/api.php` for `/v1/`, `/v2/` patterns
-- Queue configuration: Check `config/horizon.php` or `config/queue.php`
-- Auth strategy: Look for Sanctum, Passport, Fortify usage in `composer.json` and config
-
-**How to discover:**
+### Step 4: Find All TypeScript Interfaces
 
 ```bash
-# Check for multi-tenancy
-grep -r "TenantScope" app/ --include="*.php"
-grep -r "tenant_id" database/migrations/ --include="*.php"
+# Count interface definitions
+grep -r "^export interface" packages/*/src --include="*.ts" | wc -l
 
-# Check for events
-ls -la app/Events/ app/Listeners/ 2>/dev/null
+# Count type definitions
+grep -r "^export type" packages/*/src --include="*.ts" | wc -l
 
-# Check API versioning
-grep "api/v" routes/api.php
-
-# Check queue config
-cat config/horizon.php 2>/dev/null || cat config/queue.php
+# List them all
+grep -rh "^export interface\|^export type" packages/*/src --include="*.ts" | sort | uniq
 ```
 
-**What to extract:**
+**Add ALL to your inventory.**
 
-- Actual patterns used (not generic possibilities)
-- Specific configuration values (queue names, worker counts, retry strategies)
-- Technology choices (which packages, which drivers)
-
-**Update:** Replace generic architecture descriptions in `.claude/claude-md-refs/architecture.md` with discovered patterns.
-
-### Step 4: Discover Team Conventions
-
-**What to look for:**
-
-- Git workflow in `.github/PULL_REQUEST_TEMPLATE.md` or `CONTRIBUTING.md`
-- CI/CD configuration in `.github/workflows/` for test requirements
-- Code review standards in documentation
-- Testing requirements (coverage thresholds in `phpunit.xml` or CI config)
-- Deployment procedures in README or docs/
-
-**How to discover:**
+### Step 5: Find All Route Handlers
 
 ```bash
-# Check for PR template
-cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null
+# Find route definitions
+grep -r "url\.pathname\|router\.\|app\.\(get\|post\|put\|patch\|delete\)" --include="*.ts" | head -50
 
-# Check CI workflow
-ls -la .github/workflows/*.yml 2>/dev/null
-
-# Check for CONTRIBUTING
-cat CONTRIBUTING.md 2>/dev/null
-
-# Check phpunit config for coverage
-grep "coverage" phpunit.xml 2>/dev/null
+# Find handler functions
+grep -r "handle\|Handler" --include="*.ts" packages/*/src | head -30
 ```
 
-**What to extract:**
+**Create routes table:**
 
-- Approval requirements (how many reviewers)
-- Testing standards (coverage %, required test types)
-- Git branch naming conventions
-- Deployment process specifics
+| Route | Method | Handler | File |
+| ----- | ------ | ------- | ---- |
 
-**Update:** Replace generic conventions in `.claude/claude-md-refs/conventions.md` with discovered standards.
+### Step 6: Create Export Inventory Checklist
 
-### Step 5: Update BOTH Root CLAUDE.md AND All Imported Files
+Before proceeding to Phase 2, you MUST have:
 
-**First, discover ALL imported files:**
+- [ ] List of ALL packages with export counts
+- [ ] List of ALL exported types/interfaces (with file paths)
+- [ ] List of ALL exported functions (with file paths)
+- [ ] List of ALL subpath exports
+- [ ] List of ALL route handlers (with HTTP methods)
+- [ ] List of ALL state machines (entities with status/state fields)
 
-Read root CLAUDE.md and find all `@` imports. Common pattern:
+**This inventory becomes your exports-reference.md source material.**
+
+---
+
+## Phase 2: Required Output Files
+
+You MUST create these 3 files. No exceptions.
+
+### File 1: `exports-reference.md` (REQUIRED)
+
+**Purpose:** Complete API surface documentation
+**Location:** `.claude/claude-md-refs/exports-reference.md`
+**Target size:** 300-400 lines
+
+**Template:**
+
+````markdown
+# Exports Reference
+
+Complete API surface for all packages.
+
+## @scope/package-name
+
+### Models & Types
+
+| Export    | Type      | Purpose     |
+| --------- | --------- | ----------- |
+| ModelName | interface | Description |
+| TypeName  | type      | Description |
+
+### Functions
+
+| Export       | Purpose      | Returns      |
+| ------------ | ------------ | ------------ |
+| functionName | What it does | `ReturnType` |
+
+### Constants
+
+| Export        | Value | Purpose       |
+| ------------- | ----- | ------------- |
+| CONSTANT_NAME | value | What it's for |
+
+## @scope/package-name/subpath
+
+[Repeat structure for each subpath export]
+
+---
+
+## Import Patterns
+
+```typescript
+// Main exports
+import { Type, functionName } from '@scope/package';
+
+// Subpath exports
+import { SubType } from '@scope/package/subpath';
+```
+````
+
+````
+
+**Completeness requirement:** >90% of discovered exports must appear in this file.
+
+### File 2: `development-guide.md` (REQUIRED)
+
+**Purpose:** Step-by-step implementation guides
+**Location:** `.claude/claude-md-refs/development-guide.md`
+**Target size:** 400-500 lines
+
+**Must include these sections:**
+
+1. **Adding a New [Primary Entity]** - Step-by-step with actual code templates
+2. **Adding a New API Route** - With handler template from the actual codebase
+3. **Adding a New Integration** - Export/webhook patterns if applicable
+4. **Response Formats** - ALL response types with TypeScript interfaces
+5. **Error Handling** - Error patterns with examples from actual code
+6. **Testing Patterns** - How to test each component type (if tests exist)
+
+### File 3: `architecture.md` (REQUIRED)
+
+**Purpose:** System structure and flows
+**Location:** `.claude/claude-md-refs/architecture.md`
+**Target size:** 300-400 lines
+
+**Must include these sections:**
+
+1. **Package Dependency Graph** - ASCII diagram showing which packages depend on which
+2. **Primary State Machine(s)** - ASCII diagram + transition table for each entity with states
+3. **API Routes Table** - ALL routes with methods, handlers, descriptions
+4. **Data Flow Diagram** - Request lifecycle from entry to response
+5. **Storage Layout** - File/DB structure if applicable
+6. **Key Subsystems** - 1 paragraph + key files for each major subsystem
+
+### File 4: Update `CLAUDE.md`
+
+Add imports for all created files:
 
 ```markdown
-@.claude/claude-md-refs/project-commands.md
+@.claude/claude-md-refs/development-guide.md
 @.claude/claude-md-refs/architecture.md
-@.claude/claude-md-refs/conventions.md
-```
+@.claude/claude-md-refs/exports-reference.md
+````
 
-But projects may have additional imports like:
-
-```markdown
-@.claude/claude-md-refs/deployment-guide.md
-@.claude/claude-md-refs/testing-strategy.md
-@.claude/project-specific-rules.md
-```
-
-**Extract ALL import paths:** Scan CLAUDE.md for lines starting with `@` - these are all the files you need to update.
-
-**Update TWO sets of files:**
-
-#### A. Root CLAUDE.md (Framework-Specific Sections)
-
-Update these sections in root `CLAUDE.md` to match the actual project:
-
-- **Project Commands** section - Add actual project-specific commands
-- **Code Style** section - Update if project uses different standards
-- **File Organization** - Match actual project structure
-- Any framework sections that differ from defaults
-
-#### B. ALL Imported Files (Dynamically Discovered)
-
-For EACH file found via `@` imports:
-
-1. **Read the imported file** to understand its purpose
-2. **Discover relevant patterns** based on file content/name
-3. **Update with actual project information**
-4. **Verify updates** by reading the file again
-
-Common imported files:
-
-```
-.claude/claude-md-refs/
-├── project-commands.md - Custom commands, deployment scripts
-├── architecture.md - Multi-tenancy, queues, API design decisions
-├── conventions.md - Git workflow, code review, testing standards
-└── [any other @imported files found in CLAUDE.md]
-```
-
-**CRITICAL:** Update ALL files (root CLAUDE.md + every @imported file) so complete documentation matches the actual project.
-
-**Before updating:**
-
-1. Read root CLAUDE.md
-2. Extract ALL `@import` paths (lines starting with `@`)
-3. Read each imported file to understand its purpose
-4. Identify sections with generic examples in root and all imported files
-5. Have discovered information for all files
-
-**Update strategy:**
-
-- **Root CLAUDE.md**: Replace generic framework examples with project-specific ones
-- **Imported files**: Replace ALL generic examples with discovered patterns
-- **Keep**: Framework best practices and structure
-- **Remove**: Sections describing patterns the project doesn't use
-
-**After updating:**
-
-1. Read root CLAUDE.md to verify updates
-2. Read EVERY imported file (from `@` paths) to verify updates
-3. Verify ALL @imports still resolve correctly
-4. Confirm no generic placeholders remain in ANY file (root or imported)
-
-### Step 6: Verification Checklist
-
-Before completing, verify:
-
-**Root CLAUDE.md:**
-
-- [ ] Project Commands section has actual commands, not just generic examples
-- [ ] Code Style matches project (if different from framework defaults)
-- [ ] File Organization reflects actual project structure
-- [ ] All framework sections match how project actually uses the framework
-
-**All Imported Files (discovered via @ imports):**
-
-- [ ] Extracted all @import paths from root CLAUDE.md
-- [ ] Read every imported file to understand its purpose
-- [ ] Updated every imported file with discovered project patterns
-- [ ] Typical files to update:
-  - [ ] project-commands.md: All custom commands, deployment scripts
-  - [ ] architecture.md: Actual architecture patterns, queue config
-  - [ ] conventions.md: Team conventions, PR approvals, coverage
-  - [ ] [any additional imported files found]
-
-**Both Root and All Imported Files:**
-
-- [ ] No generic placeholders like "customize for your project" remain in ANY file
-- [ ] ALL @imports in root CLAUDE.md resolve correctly
-- [ ] ALL files (root + every imported file) use real project examples
-- [ ] Complete documentation across all files matches actual project
-
-## Common Mistakes
-
-| Mistake                                 | Fix                                                           |
-| --------------------------------------- | ------------------------------------------------------------- |
-| Keeping generic examples                | Replace with discovered real examples                         |
-| Asking user instead of discovering      | Analyze codebase first, ask only for clarification            |
-| Superficial updates (just project name) | Do thorough discovery of actual patterns                      |
-| Only updating root CLAUDE.md            | Update root CLAUDE.md AND ALL @imported files                 |
-| Only updating known imported files      | Discover ALL @import paths dynamically, update every file     |
-| Missing some imported files             | Extract ALL lines starting with @ from CLAUDE.md              |
-| Not verifying updates work              | Read ALL files after updating to confirm                      |
-| Skipping discovery under time pressure  | Discovery takes 2-3 minutes, prevents incorrect documentation |
-
-## What If Discovery Finds Nothing?
-
-If discovery doesn't find project-specific patterns:
-
-1. **For commands:** Keep generic examples but add comment: "No custom commands found. Add your commands here as you create them."
-
-2. **For architecture:** Keep generic examples and add note: "These are common patterns for this framework. Update as your architecture evolves."
-
-3. **For conventions:** Ask user: "I didn't find team conventions in .github/ or CONTRIBUTING.md. Do you have documented standards elsewhere?"
-
-**Don't leave incorrect information.** Better to keep generic examples with a note than to document patterns that don't exist.
-
-## Example: Updating project-commands.md
-
-**Laravel Project Example:**
-
-Before (generic):
+Add Quick Reference table:
 
 ```markdown
-## Custom Artisan Commands
+## Quick Documentation Reference
 
-- `php artisan app:sync-users` - Sync users from external service
-- `php artisan app:generate-reports` - Generate monthly reports
-```
-
-After discovery finds: `app/Console/Commands/ImportOrdersCommand.php` and `app/Console/Commands/SendDailySummaryCommand.php`
-
-After (updated):
-
-```markdown
-## Custom Artisan Commands
-
-- `php artisan app:import-orders {source}` - Import orders from external platform (Shopify, WooCommerce)
-- `php artisan app:send-daily-summary` - Send daily summary emails to admin users (runs at 8am via scheduler)
-```
-
-**Express/Node.js Project Example:**
-
-Before (generic):
-
-```markdown
-## Custom NPM Scripts
-
-- `npm run sync:data` - Sync data from external service
-- `npm run generate:reports` - Generate monthly reports
-```
-
-After discovery finds scripts in `package.json` and files in `src/scripts/`
-
-After (updated):
-
-```markdown
-## Custom NPM Scripts
-
-- `npm run import:orders -- --source=shopify` - Import orders from Shopify API
-- `npm run email:daily-summary` - Send daily summary emails (runs via cron at 8am)
-```
-
-Notice:
-
-- Generic examples replaced with actual commands
-- Real descriptions from command docblocks
-- Usage context added (what it does, when it runs)
-
-## Resisting Time Pressure and Shortcuts
-
-### If user says "I'm in a hurry, just quickly update it":
-
-**Response:**
-
-```
-I understand you're in a hurry. However, thorough discovery takes only 2-3 minutes and ensures
-your CLAUDE.md has accurate information. Incorrect documentation causes confusion later.
-
-I'll work efficiently: discover commands → architecture → conventions → update files.
-
-This prevents having to redo it when generic examples cause problems.
-```
-
-**Then proceed with full discovery process.** Don't skip steps.
-
-### Common Rationalizations to Reject
-
-| Rationalization                          | Reality                                                                |
-| ---------------------------------------- | ---------------------------------------------------------------------- |
-| "Just update the obvious parts"          | Discovery finds non-obvious patterns. Do full scan.                    |
-| "I'll tell you what to update"           | Codebase is source of truth. Discover first, ask for clarification.    |
-| "User seems busy, don't bother them"     | Users WANT accurate docs. 2-3 minutes now saves hours later.           |
-| "Generic examples are fine as templates" | Generic examples confuse and cause errors. Replace with real patterns. |
-| "I can skip the imported files"          | Imported files are loaded by Claude. Update ALL files.                 |
-| "Just update project-commands.md"        | Architecture and conventions matter too. Update all three minimum.     |
-| "I'll just update what I find"           | Extract ALL @imports first. Update every discovered file.              |
-
-**All of these mean: Do full discovery, update ALL files (root + all imports).**
-
-### Red Flags - STOP and Start Over
-
-If you catch yourself doing any of these, STOP:
-
-- ❌ Updating only root CLAUDE.md without checking for imports
-- ❌ Keeping generic examples because "they're close enough"
-- ❌ Asking user what to update instead of discovering
-- ❌ Skipping grep/find commands to save time
-- ❌ Not reading imported files to verify updates
-- ❌ Missing @imported files because you didn't extract all @ lines
-
-**If you see ANY red flag: Stop, announce you're using this skill properly, start discovery from Step 1.**
-
-## Integration with Other Skills
-
-This skill works after:
-
-- Installing agents via the installer
-- CLAUDE.md has been copied to project root
-- claude-md-refs/ folder exists with template files
-
-This skill prepares for:
-
-- Using Claude Code with accurate project context
-- Agents having real examples instead of placeholders
-- Future developers understanding actual project patterns
-
-## Key Reminders
-
-1. **Announce skill usage** - "I'm using update-claude-md-after-install skill"
-2. **Discover ALL imports dynamically** - Extract ALL @ lines from CLAUDE.md first
-3. **Discover, don't assume** - Grep/find actual patterns, don't ask user
-4. **Update BOTH root and ALL imports** - Root CLAUDE.md + every @imported file
-5. **Replace, don't append** - Replace generic examples with real discovered ones
-6. **Verify ALL files** - Read root and every imported file after updating
-7. **No shortcuts under pressure** - 2-3 minutes prevents hours of confusion
-8. **Ask only for clarification** - After discovery, not instead of discovery
-9. **Document what exists** - Don't document patterns the project doesn't use
-10. **Use TodoWrite** - Track discovery and update progress
-
-## Quick Workflow Summary
-
-```
-1. Announce: "Using update-claude-md-after-install skill"
-2. Discover imports: grep "^@" CLAUDE.md
-3. Discover commands: find app/Console/Commands/
-4. Discover architecture: grep tenant_id, check config/
-5. Discover conventions: check .github/, CONTRIBUTING.md
-6. Update root CLAUDE.md: Replace framework section examples
-7. Update ALL imported files: Replace ALL generic content
-8. Verify: Read root + ALL imports, confirm no generic placeholders
-9. Complete: Announce updates finished
+| Need Help With       | See File             |
+| -------------------- | -------------------- |
+| Adding features      | development-guide.md |
+| Understanding system | architecture.md      |
+| Finding exports/APIs | exports-reference.md |
 ```
 
 ---
 
-_This skill ensures CLAUDE.md and ALL imported files match the actual project, not generic templates._
+## Phase 3: Verification (MANDATORY)
+
+Do NOT mark this skill complete until ALL checks pass.
+
+### Check 1: Export Coverage (>90%)
+
+```bash
+# Count actual exports (adjust paths for project)
+ACTUAL=$(grep -rh "^export" packages/*/src/index.ts 2>/dev/null | wc -l)
+
+# Count documented exports (table rows in exports-reference.md)
+DOCUMENTED=$(grep -c "^|" .claude/claude-md-refs/exports-reference.md 2>/dev/null || echo 0)
+
+echo "Export coverage: $DOCUMENTED documented / $ACTUAL actual"
+```
+
+**FAIL if:** Coverage < 90%
+**Action if fail:** Go back to Phase 1, find missing exports, add to exports-reference.md
+
+### Check 2: Context Budget
+
+```bash
+# Count lines in each file
+wc -l CLAUDE.md
+wc -l .claude/claude-md-refs/*.md
+
+# Calculate total
+TOTAL=$(cat CLAUDE.md .claude/claude-md-refs/*.md 2>/dev/null | wc -l)
+echo "Total lines: $TOTAL (max: 2500)"
+```
+
+**FAIL if:**
+
+- CLAUDE.md > 1,000 lines
+- Any single import file > 500 lines
+- Total imports > 1,500 lines
+- Grand total > 2,500 lines
+
+**Action if fail:** Consolidate sections, convert prose to tables, use "reference by path" for long code examples
+
+### Check 3: Required Sections
+
+**In exports-reference.md:**
+
+- [ ] Has table for EACH discovered package
+- [ ] Has "Import Patterns" section with code examples
+- [ ] Every table has Export, Type/Purpose columns
+
+**In development-guide.md:**
+
+- [ ] Has "Adding a New X" with numbered steps
+- [ ] Has actual code templates (not just descriptions)
+- [ ] Has response format TypeScript interfaces
+
+**In architecture.md:**
+
+- [ ] Has package dependency ASCII diagram
+- [ ] Has at least one state machine diagram (if any stateful entities exist)
+- [ ] Has API routes table with ALL routes
+- [ ] Has data flow description
+
+### Check 4: No Duplicates
+
+Verify no information is duplicated between:
+
+- CLAUDE.md and import files
+- development-guide.md and architecture.md
+- exports-reference.md and other files
+
+**If duplicates found:** Remove from less-specific file, keep in most-specific file.
+
+### Check 5: AI Effectiveness Test
+
+Ask yourself: "Can an AI agent now..."
+
+- [ ] Find any exported function by searching exports-reference.md?
+- [ ] Add a new feature by following development-guide.md step-by-step?
+- [ ] Understand the system architecture by reading architecture.md?
+- [ ] Know which file to read for any task from CLAUDE.md Quick Reference?
+
+**If ANY answer is "no", the documentation is incomplete. Fix it.**
+
+---
+
+## Quality Checklist (Must Score 10/10)
+
+Score yourself HONESTLY before completing:
+
+### Export Coverage (0-2 points)
+
+- [ ] **0 points:** <50% of exports documented
+- [ ] **1 point:** 50-89% of exports documented
+- [ ] **2 points:** >90% of exports documented in tables
+
+### Implementation Guidance (0-2 points)
+
+- [ ] **0 points:** Just describes what exists ("We have controllers")
+- [ ] **1 point:** Shows file locations ("Controllers are in src/")
+- [ ] **2 points:** Step-by-step guide with actual code templates
+
+### State/Workflow Diagrams (0-2 points)
+
+- [ ] **0 points:** No diagrams
+- [ ] **1 point:** Lists states ("pending, active, completed")
+- [ ] **2 points:** ASCII diagram + transition table + constraints
+
+### API Surface (0-2 points)
+
+- [ ] **0 points:** No route documentation
+- [ ] **1 point:** Lists some routes
+- [ ] **2 points:** Complete route table with methods, handlers, descriptions
+
+### Context Efficiency (0-2 points)
+
+- [ ] **0 points:** Over budget (>2,500 lines total)
+- [ ] **1 point:** Within budget but has duplication
+- [ ] **2 points:** Within budget, no duplication, tables over prose
+
+**Total: 10/10 required to complete this skill**
+
+---
+
+## Common Mistakes
+
+| Mistake                      | Fix                                        |
+| ---------------------------- | ------------------------------------------ |
+| Skipping export discovery    | Phase 1 is MANDATORY - do it first         |
+| Generic descriptions         | Use actual code examples from the codebase |
+| Missing exports-reference.md | This file is REQUIRED, not optional        |
+| State list without diagram   | Add ASCII diagram + transition table       |
+| Over context budget          | Convert prose to tables, reference by path |
+| Duplicated information       | Keep info in ONE file only                 |
+| Self-assessing "good enough" | Use objective verification checks          |
+
+---
+
+## Failure Modes
+
+### Failure Mode 1: Skipping Discovery
+
+**Symptom:** Writing docs immediately, missing 40%+ of exports
+**Fix:** Phase 1 is MANDATORY. Complete inventory before writing ANY documentation.
+
+### Failure Mode 2: Generic Templates
+
+**Symptom:** Copy-pasting skill templates without actual project code
+**Fix:** Every code example must come from the actual codebase. No placeholders.
+
+### Failure Mode 3: Over Budget
+
+**Symptom:** CLAUDE.md > 1000 lines, context bloat, AI performance degraded
+**Fix:** Tables > prose, reference by path for code >30 lines, consolidate sections.
+
+### Failure Mode 4: Self-Assessing "Good Enough"
+
+**Symptom:** Marking complete at 70% coverage without running verification commands
+**Fix:** Run ALL verification bash commands. Must pass ALL 5 checks objectively.
+
+### Failure Mode 5: Missing Required Files
+
+**Symptom:** Only updating development-guide.md, skipping other required files
+**Fix:** ALL 3 files required: exports-reference.md, development-guide.md, architecture.md
+
+### Failure Mode 6: No State Machines
+
+**Symptom:** Listing states ("pending, active, decided") without visual diagram
+**Fix:** Add ASCII diagram + transition table for every entity with states.
+
+---
+
+## Quick Workflow Summary
+
+```
+PHASE 1: DISCOVERY (Do not skip)
+├── Find all package entry points
+├── Extract ALL exports (types, functions, constants)
+├── Find subpath exports
+├── Find all TypeScript interfaces
+├── Find all route handlers
+└── Create export inventory document
+
+PHASE 2: DOCUMENTATION (3 required files)
+├── CREATE exports-reference.md (>90% export coverage)
+├── CREATE/UPDATE development-guide.md (step-by-step guides)
+├── CREATE/UPDATE architecture.md (diagrams, routes, flows)
+└── UPDATE CLAUDE.md (add @imports, keep <1000 lines)
+
+PHASE 3: VERIFICATION (All must pass)
+├── Export coverage >90%
+├── Context budget met (<2500 lines total)
+├── All required sections present
+├── No duplicates between files
+└── AI effectiveness test passes
+
+COMPLETE: Announce final quality score (must be 10/10)
+```
+
+---
+
+## Completion Announcement
+
+When done, announce:
+
+```
+Documentation update complete.
+
+**Quality Score: X/10**
+- Export Coverage: X/2 (Y% of Z exports documented)
+- Implementation Guidance: X/2
+- State/Workflow Diagrams: X/2
+- API Surface: X/2
+- Context Efficiency: X/2
+
+**Files created/updated:**
+- exports-reference.md: X lines
+- development-guide.md: X lines
+- architecture.md: X lines
+- CLAUDE.md: X lines
+- Total: X lines (within 2,500 budget)
+
+**Verification passed:** All 5 checks complete.
+```
+
+---
+
+## References (Optional)
+
+For complex projects, create detailed reference docs in `.claude/skills/update-claude-md-after-install/references/`:
+
+| Reference                      | Purpose                                                 |
+| ------------------------------ | ------------------------------------------------------- |
+| `export-discovery-patterns.md` | Advanced grep/find patterns for different project types |
+| `monorepo-strategies.md`       | Handling 10+ packages efficiently                       |
+| `legacy-codebase-tips.md`      | Projects without TypeScript or modern tooling           |
+| `framework-specific-guides.md` | Laravel, Next.js, Express, etc. specifics               |
+
+**These are optional.** Only create if the project complexity warrants it.
+
+---
+
+_This skill ensures documentation enables AI agents to implement features correctly on the first attempt._

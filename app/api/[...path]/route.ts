@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const API_URL = process.env.INVENTORY_API_URL || 'http://localhost:8000';
+const API_URL = process.env.INVENTORY_API_URL;
 
 async function handler(request: NextRequest) {
   const path = request.nextUrl.pathname.replace(/^\/api/, '');

@@ -75,15 +75,15 @@ Common mistakes to avoid in skills.
 
 ### commit
 
-*No specific learnings yet*
+_No specific learnings yet_
 
 ### create-pr
 
-*No specific learnings yet*
+_No specific learnings yet_
 
 ### start
 
-*No specific learnings yet*
+_No specific learnings yet_
 
 ### ulpi-generate-hooks
 
@@ -96,4 +96,4 @@ Common mistakes to avoid in skills.
 
 ---
 
-*Last updated: 2026-02-05*
+_Last updated: 2026-02-05_

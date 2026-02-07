@@ -15,12 +15,12 @@ Derived from Claude Code usage analytics (77k+ messages, 9k+ sessions).
 
 ## Key Friction Points
 
-| Friction | Frequency | Root Cause |
-|----------|-----------|------------|
-| Excessive changes | 131 instances | Claude over-scopes modifications beyond request |
-| Scope creep | Multiple | Tangential work instead of focused execution |
-| Premature endings | 261 partial vs 131 full | Sessions end before meaningful completion |
-| Subagent noise | Frequent | Old notifications interrupt main workflow |
+| Friction          | Frequency               | Root Cause                                      |
+| ----------------- | ----------------------- | ----------------------------------------------- |
+| Excessive changes | 131 instances           | Claude over-scopes modifications beyond request |
+| Scope creep       | Multiple                | Tangential work instead of focused execution    |
+| Premature endings | 261 partial vs 131 full | Sessions end before meaningful completion       |
+| Subagent noise    | Frequent                | Old notifications interrupt main workflow       |
 
 ---
 
@@ -31,12 +31,14 @@ These learnings apply to ALL agents and should be synced to every agent file.
 ### Scope Control
 
 **Always:**
+
 - Confirm scope before making changes: "I'll modify X. Should I also update Y?"
 - Make minimal, targeted edits for bug fixes - don't refactor adjacent code
 - Stop after completing the stated task - don't continue to "improve" things
 - Ask before expanding scope: "I noticed Z could also be improved. Want me to address it?"
 
 **Never:**
+
 - Make changes beyond the explicitly requested scope
 - Refactor working code while fixing a bug
 - Add "improvements" that weren't requested
@@ -51,6 +53,7 @@ These learnings apply to ALL agents and should be synced to every agent file.
 - Don't get stuck in exploration mode - propose a concrete fix
 
 **Prefer:**
+
 - When editing multiple similar files, prefer sequential edits over parallel to avoid 'file modified since read' conflicts
 
 ### Multi-Agent Coordination
@@ -90,11 +93,11 @@ Subagents (nodejs-cli-senior-engineer, fastapi-senior-engineer, etc.) focus on w
 
 ### Orchestration
 
-*No learnings yet*
+_No learnings yet_
 
 ### Project Setup
 
-*No learnings yet*
+_No learnings yet_
 
 ---
 
@@ -103,6 +106,7 @@ Subagents (nodejs-cli-senior-engineer, fastapi-senior-engineer, etc.) focus on w
 ### Read-Edit Ratio
 
 User has 107k reads vs 82k edits (1.3:1 ratio). Optimize by:
+
 - Using targeted Grep searches before reading entire files
 - Jumping directly to relevant code via error messages or function names
 - Avoiding excessive exploration when the fix location is known
@@ -110,6 +114,7 @@ User has 107k reads vs 82k edits (1.3:1 ratio). Optimize by:
 ### Partial Achievement Recovery
 
 With 261 partial vs 131 full achievements:
+
 - Break complex tasks into smaller, completable chunks
 - Start sessions with explicit scope boundaries
 - Use "Just fix X, don't refactor Y" framing
@@ -118,6 +123,7 @@ With 261 partial vs 131 full achievements:
 ### Multi-Agent Success
 
 With 51k+ task operations, multi-agent workflows succeed when:
+
 - Each agent has clear, scoped responsibilities
 - Parent agents maintain focus despite subagent notifications
 - Completion is clearly signaled
@@ -174,4 +180,4 @@ Add these to project CLAUDE.md for consistent behavior:
 
 ---
 
-*Last updated from usage analytics: 2026-02-05*
+_Last updated from usage analytics: 2026-02-05_

@@ -3,24 +3,31 @@
 import { Trash2 } from 'lucide-react';
 import { useMemo } from 'react';
 
-import { GeoLocation } from '@/app/(main)/geo/locations/_components/types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { Item, ItemContent, ItemDescription, ItemHeader, ItemTitle } from '@/components/ui/item';
-import { Map, MapFitBounds, MapPolygon, MapTileLayer } from '@/components/ui/map';
+import { Map, MapFitBounds, MapMarker, MapPolygon, MapTileLayer } from '@/components/ui/map';
 import { cn, swapCoordinates } from '@/lib/utils';
+import { Attraction } from '@/types/entities';
 
-interface LocationCardProps {
-  data: GeoLocation;
-  onClick?: (data: GeoLocation) => void;
-  onDelete?: (data: GeoLocation) => void;
+interface AttractionCardProps {
+  data: Attraction;
+  onClick?: (data: Attraction) => void;
+  onDelete?: (data: Attraction) => void;
 }
 
-export function LocationCard({ data, onClick, onDelete }: LocationCardProps) {
+export function AttractionCard({ data, onClick, onDelete }: AttractionCardProps) {
   const boundaries = useMemo(() => {
     if (!data.boundaries?.coordinates) return null;
     return swapCoordinates(data.boundaries.coordinates);
   }, [data.boundaries]);
+
+  const markerPosition = useMemo((): [number, number] | null => {
+    if (!data.coordinates?.latitude || !data.coordinates?.longitude) return null;
+    return [data.coordinates.latitude, data.coordinates.longitude];
+  }, [data.coordinates]);
 
   const defaultCenter: [number, number] = [25.2048, 55.2708];
 
@@ -50,8 +57,8 @@ export function LocationCard({ data, onClick, onDelete }: LocationCardProps) {
         <div className="h-full w-full">
           <Map
             key={data.id}
-            center={defaultCenter}
-            zoom={4}
+            center={markerPosition || defaultCenter}
+            zoom={markerPosition ? 14 : 4}
             dragging={false}
             scrollWheelZoom={false}
             doubleClickZoom={false}
@@ -62,8 +69,13 @@ export function LocationCard({ data, onClick, onDelete }: LocationCardProps) {
             className="h-full w-full"
           >
             <MapTileLayer />
-            <MapFitBounds bounds={boundaries} padding={[20, 20]} />
-            {boundaries && <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />}
+            {boundaries && (
+              <>
+                <MapFitBounds bounds={boundaries} padding={[20, 20]} />
+                <MapPolygon positions={boundaries} className="fill-purple-600 stroke-purple-600 stroke-1" />
+              </>
+            )}
+            {markerPosition && <MapMarker position={markerPosition} />}
           </Map>
         </div>
       </ItemHeader>
@@ -77,11 +89,21 @@ export function LocationCard({ data, onClick, onDelete }: LocationCardProps) {
             'flex flex-row items-start justify-between gap-2',
           )}
         >
-          <ItemTitle className="text-lg">{data.name}</ItemTitle>
-          {data.code && (
+          <div className="flex items-center gap-2 min-w-0">
+            {data.image ? (
+              <Avatar className="size-6 rounded-full shrink-0">
+                <AvatarImage src={data.image} alt={data.name} />
+                <AvatarFallback className="rounded-full text-[10px]">{data.name[0]}</AvatarFallback>
+              </Avatar>
+            ) : data.icon ? (
+              <IconDisplay name={data.icon} className="size-5 shrink-0" />
+            ) : null}
+            <ItemTitle className="text-lg truncate">{data.name}</ItemTitle>
+          </div>
+          {data.color && (
             <ItemDescription className="shrink-0">
-              <Badge className="w-12 h-7 bg-primary/10 text-primary inset-ring inset-ring-primary/40">
-                {data.code}
+              <Badge className="h-7 px-2 inset-ring inset-ring-white/20" style={{ backgroundColor: data.color }}>
+                <span className="text-white text-xs font-mono">{data.color}</span>
               </Badge>
             </ItemDescription>
           )}

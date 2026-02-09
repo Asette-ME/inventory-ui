@@ -10,6 +10,7 @@ import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { GeoEditor } from '@/components/crud/geo-editor';
 import { IconPicker } from '@/components/ui/icon-picker';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createAttraction, updateAttraction } from '@/lib/actions/entities';
 import { attractionCreateSchema, AttractionFormData } from '@/lib/validations/entities';
@@ -25,6 +26,7 @@ interface AttractionSheetProps {
 
 export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: AttractionSheetProps) {
   const isEditing = !!attraction;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [boundaries, setBoundaries] = useState<Boundaries | null>(null);
@@ -79,6 +81,7 @@ export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: A
       setCoordinates(null);
       setBoundaries(null);
     }
+    setImagePreview(null);
   }, [attraction, reset]);
 
   function handleCoordinatesChange(coords: Coordinates | null) {
@@ -145,13 +148,29 @@ export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: A
           />
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="image"
-          label="Image URL"
-          placeholder="https://example.com/attraction.png"
-          description="URL to an image (optional)"
-        />
+        <FormFieldWrapper label="Image" description="Upload an image for this attraction">
+          {attraction?.image && !imagePreview && (
+            <div className="mb-2">
+              <img src={attraction.image} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          {imagePreview && (
+            <div className="mb-2">
+              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setValue('image', file as any);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </FormFieldWrapper>
 
         <FormFieldWrapper label="Color" description="Choose a color for this attraction">
           <ColorPicker value={colorValue} onChange={(color) => setValue('color', color)} />

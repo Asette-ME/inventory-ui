@@ -148,10 +148,8 @@ export interface AmenityCreateInput {
   name: string;
   description?: string | null;
   icon?: string | null;
-  image?: string | null;
+  image?: string | File | null;
   color?: string | null;
-  coordinates?: Coordinates | null;
-  boundaries?: number[][][] | number[][][][] | null;
 }
 
 export interface AmenityUpdateInput extends Partial<AmenityCreateInput> {}

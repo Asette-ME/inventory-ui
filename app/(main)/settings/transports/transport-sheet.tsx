@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -9,6 +9,7 @@ import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { IconPicker } from '@/components/ui/icon-picker';
+import { Input } from '@/components/ui/input';
 import { createTransport, updateTransport } from '@/lib/actions/entities';
 import { transportCreateSchema, TransportFormData } from '@/lib/validations/entities';
 import { Transport } from '@/types/entities';
@@ -22,6 +23,7 @@ interface TransportSheetProps {
 
 export function TransportSheet({ open, onOpenChange, transport, onSuccess }: TransportSheetProps) {
   const isEditing = !!transport;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<TransportFormData>({
     resolver: zodResolver(transportCreateSchema),
@@ -60,6 +62,7 @@ export function TransportSheet({ open, onOpenChange, transport, onSuccess }: Tra
         color: null,
       });
     }
+    setImagePreview(null);
   }, [transport, reset]);
 
   async function onSubmit(data: TransportFormData) {
@@ -100,13 +103,29 @@ export function TransportSheet({ open, onOpenChange, transport, onSuccess }: Tra
           />
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="image"
-          label="Image URL"
-          placeholder="https://example.com/icon.png"
-          description="URL to an image (optional)"
-        />
+        <FormFieldWrapper label="Image" description="Upload an image for this transport">
+          {transport?.image && !imagePreview && (
+            <div className="mb-2">
+              <img src={transport.image} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          {imagePreview && (
+            <div className="mb-2">
+              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setValue('image', file as any);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </FormFieldWrapper>
 
         <FormFieldWrapper label="Color" description="Choose a color for this transport">
           <ColorPicker value={colorValue} onChange={(color) => setValue('color', color)} />

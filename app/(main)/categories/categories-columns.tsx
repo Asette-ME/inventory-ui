@@ -5,6 +5,7 @@ import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,6 +31,42 @@ export function getCategoriesColumns({
   onDelete,
 }: ColumnOptions): ColumnDef<Category>[] {
   return [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      id: 'id',
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="ID"
+          sortKey="id"
+          currentSortBy={sortBy}
+          currentSortOrder={sortOrder}
+          onSort={onSort}
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="font-mono text-xs text-muted-foreground truncate max-w-[100px] block">{row.original.id}</span>
+      ),
+    },
     {
       id: 'name',
       accessorKey: 'name',
@@ -59,6 +96,21 @@ export function getCategoriesColumns({
         />
       ),
       cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString(),
+    },
+    {
+      id: 'updated_at',
+      accessorKey: 'updated_at',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Updated At"
+          sortKey="updated_at"
+          currentSortBy={sortBy}
+          currentSortOrder={sortOrder}
+          onSort={onSort}
+        />
+      ),
+      cell: ({ row }) => new Date(row.original.updated_at).toLocaleDateString(),
     },
     {
       id: 'actions',
@@ -92,4 +144,9 @@ export function getCategoriesColumns({
   ];
 }
 
-export const DEFAULT_VISIBLE_COLUMNS = { name: true, created_at: true };
+export const DEFAULT_VISIBLE_COLUMNS = {
+  id: false,
+  name: true,
+  created_at: true,
+  updated_at: false,
+};

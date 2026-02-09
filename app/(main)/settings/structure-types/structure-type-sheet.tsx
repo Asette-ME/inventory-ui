@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -9,6 +9,7 @@ import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { IconPicker } from '@/components/ui/icon-picker';
+import { Input } from '@/components/ui/input';
 import { createStructureType, updateStructureType } from '@/lib/actions/entities';
 import { structureTypeCreateSchema, StructureTypeFormData } from '@/lib/validations/entities';
 import { StructureType } from '@/types/entities';
@@ -22,6 +23,7 @@ interface StructureTypeSheetProps {
 
 export function StructureTypeSheet({ open, onOpenChange, structureType, onSuccess }: StructureTypeSheetProps) {
   const isEditing = !!structureType;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<StructureTypeFormData>({
     resolver: zodResolver(structureTypeCreateSchema),
@@ -60,6 +62,7 @@ export function StructureTypeSheet({ open, onOpenChange, structureType, onSucces
         color: null,
       });
     }
+    setImagePreview(null);
   }, [structureType, reset]);
 
   async function onSubmit(data: StructureTypeFormData) {
@@ -108,13 +111,29 @@ export function StructureTypeSheet({ open, onOpenChange, structureType, onSucces
           />
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="image"
-          label="Image URL"
-          placeholder="https://example.com/icon.png"
-          description="URL to an image (optional)"
-        />
+        <FormFieldWrapper label="Image" description="Upload an image for this structure type">
+          {structureType?.image && !imagePreview && (
+            <div className="mb-2">
+              <img src={structureType.image} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          {imagePreview && (
+            <div className="mb-2">
+              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setValue('image', file as any);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </FormFieldWrapper>
 
         <FormFieldWrapper label="Color" description="Choose a color for this structure type">
           <ColorPicker value={colorValue} onChange={(color) => setValue('color', color)} />

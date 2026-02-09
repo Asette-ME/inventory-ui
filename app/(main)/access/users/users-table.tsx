@@ -1,17 +1,29 @@
 'use client';
 
 import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
+import { Shield, Trash2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { DeleteDialog } from '@/components/crud/delete-dialog';
-import { DataTable, DataTablePagination } from '@/components/data-table';
+import { DataTable, DataTableBulkToolbar, DataTablePagination } from '@/components/data-table';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useTableState } from '@/hooks/use-table-state';
 import { useUsers } from '@/hooks/use-users';
 import { useUsersParams } from '@/hooks/use-users-params';
-import { deleteUser } from '@/lib/actions/entities';
+import { bulkAssignRoles, bulkDelete, deleteUser, getRoles } from '@/lib/actions/entities';
 import { cn } from '@/lib/utils';
-import { User } from '@/types/entities';
+import { Role, User } from '@/types/entities';
 
 import { UserSheet } from './user-sheet';
 import { DEFAULT_VISIBLE_COLUMNS, getUsersColumns } from './users-columns';
@@ -31,6 +43,13 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
   // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  // Bulk assign roles dialog state
+  const [bulkRoleDialogOpen, setBulkRoleDialogOpen] = useState(false);
+  const [availableRoles, setAvailableRoles] = useState<Role[]>([]);
+  const [bulkRoleIds, setBulkRoleIds] = useState<string[]>([]);
+  const [rolesLoading, setRolesLoading] = useState(false);
+  const [bulkAssigning, setBulkAssigning] = useState(false);
 
   const { columnVisibility, columnOrder, onColumnVisibilityChange, onColumnOrderChange } = useTableState({
     key: 'users',
@@ -133,6 +152,105 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
         itemName={userToDelete?.username}
         onConfirm={confirmDelete}
       />
+
+      <DataTableBulkToolbar
+        selectedCount={Object.keys(rowSelection).length}
+        onClearSelection={() => setRowSelection({})}
+        actions={[
+          {
+            label: 'Assign Roles',
+            icon: <Shield className="size-4" />,
+            onClick: async () => {
+              setBulkRoleDialogOpen(true);
+              setBulkRoleIds([]);
+              setRolesLoading(true);
+              try {
+                const res = await getRoles({ limit: 100 });
+                setAvailableRoles(res.data);
+              } catch {
+                toast.error('Failed to load roles');
+              } finally {
+                setRolesLoading(false);
+              }
+            },
+          },
+          {
+            label: 'Delete',
+            icon: <Trash2 className="size-4" />,
+            variant: 'destructive' as const,
+            onClick: async () => {
+              const ids = Object.keys(rowSelection);
+              const results = await bulkDelete(deleteUser, ids);
+              const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+              const failed = results.filter((r) => r.status === 'rejected').length;
+              if (succeeded > 0) toast.success(`${succeeded} users deleted`);
+              if (failed > 0) toast.error(`${failed} deletions failed`);
+              setRowSelection({});
+              refetch();
+            },
+          },
+        ]}
+      />
+
+      <Dialog open={bulkRoleDialogOpen} onOpenChange={setBulkRoleDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Roles</DialogTitle>
+            <DialogDescription>
+              Select roles to assign to {Object.keys(rowSelection).length} selected users.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-4">
+            {rolesLoading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-8 w-full" />
+                ))}
+              </div>
+            ) : (
+              availableRoles.map((role) => (
+                <label key={role.id} className="flex items-center gap-3 cursor-pointer">
+                  <Checkbox
+                    checked={bulkRoleIds.includes(role.id)}
+                    onCheckedChange={(checked) => {
+                      setBulkRoleIds((prev) => (checked ? [...prev, role.id] : prev.filter((id) => id !== role.id)));
+                    }}
+                  />
+                  <span className="text-sm font-medium">{role.name}</span>
+                </label>
+              ))
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkRoleDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              disabled={bulkRoleIds.length === 0 || bulkAssigning}
+              onClick={async () => {
+                setBulkAssigning(true);
+                try {
+                  const ids = Object.keys(rowSelection);
+                  const results = await bulkAssignRoles(ids, bulkRoleIds);
+                  const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+                  const failed = results.filter((r) => r.status === 'rejected').length;
+                  if (succeeded > 0) toast.success(`Roles assigned to ${succeeded} users`);
+                  if (failed > 0) toast.error(`${failed} assignments failed`);
+                  setRowSelection({});
+                  setBulkRoleDialogOpen(false);
+                  refetch();
+                } catch {
+                  toast.error('Failed to assign roles');
+                } finally {
+                  setBulkAssigning(false);
+                }
+              }}
+            >
+              {bulkAssigning ? 'Assigning...' : 'Assign Roles'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

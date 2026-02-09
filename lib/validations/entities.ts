@@ -13,7 +13,7 @@ const boundariesSchema = z.array(z.any()).nullable().optional();
 
 const uiAttributeSchema = {
   icon: z.string().nullable().optional(),
-  image: z.string().nullable().optional(),
+  image: z.any().nullable().optional(),
   color: z.string().nullable().optional(),
 };
 
@@ -111,8 +111,6 @@ export const amenityCreateSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
   description: z.string().nullable().optional(),
   ...uiAttributeSchema,
-  coordinates: coordinatesSchema,
-  boundaries: boundariesSchema,
 });
 
 export const amenityUpdateSchema = amenityCreateSchema.partial();

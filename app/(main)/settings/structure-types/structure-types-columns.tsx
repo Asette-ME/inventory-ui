@@ -4,7 +4,9 @@ import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +34,42 @@ export function getStructureTypesColumns({
 }: ColumnOptions): ColumnDef<StructureType>[] {
   return [
     {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      id: 'id',
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="ID"
+          sortKey="id"
+          currentSortBy={sortBy}
+          currentSortOrder={sortOrder}
+          onSort={onSort}
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="font-mono text-xs text-muted-foreground truncate max-w-[100px] block">{row.original.id}</span>
+      ),
+    },
+    {
       id: 'name',
       accessorKey: 'name',
       header: ({ column }) => (
@@ -45,6 +83,21 @@ export function getStructureTypesColumns({
         />
       ),
       cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
+    },
+    {
+      id: 'image',
+      accessorKey: 'image',
+      header: 'Image',
+      cell: ({ row }) => {
+        const image = row.original.image;
+        if (!image) return <span className="text-muted-foreground">—</span>;
+        return (
+          <Avatar className="size-8 rounded-md">
+            <AvatarImage src={image} alt={row.original.name} />
+            <AvatarFallback className="rounded-md text-xs">IMG</AvatarFallback>
+          </Avatar>
+        );
+      },
     },
     {
       id: 'icon',
@@ -89,6 +142,21 @@ export function getStructureTypesColumns({
       cell: ({ row }) => new Date(row.original.created_at).toLocaleDateString(),
     },
     {
+      id: 'updated_at',
+      accessorKey: 'updated_at',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Updated At"
+          sortKey="updated_at"
+          currentSortBy={sortBy}
+          currentSortOrder={sortOrder}
+          onSort={onSort}
+        />
+      ),
+      cell: ({ row }) => new Date(row.original.updated_at).toLocaleDateString(),
+    },
+    {
       id: 'actions',
       header: '',
       cell: ({ row }) => {
@@ -120,4 +188,12 @@ export function getStructureTypesColumns({
   ];
 }
 
-export const DEFAULT_VISIBLE_COLUMNS = { name: true, icon: true, color: true, created_at: true };
+export const DEFAULT_VISIBLE_COLUMNS = {
+  id: false,
+  name: true,
+  image: true,
+  icon: true,
+  color: true,
+  created_at: true,
+  updated_at: false,
+};

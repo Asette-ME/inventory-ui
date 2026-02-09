@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { getUserInitials } from '@/lib/utils';
 import { User } from '@/types/entities';
 
@@ -46,6 +47,23 @@ export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }:
       ),
       enableSorting: false,
       enableHiding: false,
+    },
+    {
+      id: 'id',
+      accessorKey: 'id',
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="ID"
+          sortKey="id"
+          currentSortBy={sortBy}
+          currentSortOrder={sortOrder}
+          onSort={onSort}
+        />
+      ),
+      cell: ({ row }) => (
+        <span className="font-mono text-xs text-muted-foreground truncate max-w-[100px] block">{row.original.id}</span>
+      ),
     },
     {
       id: 'username',
@@ -112,7 +130,15 @@ export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }:
         return (
           <div className="flex flex-wrap gap-1">
             {roles.map((role) => (
-              <Badge key={role.id} variant="secondary">
+              <Badge key={role.id} variant="secondary" className="gap-1">
+                {role.image ? (
+                  <Avatar className="size-4 rounded-full">
+                    <AvatarImage src={role.image} alt={role.name} />
+                    <AvatarFallback className="rounded-full text-[8px]">{role.name[0]}</AvatarFallback>
+                  </Avatar>
+                ) : role.icon ? (
+                  <IconDisplay name={role.icon} className="size-3" />
+                ) : null}
                 {role.name}
               </Badge>
             ))}
@@ -202,6 +228,7 @@ export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }:
 
 // Default visible columns
 export const DEFAULT_VISIBLE_COLUMNS = {
+  id: false,
   username: true,
   email: true,
   phone: true,

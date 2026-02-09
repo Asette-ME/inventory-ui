@@ -112,7 +112,14 @@ export default function CitiesPage() {
       addLabel="Add City"
     >
       <div className="space-y-6">
-        <FilterBar>
+        <FilterBar
+          actions={
+            <Button variant="outline" onClick={fetchCities} disabled={isLoading} className="gap-2">
+              <RefreshCw className={isLoading ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          }
+        >
           <InputGroup className="w-full sm:w-64 bg-white dark:bg-muted/50">
             <InputGroupAddon>
               <Search />
@@ -145,10 +152,6 @@ export default function CitiesPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={fetchCities} disabled={isLoading} className="gap-2">
-            <RefreshCw className={isLoading ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Refresh</span>
-          </Button>
         </FilterBar>
 
         {isLoading && cities.length === 0 ? (
@@ -183,6 +186,7 @@ export default function CitiesPage() {
                   } as any
                 }
                 onClick={() => handleEdit(city)}
+                onDelete={() => handleDeleteClick(city)}
               />
             ))}
           </LocationGroup>

@@ -1,19 +1,18 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
-import { GeoEditor } from '@/components/crud/geo-editor';
 import { IconPicker } from '@/components/ui/icon-picker';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createAmenity, updateAmenity } from '@/lib/actions/entities';
 import { amenityCreateSchema, AmenityFormData } from '@/lib/validations/entities';
-import { Coordinates } from '@/types/common';
 import { Amenity } from '@/types/entities';
 
 interface AmenitySheetProps {
@@ -25,6 +24,7 @@ interface AmenitySheetProps {
 
 export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: AmenitySheetProps) {
   const isEditing = !!amenity;
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<AmenityFormData>({
     resolver: zodResolver(amenityCreateSchema),
@@ -34,8 +34,6 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
       icon: null,
       image: null,
       color: null,
-      coordinates: null,
-      boundaries: null,
     },
   });
 
@@ -50,8 +48,6 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
   } = form;
   const colorValue = watch('color');
   const iconValue = watch('icon');
-  const coordinatesValue = watch('coordinates') as Coordinates | null;
-  const boundariesValue = watch('boundaries');
 
   useEffect(() => {
     if (amenity) {
@@ -61,8 +57,6 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
         icon: amenity.icon,
         image: amenity.image,
         color: amenity.color,
-        coordinates: amenity.coordinates,
-        boundaries: amenity.boundaries?.coordinates || null,
       });
     } else {
       reset({
@@ -71,10 +65,9 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
         icon: null,
         image: null,
         color: null,
-        coordinates: null,
-        boundaries: null,
       });
     }
+    setImagePreview(null);
   }, [amenity, reset]);
 
   async function onSubmit(data: AmenityFormData) {
@@ -126,25 +119,32 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
           />
         </FormFieldWrapper>
 
-        <FormField
-          control={control}
-          name="image"
-          label="Image URL"
-          placeholder="https://example.com/icon.png"
-          description="URL to an image (optional)"
-        />
+        <FormFieldWrapper label="Image" description="Upload an image for this amenity">
+          {amenity?.image && !imagePreview && (
+            <div className="mb-2">
+              <img src={amenity.image} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          {imagePreview && (
+            <div className="mb-2">
+              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+            </div>
+          )}
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setValue('image', file as any);
+                setImagePreview(URL.createObjectURL(file));
+              }
+            }}
+          />
+        </FormFieldWrapper>
 
         <FormFieldWrapper label="Color" description="Choose a color for this amenity">
           <ColorPicker value={colorValue} onChange={(color) => setValue('color', color)} />
-        </FormFieldWrapper>
-
-        <FormFieldWrapper label="Location" description="Set the geographic location and boundaries">
-          <GeoEditor
-            coordinates={coordinatesValue}
-            boundaries={boundariesValue ? { type: 'MultiPolygon', coordinates: boundariesValue } : null}
-            onCoordinatesChange={(coords) => setValue('coordinates', coords)}
-            onBoundariesChange={(bounds) => setValue('boundaries', bounds)}
-          />
         </FormFieldWrapper>
       </form>
     </EntitySheet>

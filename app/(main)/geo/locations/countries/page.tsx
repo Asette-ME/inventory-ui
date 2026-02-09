@@ -85,7 +85,14 @@ export default function CountriesPage() {
       addLabel="Add Country"
     >
       <div className="space-y-6">
-        <FilterBar>
+        <FilterBar
+          actions={
+            <Button variant="outline" onClick={fetchCountries} disabled={isLoading} className="gap-2">
+              <RefreshCw className={isLoading ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          }
+        >
           <InputGroup className="w-full sm:w-64 bg-white dark:bg-muted/50">
             <InputGroupAddon>
               <Search />
@@ -99,10 +106,6 @@ export default function CountriesPage() {
               }}
             />
           </InputGroup>
-          <Button variant="outline" onClick={fetchCountries} disabled={isLoading} className="gap-2">
-            <RefreshCw className={isLoading ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Refresh</span>
-          </Button>
         </FilterBar>
 
         {isLoading && countries.length === 0 ? (
@@ -124,7 +127,12 @@ export default function CountriesPage() {
         ) : (
           <LocationGroup>
             {countries.map((country) => (
-              <LocationCard key={country.id} data={country as any} onClick={() => handleEdit(country)} />
+              <LocationCard
+                key={country.id}
+                data={country as any}
+                onClick={() => handleEdit(country)}
+                onDelete={() => handleDeleteClick(country)}
+              />
             ))}
           </LocationGroup>
         )}

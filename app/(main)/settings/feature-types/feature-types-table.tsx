@@ -1,15 +1,15 @@
 'use client';
 
-import { getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
-import { Plus, Sparkles } from 'lucide-react';
+import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
+import { Plus, Sparkles, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { DeleteDialog, EmptyState, TableSkeleton } from '@/components/crud';
-import { DataTable, DataTablePagination } from '@/components/data-table';
+import { DataTable, DataTableBulkToolbar, DataTablePagination } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { useTableState } from '@/hooks/use-table-state';
-import { deleteFeatureType, getFeatureTypes } from '@/lib/actions/entities';
+import { bulkDelete, deleteFeatureType, getFeatureTypes } from '@/lib/actions/entities';
 import { cn } from '@/lib/utils';
 import { PaginationMeta } from '@/types/common';
 import { FeatureType } from '@/types/entities';
@@ -33,6 +33,7 @@ export function FeatureTypesTable({ sheetOpen, onSheetOpenChange }: FeatureTypes
   const [sortBy, setSortBy] = useState<string>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [selectedItem, setSelectedItem] = useState<FeatureType | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<FeatureType | null>(null);
@@ -109,8 +110,9 @@ export function FeatureTypesTable({ sheetOpen, onSheetOpenChange }: FeatureTypes
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange,
     onColumnOrderChange,
+    onRowSelectionChange: setRowSelection,
     getRowId: (row) => row.id,
-    state: { columnVisibility, columnOrder },
+    state: { columnVisibility, columnOrder, rowSelection },
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
@@ -174,6 +176,27 @@ export function FeatureTypesTable({ sheetOpen, onSheetOpenChange }: FeatureTypes
         title="Delete Feature Type"
         itemName={itemToDelete?.name}
         onConfirm={confirmDelete}
+      />
+      <DataTableBulkToolbar
+        selectedCount={Object.keys(rowSelection).length}
+        onClearSelection={() => setRowSelection({})}
+        actions={[
+          {
+            label: 'Delete',
+            icon: <Trash2 className="size-4" />,
+            variant: 'destructive' as const,
+            onClick: async () => {
+              const ids = Object.keys(rowSelection);
+              const results = await bulkDelete(deleteFeatureType, ids);
+              const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+              const failed = results.filter((r) => r.status === 'rejected').length;
+              if (succeeded > 0) toast.success(`${succeeded} feature types deleted`);
+              if (failed > 0) toast.error(`${failed} deletions failed`);
+              setRowSelection({});
+              void fetchItems();
+            },
+          },
+        ]}
       />
     </div>
   );

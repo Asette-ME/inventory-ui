@@ -111,7 +111,14 @@ export default function DistrictsPage() {
       addLabel="Add District"
     >
       <div className="space-y-6">
-        <FilterBar>
+        <FilterBar
+          actions={
+            <Button variant="outline" onClick={fetchDistricts} disabled={isLoading} className="gap-2">
+              <RefreshCw className={isLoading ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          }
+        >
           <InputGroup className="w-full sm:w-64 bg-white dark:bg-muted/50">
             <InputGroupAddon>
               <Search />
@@ -138,10 +145,6 @@ export default function DistrictsPage() {
               ))}
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={fetchDistricts} disabled={isLoading} className="gap-2">
-            <RefreshCw className={isLoading ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Refresh</span>
-          </Button>
         </FilterBar>
 
         {isLoading && districts.length === 0 ? (
@@ -166,7 +169,12 @@ export default function DistrictsPage() {
         ) : (
           <LocationGroup>
             {districts.map((district) => (
-              <LocationCard key={district.id} data={district as any} onClick={() => handleEdit(district)} />
+              <LocationCard
+                key={district.id}
+                data={district as any}
+                onClick={() => handleEdit(district)}
+                onDelete={() => handleDeleteClick(district)}
+              />
             ))}
           </LocationGroup>
         )}

@@ -1,5 +1,6 @@
 type FetchOptions = RequestInit & {
   headers?: Record<string, string>;
+  isFormData?: boolean;
 };
 
 /**
@@ -20,21 +21,26 @@ function normalizeEndpoint(endpoint: string): string {
 export const api = {
   async fetch(endpoint: string, options: FetchOptions = {}) {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const { isFormData, ...restOptions } = options;
 
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = {};
+
+    // Don't set Content-Type for FormData - browser sets it with boundary
+    if (!isFormData) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     if (options.headers) Object.assign(headers, options.headers);
 
     if (token) headers.Authorization = `Bearer ${token}`;
 
-    const config = { ...options, headers };
+    const config = { ...restOptions, headers };
 
     // Normalize endpoint to prevent 308 redirects and use relative path /api
     const normalizedEndpoint = normalizeEndpoint(endpoint);
     const response = await fetch(`/api${normalizedEndpoint}`, config);
 
     if (response.status === 401) {
-      // TODO: Handle token refresh or logout
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
         window.location.href = '/login';
@@ -44,7 +50,7 @@ export const api = {
     return response;
   },
 
-  async get(endpoint: string, options: FetchOptions = {}) {
+  async get<T = any>(endpoint: string, options: FetchOptions = {}): Promise<Response> {
     return this.fetch(endpoint, { ...options, method: 'GET' });
   },
 
@@ -56,11 +62,37 @@ export const api = {
     });
   },
 
+  async postFormData(endpoint: string, formData: FormData, options: FetchOptions = {}) {
+    return this.fetch(endpoint, {
+      ...options,
+      method: 'POST',
+      body: formData,
+      isFormData: true,
+    });
+  },
+
   async put(endpoint: string, body: any, options: FetchOptions = {}) {
     return this.fetch(endpoint, {
       ...options,
       method: 'PUT',
       body: JSON.stringify(body),
+    });
+  },
+
+  async patch(endpoint: string, body: any, options: FetchOptions = {}) {
+    return this.fetch(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    });
+  },
+
+  async patchFormData(endpoint: string, formData: FormData, options: FetchOptions = {}) {
+    return this.fetch(endpoint, {
+      ...options,
+      method: 'PATCH',
+      body: formData,
+      isFormData: true,
     });
   },
 

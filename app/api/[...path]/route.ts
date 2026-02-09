@@ -37,7 +37,12 @@ async function handler(request: NextRequest) {
 
   // Forward body for non-GET requests
   if (request.method !== 'GET' && request.method !== 'HEAD') {
-    fetchOptions.body = await request.text();
+    // For multipart form data, forward as-is (arraybuffer preserves binary data)
+    if (contentType?.includes('multipart/form-data')) {
+      fetchOptions.body = await request.arrayBuffer();
+    } else {
+      fetchOptions.body = await request.text();
+    }
   }
 
   try {

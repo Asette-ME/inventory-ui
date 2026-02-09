@@ -85,7 +85,14 @@ export default function AreasPage() {
       addLabel="Add Area"
     >
       <div className="space-y-6">
-        <FilterBar>
+        <FilterBar
+          actions={
+            <Button variant="outline" onClick={fetchAreas} disabled={isLoading} className="gap-2">
+              <RefreshCw className={isLoading ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline">Refresh</span>
+            </Button>
+          }
+        >
           <InputGroup className="w-full sm:w-64 bg-white dark:bg-muted/50">
             <InputGroupAddon>
               <Search />
@@ -99,10 +106,6 @@ export default function AreasPage() {
               }}
             />
           </InputGroup>
-          <Button variant="outline" onClick={fetchAreas} disabled={isLoading} className="gap-2">
-            <RefreshCw className={isLoading ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">Refresh</span>
-          </Button>
         </FilterBar>
 
         {isLoading && areas.length === 0 ? (
@@ -124,7 +127,12 @@ export default function AreasPage() {
         ) : (
           <LocationGroup>
             {areas.map((area) => (
-              <LocationCard key={area.id} data={area as any} onClick={() => handleEdit(area)} />
+              <LocationCard
+                key={area.id}
+                data={area as any}
+                onClick={() => handleEdit(area)}
+                onDelete={() => handleDeleteClick(area)}
+              />
             ))}
           </LocationGroup>
         )}

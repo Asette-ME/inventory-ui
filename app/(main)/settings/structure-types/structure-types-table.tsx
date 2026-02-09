@@ -1,15 +1,15 @@
 'use client';
 
-import { getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
-import { Building2, Plus } from 'lucide-react';
+import { getCoreRowModel, getFilteredRowModel, RowSelectionState, useReactTable } from '@tanstack/react-table';
+import { Building2, Plus, Trash2 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { DeleteDialog, EmptyState, TableSkeleton } from '@/components/crud';
-import { DataTable, DataTablePagination } from '@/components/data-table';
+import { DataTable, DataTableBulkToolbar, DataTablePagination } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { useTableState } from '@/hooks/use-table-state';
-import { deleteStructureType, getStructureTypes } from '@/lib/actions/entities';
+import { bulkDelete, deleteStructureType, getStructureTypes } from '@/lib/actions/entities';
 import { cn } from '@/lib/utils';
 import { PaginationMeta } from '@/types/common';
 import { StructureType } from '@/types/entities';
@@ -33,6 +33,7 @@ export function StructureTypesTable({ sheetOpen, onSheetOpenChange }: StructureT
   const [sortBy, setSortBy] = useState<string>('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [selectedItem, setSelectedItem] = useState<StructureType | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<StructureType | null>(null);
@@ -109,8 +110,9 @@ export function StructureTypesTable({ sheetOpen, onSheetOpenChange }: StructureT
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange,
     onColumnOrderChange,
+    onRowSelectionChange: setRowSelection,
     getRowId: (row) => row.id,
-    state: { columnVisibility, columnOrder },
+    state: { columnVisibility, columnOrder, rowSelection },
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
@@ -174,6 +176,27 @@ export function StructureTypesTable({ sheetOpen, onSheetOpenChange }: StructureT
         title="Delete Structure Type"
         itemName={itemToDelete?.name}
         onConfirm={confirmDelete}
+      />
+      <DataTableBulkToolbar
+        selectedCount={Object.keys(rowSelection).length}
+        onClearSelection={() => setRowSelection({})}
+        actions={[
+          {
+            label: 'Delete',
+            icon: <Trash2 className="size-4" />,
+            variant: 'destructive' as const,
+            onClick: async () => {
+              const ids = Object.keys(rowSelection);
+              const results = await bulkDelete(deleteStructureType, ids);
+              const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+              const failed = results.filter((r) => r.status === 'rejected').length;
+              if (succeeded > 0) toast.success(`${succeeded} structure types deleted`);
+              if (failed > 0) toast.error(`${failed} deletions failed`);
+              setRowSelection({});
+              void fetchItems();
+            },
+          },
+        ]}
       />
     </div>
   );

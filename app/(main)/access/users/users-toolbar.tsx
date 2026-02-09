@@ -7,9 +7,12 @@ import { useEffect, useState } from 'react';
 import { DataTableFacetedFilter, DataTableFilterDrawer, DataTableViewOptions } from '@/components/data-table';
 import { FilterOption } from '@/components/data-table/data-table-faceted-filter';
 import { FilterGroup } from '@/components/data-table/data-table-filter-drawer';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { IconDisplay } from '@/components/ui/icon-display';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { getRoles } from '@/lib/actions/entities';
+import { cn } from '@/lib/utils';
 import { Role, User } from '@/types/entities';
 
 interface UsersToolbarProps {
@@ -48,7 +51,16 @@ export function UsersToolbar({
           response.data.map((role: Role) => ({
             label: role.name,
             value: role.id,
-            icon: Shield,
+            icon: role.image
+              ? ({ className }: { className?: string }) => (
+                  <Avatar className={cn('size-4 rounded-full', className)}>
+                    <AvatarImage src={role.image!} alt={role.name} />
+                    <AvatarFallback className="rounded-full text-[8px]">{role.name[0]}</AvatarFallback>
+                  </Avatar>
+                )
+              : role.icon
+                ? ({ className }: { className?: string }) => <IconDisplay name={role.icon} className={className} />
+                : Shield,
           })),
         );
       } catch (err) {

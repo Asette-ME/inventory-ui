@@ -127,7 +127,11 @@ In the appropriate nav data file (e.g., `components/nav/data/settings.nav.ts`):
 
 ## Adding a Geo Entity (with Map)
 
-Same as above, but also:
+Same as standard CRUD above, but also:
+
+**Note:** Geo location entities (Countries, Cities, Districts, Areas) use a **card-based UI** instead of the standard 5-file table pattern. They share components via `app/(main)/geo/locations/_components/` (`LocationGroup`, `LocationCard`, `types.ts`). Each location entity has only `page.tsx` + `{entity}-sheet.tsx`.
+
+For non-location geo entities (Attractions, Amenities), use the standard 5-file table pattern.
 
 1. Entity extends `GeoEntity` (adds coordinates, boundaries)
 2. Zod schema includes `coordinatesSchema` and `boundariesSchema`
@@ -340,6 +344,49 @@ import { Map, MapTileLayer, MapMarker, MapFitBounds, MapDrawControl } from '@/co
 ```
 
 For editing coordinates/boundaries in forms, use the `GeoEditor` CRUD component.
+
+---
+
+## Bulk Operations
+
+### Bulk Delete
+
+Use `bulkDelete()` with any entity's delete function:
+
+```typescript
+import { bulkDelete, deleteWidget } from '@/lib/actions/entities';
+
+const results = await bulkDelete(deleteWidget, selectedIds);
+const failed = results.filter((r) => r.status === 'rejected');
+if (failed.length) toast.error(`${failed.length} deletions failed`);
+```
+
+### Bulk Toolbar
+
+Use `DataTableBulkToolbar` for a floating action bar when rows are selected:
+
+```typescript
+import { DataTableBulkToolbar } from '@/components/data-table';
+
+<DataTableBulkToolbar
+  selectedCount={selectedIds.length}
+  onClearSelection={() => table.toggleAllRowsSelected(false)}
+  actions={[
+    { label: 'Delete', icon: <Trash2 className="size-4" />, variant: 'destructive', onClick: handleBulkDelete },
+  ]}
+/>
+```
+
+### Entity Display Components
+
+Use `components/entity/` for rendering entities with UIAttributeEntity fields in tables/lists:
+
+```typescript
+import { EntityBadge } from '@/components/entity/entity-badge';
+
+// In column cell - shows icon/image + name in a badge
+<EntityBadge id={role.id} name={role.name} icon={role.icon} color={role.color} />
+```
 
 ---
 

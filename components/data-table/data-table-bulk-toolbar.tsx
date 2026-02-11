@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react';
 import { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,7 +31,7 @@ export function DataTableBulkToolbar({
 }: DataTableBulkToolbarProps) {
   if (selectedCount === 0) return null;
 
-  return (
+  return createPortal(
     <div
       className={cn(
         'fixed bottom-6 left-1/2 z-50 -translate-x-1/2',
@@ -65,6 +66,7 @@ export function DataTableBulkToolbar({
           </Button>
         ))}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

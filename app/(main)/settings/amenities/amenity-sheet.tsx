@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
+import { EntityImage } from '@/components/entity/entity-image';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -120,14 +121,10 @@ export function AmenitySheet({ open, onOpenChange, amenity, onSuccess }: Amenity
         </FormFieldWrapper>
 
         <FormFieldWrapper label="Image" description="Upload an image for this amenity">
-          {amenity?.image && !imagePreview && (
+          {(amenity?.image || imagePreview) && (
             <div className="mb-2">
-              <img src={amenity.image} alt="" className="h-16 w-16 rounded-md object-cover" />
-            </div>
-          )}
-          {imagePreview && (
-            <div className="mb-2">
-              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+              {amenity?.image && !imagePreview && <EntityImage image={amenity.image} />}
+              {imagePreview && <EntityImage image={imagePreview} />}
             </div>
           )}
           <Input

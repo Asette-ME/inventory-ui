@@ -44,6 +44,9 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
 
+  // Bulk delete dialog state
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+
   // Bulk assign roles dialog state
   const [bulkRoleDialogOpen, setBulkRoleDialogOpen] = useState(false);
   const [availableRoles, setAvailableRoles] = useState<Role[]>([]);
@@ -153,6 +156,23 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
         onConfirm={confirmDelete}
       />
 
+      <DeleteDialog
+        open={bulkDeleteDialogOpen}
+        onOpenChange={setBulkDeleteDialogOpen}
+        title="Delete Users"
+        itemName={`${Object.keys(rowSelection).length} selected users`}
+        onConfirm={async () => {
+          const ids = Object.keys(rowSelection);
+          const results = await bulkDelete(deleteUser, ids);
+          const succeeded = results.filter((r) => r.status === 'fulfilled').length;
+          const failed = results.filter((r) => r.status === 'rejected').length;
+          if (succeeded > 0) toast.success(`${succeeded} users deleted`);
+          if (failed > 0) toast.error(`${failed} deletions failed`);
+          setRowSelection({});
+          refetch();
+        }}
+      />
+
       <DataTableBulkToolbar
         selectedCount={Object.keys(rowSelection).length}
         onClearSelection={() => setRowSelection({})}
@@ -178,16 +198,7 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
             label: 'Delete',
             icon: <Trash2 className="size-4" />,
             variant: 'destructive' as const,
-            onClick: async () => {
-              const ids = Object.keys(rowSelection);
-              const results = await bulkDelete(deleteUser, ids);
-              const succeeded = results.filter((r) => r.status === 'fulfilled').length;
-              const failed = results.filter((r) => r.status === 'rejected').length;
-              if (succeeded > 0) toast.success(`${succeeded} users deleted`);
-              if (failed > 0) toast.error(`${failed} deletions failed`);
-              setRowSelection({});
-              refetch();
-            },
+            onClick: () => setBulkDeleteDialogOpen(true),
           },
         ]}
       />
@@ -200,25 +211,33 @@ export function UsersTableContent({ sheetOpen, onSheetOpenChange }: UsersTableCo
               Select roles to assign to {Object.keys(rowSelection).length} selected users.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-3 py-4">
+          <div className="py-4">
             {rolesLoading ? (
-              <div className="space-y-2">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton key={i} className="h-8 w-full" />
+              <div className="grid grid-cols-2 gap-3">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-12 w-full rounded-md" />
                 ))}
               </div>
             ) : (
-              availableRoles.map((role) => (
-                <label key={role.id} className="flex items-center gap-3 cursor-pointer">
-                  <Checkbox
-                    checked={bulkRoleIds.includes(role.id)}
-                    onCheckedChange={(checked) => {
-                      setBulkRoleIds((prev) => (checked ? [...prev, role.id] : prev.filter((id) => id !== role.id)));
-                    }}
-                  />
-                  <span className="text-sm font-medium">{role.name}</span>
-                </label>
-              ))
+              <div className="grid grid-cols-2 gap-3">
+                {availableRoles.map((role) => (
+                  <label
+                    key={role.id}
+                    className={cn(
+                      'flex items-center gap-2 rounded-md border p-3',
+                      'cursor-pointer hover:bg-muted/50 transition-colors',
+                    )}
+                  >
+                    <Checkbox
+                      checked={bulkRoleIds.includes(role.id)}
+                      onCheckedChange={(checked) => {
+                        setBulkRoleIds((prev) => (checked ? [...prev, role.id] : prev.filter((id) => id !== role.id)));
+                      }}
+                    />
+                    <span className="text-sm font-medium">{role.name}</span>
+                  </label>
+                ))}
+              </div>
             )}
           </div>
           <DialogFooter>

@@ -155,12 +155,25 @@ export async function deleteUser(id: string): Promise<ApiResponse<boolean>> {
   return parseResponse(res);
 }
 
+// Assign a single role to a user
+export async function assignUserRole(userId: string, roleId: string): Promise<ApiResponse<User>> {
+  const res = await api.post(`/user/${userId}/roles/${roleId}`, {});
+  return parseResponse(res);
+}
+
+// Remove a single role from a user
+export async function removeUserRole(userId: string, roleId: string): Promise<ApiResponse<User>> {
+  const res = await api.delete(`/user/${userId}/roles/${roleId}`);
+  return parseResponse(res);
+}
+
 // Bulk assign roles to multiple users in parallel
 export async function bulkAssignRoles(
   userIds: string[],
   roleIds: string[],
 ): Promise<PromiseSettledResult<ApiResponse<User>>[]> {
-  return Promise.allSettled(userIds.map((userId) => updateUser(userId, { roles: roleIds })));
+  const assignments = userIds.flatMap((userId) => roleIds.map((roleId) => assignUserRole(userId, roleId)));
+  return Promise.allSettled(assignments);
 }
 
 // ============= COUNTRY ACTIONS =============

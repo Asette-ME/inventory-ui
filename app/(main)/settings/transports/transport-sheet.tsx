@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
+import { EntityImage } from '@/components/entity/entity-image';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { Input } from '@/components/ui/input';
 import { createTransport, updateTransport } from '@/lib/actions/entities';
@@ -104,14 +105,10 @@ export function TransportSheet({ open, onOpenChange, transport, onSuccess }: Tra
         </FormFieldWrapper>
 
         <FormFieldWrapper label="Image" description="Upload an image for this transport">
-          {transport?.image && !imagePreview && (
+          {(transport?.image || imagePreview) && (
             <div className="mb-2">
-              <img src={transport.image} alt="" className="h-16 w-16 rounded-md object-cover" />
-            </div>
-          )}
-          {imagePreview && (
-            <div className="mb-2">
-              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+              {transport?.image && !imagePreview && <EntityImage image={transport.image} />}
+              {imagePreview && <EntityImage image={imagePreview} />}
             </div>
           )}
           <Input

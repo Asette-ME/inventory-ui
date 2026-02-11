@@ -49,12 +49,12 @@ app/
 │   │   └── roles/                      # Roles CRUD
 │   ├── geo/
 │   │   ├── locations/
-│   │   │   ├── _components/            # Shared location components
-│   │   │   ├── countries/              # Countries CRUD
-│   │   │   ├── cities/                 # Cities CRUD
-│   │   │   ├── districts/              # Districts CRUD
-│   │   │   └── areas/                  # Areas CRUD
-│   │   └── attractions/                # Attractions CRUD
+│   │   │   ├── _components/            # Shared: LocationGroup, LocationCard, types
+│   │   │   ├── countries/              # Card UI (page + sheet only)
+│   │   │   ├── cities/                 # Card UI (page + sheet only)
+│   │   │   ├── districts/             # Card UI (page + sheet only)
+│   │   │   └── areas/                  # Card UI (page + sheet only)
+│   │   └── attractions/                # Standard 5-file CRUD
 │   ├── properties/
 │   │   ├── structures/page.tsx
 │   │   └── units/page.tsx
@@ -71,6 +71,7 @@ components/
 ├── auth/                               # AuthGuard, GuestGuard, forms
 ├── crud/                               # Reusable CRUD components (barrel: index.ts)
 ├── data-table/                         # TanStack table components (barrel: index.ts)
+├── entity/                             # Entity display: EntityIcon, EntityImage, EntityBadge
 ├── icons/                              # Custom SVG icons
 ├── nav/                                # Sidebar, header, nav data
 │   ├── data/                           # Route group configs (barrel: index.ts)
@@ -186,8 +187,14 @@ Idle → Loading (fetch) → Display Data
   │                          │
   ├── Create → Sheet Open → Submit → Loading → Success (refetch) / Error (toast)
   ├── Edit → Sheet Open (prefilled) → Submit → Loading → Success (refetch) / Error (toast)
-  └── Delete → Dialog Open → Confirm → Loading → Success (refetch) / Error (toast)
+  ├── Delete → Dialog Open → Confirm → Loading → Success (refetch) / Error (toast)
+  └── Bulk Select → BulkToolbar appears → Bulk Action → Loading → Success (refetch) / Error (toast)
 ```
+
+### Bulk Operations
+
+`bulkDelete(deleteFn, ids[])` runs deletions in parallel via `Promise.allSettled`.
+`DataTableBulkToolbar` renders as a portal floating bar at bottom of viewport when rows are selected.
 
 ---
 

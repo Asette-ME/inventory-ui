@@ -4,8 +4,8 @@ import { ColumnDef } from '@tanstack/react-table';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 
 import { DataTableColumnHeader } from '@/components/data-table';
+import { EntityBadge } from '@/components/entity/entity-badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -15,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { IconDisplay } from '@/components/ui/icon-display';
 import { getUserInitials } from '@/lib/utils';
 import { User } from '@/types/entities';
 
@@ -130,17 +129,14 @@ export function getUsersColumns({ sortBy, sortOrder, onSort, onEdit, onDelete }:
         return (
           <div className="flex flex-wrap gap-1">
             {roles.map((role) => (
-              <Badge key={role.id} variant="secondary" className="gap-1">
-                {role.image ? (
-                  <Avatar className="size-4 rounded-full">
-                    <AvatarImage src={role.image} alt={role.name} />
-                    <AvatarFallback className="rounded-full text-[8px]">{role.name[0]}</AvatarFallback>
-                  </Avatar>
-                ) : role.icon ? (
-                  <IconDisplay name={role.icon} className="size-3" />
-                ) : null}
-                {role.name}
-              </Badge>
+              <EntityBadge
+                key={role.id}
+                id={role.id}
+                image={role.image}
+                icon={role.icon}
+                name={role.name}
+                color={role.color}
+              />
             ))}
           </div>
         );

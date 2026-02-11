@@ -75,13 +75,16 @@ Each entity follows a pattern: `Entity`, `EntityCreateInput`, `EntityUpdateInput
 
 ### `lib/api.ts`
 
-| Export       | Type     | Purpose                                  |
-| ------------ | -------- | ---------------------------------------- |
-| `api.fetch`  | function | Base fetch with Bearer token auto-attach |
-| `api.get`    | function | GET request wrapper                      |
-| `api.post`   | function | POST request wrapper                     |
-| `api.put`    | function | PUT request wrapper                      |
-| `api.delete` | function | DELETE request wrapper                   |
+| Export              | Type     | Purpose                                  |
+| ------------------- | -------- | ---------------------------------------- |
+| `api.fetch`         | function | Base fetch with Bearer token auto-attach |
+| `api.get`           | function | GET request wrapper                      |
+| `api.post`          | function | POST with JSON body                      |
+| `api.postFormData`  | function | POST with FormData (file uploads)        |
+| `api.put`           | function | PUT with JSON body                       |
+| `api.patch`         | function | PATCH with JSON body                     |
+| `api.patchFormData` | function | PATCH with FormData (file uploads)       |
+| `api.delete`        | function | DELETE request wrapper                   |
 
 ### `lib/env.ts`
 
@@ -120,7 +123,21 @@ update{Entity}(id, data) => ApiResponse<Entity>
 delete{Entity}(id) => ApiResponse<boolean>
 ```
 
-**Entities covered:** Role, User, Country, City, District, Area, Category, Amenity, Attraction, Transport, FeatureType, StructureType (60 total server actions)
+**Entities covered:** Role, User, Country, City, District, Area, Category, Amenity, Attraction, Transport, FeatureType, StructureType (60 standard CRUD actions)
+
+#### Additional User Role Actions
+
+| Export            | Signature                                            | Purpose                             |
+| ----------------- | ---------------------------------------------------- | ----------------------------------- |
+| `assignUserRole`  | `(userId, roleId) => Promise<ApiResponse<User>>`     | Assign single role to a user        |
+| `removeUserRole`  | `(userId, roleId) => Promise<ApiResponse<User>>`     | Remove single role from a user      |
+| `bulkAssignRoles` | `(userIds[], roleIds[]) => Promise<SettledResult[]>` | Bulk assign roles to multiple users |
+
+#### Bulk Operations
+
+| Export       | Signature                                                | Purpose                                 |
+| ------------ | -------------------------------------------------------- | --------------------------------------- |
+| `bulkDelete` | `(deleteFn, ids[]) => Promise<PromiseSettledResult<>[]>` | Generic bulk delete using any entity fn |
 
 ### `lib/actions/buildings.ts`
 
@@ -186,14 +203,33 @@ Zod schemas per entity. Pattern: `{entity}CreateSchema`, `{entity}UpdateSchema`,
 
 ## Components - Data Table (`components/data-table/`)
 
-| Export                   | Purpose                                                       |
-| ------------------------ | ------------------------------------------------------------- |
-| `DataTable`              | Main table with TanStack integration, sorting, loading states |
-| `DataTableColumnHeader`  | Sortable column header with dropdown                          |
-| `DataTablePagination`    | Page controls + page size selector                            |
-| `DataTableViewOptions`   | Column visibility toggle                                      |
-| `DataTableFacetedFilter` | Multi-select facet filter                                     |
-| `DataTableFilterDrawer`  | Mobile filter drawer                                          |
+| Export                   | Purpose                                                              |
+| ------------------------ | -------------------------------------------------------------------- |
+| `DataTable`              | Main table with TanStack integration, sorting, loading states        |
+| `DataTableBulkToolbar`   | Floating bulk action bar (portal to body, shows when items selected) |
+| `DataTableColumnHeader`  | Sortable column header with dropdown                                 |
+| `DataTablePagination`    | Page controls + page size selector                                   |
+| `DataTableViewOptions`   | Column visibility toggle                                             |
+| `DataTableFacetedFilter` | Multi-select facet filter                                            |
+| `DataTableFilterDrawer`  | Mobile filter drawer                                                 |
+
+---
+
+## Components - Entity (`components/entity/`)
+
+Display components for entities with UIAttributeEntity fields. No barrel export — import directly.
+
+| Export        | Component    | Props                                                                |
+| ------------- | ------------ | -------------------------------------------------------------------- |
+| `EntityIcon`  | Icon display | `icon: string`                                                       |
+| `EntityImage` | Avatar image | `image: string, className?: string`                                  |
+| `EntityBadge` | Badge combo  | `id, name, icon?, image?, color?` — shows icon/image + name in Badge |
+
+```typescript
+import { EntityBadge } from '@/components/entity/entity-badge';
+import { EntityIcon } from '@/components/entity/entity-icon';
+import { EntityImage } from '@/components/entity/entity-image';
+```
 
 ---
 
@@ -267,7 +303,19 @@ import { countryCreateSchema, type CountryFormData } from '@/lib/validations/ent
 import { EntitySheet, FormField, DeleteDialog, PageLayout, FilterBar, EmptyState } from '@/components/crud';
 
 // Data table
-import { DataTable, DataTableColumnHeader, DataTablePagination, DataTableViewOptions } from '@/components/data-table';
+import {
+  DataTable,
+  DataTableBulkToolbar,
+  DataTableColumnHeader,
+  DataTablePagination,
+  DataTableViewOptions,
+} from '@/components/data-table';
+
+// Entity display (no barrel - import directly)
+import { EntityBadge } from '@/components/entity/entity-badge';
+
+// Bulk operations
+import { bulkDelete, bulkAssignRoles } from '@/lib/actions/entities';
 
 // UI components
 import { Button } from '@/components/ui/button';

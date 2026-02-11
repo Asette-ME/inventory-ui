@@ -46,7 +46,7 @@ pnpm format   # Run Prettier
 
 - `lib/api.ts` - Client-side API wrapper that auto-attaches Bearer token
 - `lib/actions/api.ts` - Server-side fetch helpers (reads auth cookie)
-- `lib/actions/entities.ts` - 60 server actions for all entity CRUD
+- `lib/actions/entities.ts` - 64 server actions (60 CRUD + `assignUserRole`, `removeUserRole`, `bulkAssignRoles`, `bulkDelete`)
 - All API calls go through `/api/...` which proxies to the backend
 - 401 responses trigger automatic logout and redirect to login
 
@@ -54,7 +54,8 @@ pnpm format   # Run Prettier
 
 - `components/ui/` - Shadcn UI components (new-york style) + custom map, icon-picker, place-autocomplete
 - `components/crud/` - Reusable CRUD components: EntitySheet, FormField, DeleteDialog, PageLayout, GeoEditor, skeletons
-- `components/data-table/` - TanStack table with pagination, sorting, filtering, column visibility
+- `components/data-table/` - TanStack table with pagination, sorting, filtering, column visibility, bulk toolbar
+- `components/entity/` - Entity display components: EntityIcon, EntityImage, EntityBadge (no barrel)
 - `components/nav/` - Sidebar, header, navigation groups with role-based filtering
 - `components/auth/` - AuthGuard, GuestGuard, login/signup forms
 

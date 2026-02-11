@@ -46,8 +46,8 @@ export function DeleteDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md animate-scale-in">
         <DialogHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10 animate-pulse">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3">
+            <div className="p-3 items-center justify-center rounded-lg bg-destructive/10 animate-pulse">
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
             <div>
@@ -58,12 +58,12 @@ export function DeleteDialog({
             </div>
           </div>
         </DialogHeader>
-        <DialogFooter className="gap-2 sm:gap-0">
+        <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isDeleting}>
             Cancel
           </Button>
           <Button variant="destructive" onClick={handleConfirm} disabled={isDeleting}>
-            {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isDeleting && <Loader2 className="h-4 w-4 animate-spin" />}
             Delete
           </Button>
         </DialogFooter>

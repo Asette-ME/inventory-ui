@@ -9,12 +9,13 @@ import { ColorPicker } from '@/components/crud/color-picker';
 import { EntitySheet } from '@/components/crud/entity-sheet';
 import { FormField, FormFieldWrapper } from '@/components/crud/form-field';
 import { GeoEditor } from '@/components/crud/geo-editor';
+import { EntityImage } from '@/components/entity/entity-image';
 import { IconPicker } from '@/components/ui/icon-picker';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createAttraction, updateAttraction } from '@/lib/actions/entities';
 import { attractionCreateSchema, AttractionFormData } from '@/lib/validations/entities';
-import { Coordinates, Boundaries } from '@/types/common';
+import { Boundaries, Coordinates } from '@/types/common';
 import { Attraction } from '@/types/entities';
 
 interface AttractionSheetProps {
@@ -149,14 +150,10 @@ export function AttractionSheet({ open, onOpenChange, attraction, onSuccess }: A
         </FormFieldWrapper>
 
         <FormFieldWrapper label="Image" description="Upload an image for this attraction">
-          {attraction?.image && !imagePreview && (
+          {(attraction?.image || imagePreview) && (
             <div className="mb-2">
-              <img src={attraction.image} alt="" className="h-16 w-16 rounded-md object-cover" />
-            </div>
-          )}
-          {imagePreview && (
-            <div className="mb-2">
-              <img src={imagePreview} alt="" className="h-16 w-16 rounded-md object-cover" />
+              {attraction?.image && !imagePreview && <EntityImage image={attraction.image} />}
+              {imagePreview && <EntityImage image={imagePreview} />}
             </div>
           )}
           <Input
